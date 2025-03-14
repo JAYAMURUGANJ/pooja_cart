@@ -1,0 +1,167 @@
+var poojaItems = [
+  {
+    "id": 1,
+    "name": "Karpuram",
+    "unit_id": 1, // ✅ Gram (g)
+    "unit_count": 50,
+    "item_category_id": 1,
+    "items_function_ids": [1, 2, 3, 4, 5],
+    "mrp": 50,
+    "selling_price": 45,
+    "img": "https://example.com/images/karpuram.jpg",
+  },
+  {
+    "id": 2,
+    "name": "Kungumam",
+    "unit_id": 1, // ✅ Gram (g)
+    "unit_count": 100,
+    "item_category_id": 2,
+    "items_function_ids": [1, 4, 5],
+    "mrp": 30,
+    "selling_price": 25,
+    "img": "https://example.com/images/kungumam.jpg",
+  },
+  {
+    "id": 3,
+    "name": "Deepam Oil",
+    "unit_id": 3, // ✅ Liter (l)
+    "unit_count": 1,
+    "item_category_id": 3,
+    "items_function_ids": [1, 2, 3, 4, 5],
+    "mrp": 150,
+    "selling_price": 140,
+    "img": "https://example.com/images/deepam_oil.jpg",
+  },
+  {
+    "id": 4,
+    "name": "Manjal (Turmeric Powder)",
+    "unit_id": 1, // ✅ Gram (g)
+    "unit_count": 200,
+    "item_category_id": 4,
+    "items_function_ids": [1, 4, 5],
+    "mrp": 40,
+    "selling_price": 35,
+    "img": "https://example.com/images/turmeric_powder.jpg",
+  },
+  {
+    "id": 5,
+    "name": "Sandal Powder",
+    "unit_id": 1, // ✅ Gram (g)
+    "unit_count": 50,
+    "item_category_id": 5,
+    "items_function_ids": [1, 4, 5],
+    "mrp": 80,
+    "selling_price": 75,
+    "img": "https://example.com/images/sandal_powder.jpg",
+  },
+  {
+    "id": 6,
+    "name": "Thiri (Cotton Wicks)",
+    "unit_id": 5, // ✅ Pack
+    "unit_count": 10,
+    "item_category_id": 6,
+    "items_function_ids": [1, 2, 3, 4, 5],
+    "mrp": 20,
+    "selling_price": 18,
+    "img": "https://example.com/images/cotton_wicks.jpg",
+  },
+  {
+    "id": 7,
+    "name": "Pooja Pot",
+    "unit_id": 7, // ✅ Combo
+    "unit_count": 5,
+    "item_category_id": 7,
+    "items_function_ids": [1, 2, 4, 5],
+    "mrp": 250,
+    "selling_price": 230,
+    "img": "https://example.com/images/pooja_pot.jpg",
+  },
+  {
+    "id": 8,
+    "name": "Agarbathi (Incense Sticks)",
+    "unit_id": 5, // ✅ Pack
+    "unit_count": 12,
+    "item_category_id": 8,
+    "items_function_ids": [1, 2, 3, 4, 5],
+    "mrp": 60,
+    "selling_price": 55,
+    "img": "https://example.com/images/incense_sticks.jpg",
+  },
+  {
+    "id": 9,
+    "name": "Betel Leaves",
+    "unit_id": 5, // ✅ Pack
+    "unit_count": 25,
+    "item_category_id": 9,
+    "items_function_ids": [1, 2, 5],
+    "mrp": 25,
+    "selling_price": 20,
+    "img": "https://example.com/images/betel_leaves.jpg",
+  },
+  {
+    "id": 10,
+    "name": "Coconut",
+    "unit_id": 6, // ✅ Piece
+    "unit_count": 1,
+    "item_category_id": 10,
+    "items_function_ids": [1, 2, 3, 4, 5],
+    "mrp": 35,
+    "selling_price": 30,
+    "img": "https://example.com/images/coconut.jpg",
+  },
+  {
+    "id": 11,
+    "name": "Panchapathiram & Uthirini",
+    "unit_id": 6, // ✅ Piece
+    "unit_count": 1,
+    "item_category_id": 7,
+    "items_function_ids": [1, 2, 5],
+    "mrp": 120,
+    "selling_price": 110,
+    "img": "https://example.com/images/panchapathiram.jpg",
+  },
+  {
+    "id": 12,
+    "name": "Navadhaniyam (9 Grains)",
+    "unit_id": 5, // ✅ Pack
+    "unit_count": 1,
+    "item_category_id": 9,
+    "items_function_ids": [4],
+    "mrp": 100,
+    "selling_price": 90,
+    "img": "https://example.com/images/navadhaniyam.jpg",
+  },
+  {
+    "id": 13,
+    "name": "Vibuthi (Sacred Ash)",
+    "unit_id": 1, // ✅ Gram (g)
+    "unit_count": 50,
+    "item_category_id": 2,
+    "items_function_ids": [1, 4, 5],
+    "mrp": 25,
+    "selling_price": 20,
+    "img": "https://example.com/images/vibuthi.jpg",
+  },
+  {
+    "id": 14,
+    "name": "Ganga Jal",
+    "unit_id": 3, // ✅ Liter (l)
+    "unit_count": 1,
+    "item_category_id": 3,
+    "items_function_ids": [1, 2, 3, 4, 5],
+    "mrp": 200,
+    "selling_price": 180,
+    "img": "https://example.com/images/ganga_jal.jpg",
+  },
+  {
+    "id": 15,
+    "name": "Banana Leaf",
+    "unit_id": 6, // ✅ Piece
+    "unit_count": 1,
+    "item_category_id": 10,
+    "items_function_ids": [1, 2, 5],
+    "mrp": 10,
+    "selling_price": 8,
+    "img": "https://example.com/images/banana_leaf.jpg",
+  },
+];

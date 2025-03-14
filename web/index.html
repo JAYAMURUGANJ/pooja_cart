@@ -1,0 +1,72 @@
+<!DOCTYPE html><html><head>
+  <base href="$FLUTTER_BASE_HREF">
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="palanistore">
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+   <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">-->
+  <meta name="apple-mobile-web-app-title" content="palanistore">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <title>Palani Store</title>
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <script src="flutter_bootstrap.js" async=""></script>
+  
+  <div class="main-content" id="loader-content">
+    <div class="loader">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <img src="splash/logo.png" alt="Palani Store">
+  </div>
+  <script>
+    // Function to hide loader
+    function hideLoader() {
+      const loaderContent = document.getElementById('loader-content');
+      loaderContent.classList.add('hidden');
+    }
+
+    // Function to get a cookie by name
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    // Function to apply the theme
+    function applyTheme() {
+      const theme = getCookie('appTheme') || 'dark';
+      const body = document.body;
+      
+      // Add more detailed console logging
+      console.log("Current Theme Cookie: " + theme);
+      console.log("Current Body Classes Before: " + body.className);
+      
+      // Clear existing theme classes first
+      body.classList.remove('dark-theme', 'light-theme');
+      
+      // Apply new theme
+      body.classList.add(theme + '-theme');
+      
+      console.log("Current Body Classes After: " + body.className);
+    }
+   
+    applyTheme(); 
+    window.addEventListener('flutter-first-frame', () => {
+      applyTheme;
+      hideLoader();
+    });
+  </script>
+
+  
+
+</body></html>
