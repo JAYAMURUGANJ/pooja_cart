@@ -14,8 +14,9 @@ import '../models/pooja_item_category.dart';
 import '../models/pooja_item_functions.dart';
 import '../models/pooja_items.dart';
 import '../utils/pooja_item_utils.dart';
-import '../widgets/nav_bar.dart';
 import '../widgets/item_filter.dart';
+import '../widgets/item_info.dart';
+import '../widgets/nav_bar.dart';
 import '../widgets/search_bar.dart';
 
 class ResponsiveItemScreen extends StatefulWidget {
@@ -1018,31 +1019,10 @@ class _ResponsiveItemScreenState extends State<ResponsiveItemScreen> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  item.name ?? 'Unknown Item',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: useWideLayout ? 14 : 15,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                  ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  "${item.unitCount} ${PoojaItemUtils().getUnitName(item.unitId!, pUnits)}",
-                                  style: TextStyle(
-                                    fontSize: useWideLayout ? 14 : 13,
-                                    color: Colors.grey.shade600,
-                                  ),
-                                ),
-                              ],
-                            ),
+                          ItemNameImgUnit(
+                            item: item,
+                            useWideLayout: useWideLayout,
+                            pUnits: pUnits,
                           ),
                           // Category tag if available
                           if (item.itemCategoryId != null)
