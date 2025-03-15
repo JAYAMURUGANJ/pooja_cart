@@ -3,6 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../models/pooja_cart_item.dart';
 import '../utils/pooja_item_utils.dart';
+import '../widgets/empty_cart.dart';
 
 class OrderSummaryScreen extends StatefulWidget {
   final List<CartItem> cartItems;
@@ -180,7 +181,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: Colors.blue.shade800,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         actions: [
@@ -233,24 +234,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
   }
 
   Widget _buildEmptyOrderView() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.shopping_cart_outlined, size: 48, color: Colors.grey[400]),
-          const SizedBox(height: 16),
-          Text(
-            'Your order is empty',
-            style: TextStyle(color: Colors.grey[600]),
-          ),
-          const SizedBox(height: 16),
-          OutlinedButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Back to shopping'),
-          ),
-        ],
-      ),
-    );
+    return EmptyCard(context: context);
   }
 
   Widget _buildCartItemTile(CartItem cartItem) {
@@ -283,8 +267,8 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                 padding: const EdgeInsets.only(top: 4),
                 child: Text(
                   "You Save ₹${discountTotal.toStringAsFixed(2)}",
-                  style: const TextStyle(
-                    color: Colors.green,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
@@ -368,13 +352,9 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
-              icon: const Icon(Icons.share_outlined),
-              label: const Text("Send via WhatsApp"),
+              icon: const Icon(Icons.shopify_outlined, color: Colors.white),
+              label: const Text("Confirm Order"),
               onPressed: () => _shareOrderViaWhatsApp(context),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                foregroundColor: Colors.white,
-              ),
             ),
           ),
         ],

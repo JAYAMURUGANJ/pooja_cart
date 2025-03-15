@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pooja_cart/models/pooja_items_units.dart';
+import 'package:pooja_cart/widgets/empty_cart.dart';
 import 'package:pooja_cart/widgets/head_container.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -124,87 +125,68 @@ class _ResponsiveItemScreenState extends State<ResponsiveItemScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton:
           isMobile && totalItems > 0
-              ? Container(
-                width: MediaQuery.of(context).size.width * 0.92,
-                height: 60,
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: viewOrderSummary,
-                    borderRadius: BorderRadius.circular(12),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "$totalItems ${totalItems == 1 ? 'item' : 'items'}",
-                                style: TextStyle(
-                                  color: Colors.grey.shade700,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              Text(
-                                "₹${PoojaItemUtils.getTotal(itemQuantities, pItems).toStringAsFixed(2)}",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                  color: Colors.blue.shade800,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 12,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.blue.shade600,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: const Row(
-                              children: [
-                                Text(
-                                  "VIEW CART",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                SizedBox(width: 8),
-                                Icon(
-                                  Icons.arrow_forward,
-                                  color: Colors.white,
-                                  size: 16,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+              ? _cartFootForMobile(context, totalItems)
+              : null,
+    );
+  }
+
+  Container _cartFootForMobile(BuildContext context, int totalItems) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.92,
+      height: 60,
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "$totalItems ${totalItems == 1 ? 'item' : 'items'}",
+                    style: TextStyle(color: Colors.grey.shade700, fontSize: 14),
+                  ),
+                  Text(
+                    "₹${PoojaItemUtils.getTotal(itemQuantities, pItems).toStringAsFixed(2)}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
+                ],
+              ),
+              ElevatedButton.icon(
+                onPressed: viewOrderSummary,
+                icon: Icon(
+                  Icons.shopping_cart_outlined,
+                  size: 16,
+                  color: Colors.white,
                 ),
-              )
-              : null,
+                label: Text(
+                  "VIEW CART",
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -441,6 +423,305 @@ class _ResponsiveItemScreenState extends State<ResponsiveItemScreen> {
     );
   }
 
+  Future<void> _shareOrderViaWhatsApp(BuildContext context) async {
+    final cartItems = getCartItems();
+    if (cartItems.isEmpty) {
+      _showMessage(context, 'Your order is empty');
+      return;
+    }
+
+    final orderSummary = getOrderSummary();
+    final String whatsappNumber = "9566632370";
+
+    final String orderText = PoojaItemUtils.generateOrderSummary(
+      cartItems,
+      orderSummary['mrpTotal']!,
+      orderSummary['discount']!,
+      orderSummary['total']!,
+    );
+    final String encodedMessage = Uri.encodeComponent(orderText);
+    final String formattedNumber = whatsappNumber.replaceAll(
+      RegExp(r'[^0-9]'),
+      '',
+    );
+
+    final Uri whatsappUri = Uri.parse(
+      'https://wa.me/$formattedNumber?text=$encodedMessage',
+    );
+
+    try {
+      bool launched = await launchUrl(
+        whatsappUri,
+        mode: LaunchMode.externalApplication,
+      );
+      if (!launched) {
+        if (context.mounted) {
+          _showMessage(context, 'Could not launch WhatsApp.');
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        _showMessage(context, 'Error opening WhatsApp: $e');
+      }
+    }
+  }
+
+  void _showMessage(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.blue.shade700,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        margin: const EdgeInsets.all(16),
+      ),
+    );
+  }
+
+  Widget _showItemGrid({bool isDesktopOrWeb = false}) {
+    final size = MediaQuery.of(context).size;
+    final isTablet = size.width > 600 && size.width <= 900;
+    final bool useWideLayout = isDesktopOrWeb || isTablet;
+    final bool isMobileView = size.width <= 600;
+
+    // Optimized column count for different screens
+    int crossAxisCount =
+        (size.width > 1200)
+            ? 3
+            : (size.width > 800)
+            ? 2
+            : (size.width > 600)
+            ? 2
+            : 1;
+
+    // Adjust aspect ratio dynamically
+    double aspectRatio = isMobileView ? 1.2 : (useWideLayout ? 1.6 : 1);
+
+    // Get filtered items based on search and filter criteria
+    final filteredItems = PoojaItemUtils.getFilteredItems(
+      pItems: pItems,
+      searchController: searchController,
+      selectedCategoryIds: selectedCategoryId,
+      selectedItemsFunctionIds: selectedFunctionCategoryId,
+      selectedUnitIds: selectedUnitId,
+    );
+
+    if (filteredItems.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.search_off_rounded, size: 70, color: Colors.grey[300]),
+            const SizedBox(height: 20),
+            Text(
+              'No items found',
+              style: TextStyle(
+                fontSize: useWideLayout ? 20 : 18,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey[600],
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'Try adjusting your search or filters',
+              style: TextStyle(
+                fontSize: useWideLayout ? 16 : 14,
+                color: Colors.grey[500],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Use a staggered grid view for flexible heights
+    return isMobileView
+        ? ListView.builder(
+          padding: const EdgeInsets.only(bottom: 80),
+          itemCount: filteredItems.length,
+          itemBuilder: (context, index) {
+            final item = filteredItems[index];
+            int quantity = itemQuantities[item.id] ?? 0;
+
+            return Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: Colors.grey.shade200, width: 1),
+                ),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Item info row
+                  ItemNameImgUnit(
+                    item: item,
+                    pUnits: pUnits,
+                    useWideLayout: false,
+                  ),
+                  const SizedBox(height: 8),
+                  // Price information row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            "₹${item.sellingPrice}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15,
+                            ),
+                          ),
+                          if (item.mrp != null &&
+                              item.sellingPrice != null &&
+                              item.mrp! > item.sellingPrice!) ...[
+                            const SizedBox(width: 6),
+                            Text(
+                              "₹${item.mrp}",
+                              style: TextStyle(
+                                decoration: TextDecoration.lineThrough,
+                                color: Colors.grey.shade500,
+                                fontSize: 12,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4,
+                                vertical: 1,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.green.shade50,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                "${((1 - (item.sellingPrice! / item.mrp!)) * 100).toStringAsFixed(0)}% off",
+                                style: TextStyle(
+                                  color: Colors.green.shade700,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+
+                      // Add/quantity controls
+                      quantity > 0
+                          ? PoojaItemUtils.buildQuantityControl(
+                            itemId: item.id!,
+                            quantity: quantity,
+                            onQuantityChanged: updateQuantity,
+                          )
+                          : PoojaItemUtils.buildAddButton(
+                            itemId: item.id!,
+                            onQuantityChanged: updateQuantity,
+                          ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        )
+        : Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GridView.builder(
+            padding: EdgeInsets.all(useWideLayout ? 0 : 12),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount,
+              childAspectRatio: aspectRatio,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              mainAxisExtent: null,
+            ),
+            itemCount: filteredItems.length,
+            itemBuilder: (context, index) {
+              final item = filteredItems[index];
+              final int quantity = itemQuantities[item.id] ?? 0;
+
+              return Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ItemNameImgUnit(
+                        item: item,
+                        useWideLayout: useWideLayout,
+                        pUnits: pUnits,
+                      ),
+                      // Rest of the card remains unchanged
+                      const Spacer(),
+                      Divider(color: Colors.grey.shade200),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (item.mrp != null &&
+                                  item.sellingPrice != null &&
+                                  item.mrp! > item.sellingPrice!)
+                                Text(
+                                  "₹${item.mrp?.toStringAsFixed(2)}",
+                                  style: TextStyle(
+                                    decoration: TextDecoration.lineThrough,
+                                    color: Colors.grey.shade500,
+                                    fontSize: useWideLayout ? 13 : 12,
+                                  ),
+                                ),
+                              Text(
+                                "₹${item.sellingPrice?.toStringAsFixed(2) ?? '-'}",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: useWideLayout ? 16 : 15,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                            ],
+                          ),
+                          quantity > 0
+                              ? SizedBox(
+                                width: 100,
+                                child:
+                                    PoojaItemUtils.buildResponsiveQuantityControl(
+                                      itemId: item.id!,
+                                      quantity: quantity,
+                                      onQuantityChanged: updateQuantity,
+                                      buttonSize: 33,
+                                      fontSize: 13,
+                                    ),
+                              )
+                              : SizedBox(
+                                height: 36,
+                                child: OutlinedButton(
+                                  onPressed: () => addItemToCart(item),
+                                  child: const Text(
+                                    "Add",
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+  }
+
+  // Order Summary section
   Expanded _orderSummary(
     bool isDesktopOrWeb,
     List<CartItem> cartItems,
@@ -472,35 +753,7 @@ class _ResponsiveItemScreenState extends State<ResponsiveItemScreen> {
     return Expanded(
       child:
           cartItems.isEmpty
-              ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.shopping_cart_outlined,
-                      size: 80,
-                      color: Colors.grey[300],
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      'Your cart is empty',
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: isDesktopOrWeb ? 20 : 18,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Add items from the list',
-                      style: TextStyle(
-                        color: Colors.grey[500],
-                        fontSize: isDesktopOrWeb ? 16 : 14,
-                      ),
-                    ),
-                  ],
-                ),
-              )
+              ? EmptyCard(context: context)
               : ListView.builder(
                 padding: const EdgeInsets.all(16),
                 itemCount: cartItems.length,
@@ -778,358 +1031,5 @@ class _ResponsiveItemScreenState extends State<ResponsiveItemScreen> {
         ],
       ),
     );
-  }
-
-  Future<void> _shareOrderViaWhatsApp(BuildContext context) async {
-    final cartItems = getCartItems();
-    if (cartItems.isEmpty) {
-      _showMessage(context, 'Your order is empty');
-      return;
-    }
-
-    final orderSummary = getOrderSummary();
-    final String whatsappNumber = "9566632370";
-
-    final String orderText = PoojaItemUtils.generateOrderSummary(
-      cartItems,
-      orderSummary['mrpTotal']!,
-      orderSummary['discount']!,
-      orderSummary['total']!,
-    );
-    final String encodedMessage = Uri.encodeComponent(orderText);
-    final String formattedNumber = whatsappNumber.replaceAll(
-      RegExp(r'[^0-9]'),
-      '',
-    );
-
-    final Uri whatsappUri = Uri.parse(
-      'https://wa.me/$formattedNumber?text=$encodedMessage',
-    );
-
-    try {
-      bool launched = await launchUrl(
-        whatsappUri,
-        mode: LaunchMode.externalApplication,
-      );
-      if (!launched) {
-        if (context.mounted) {
-          _showMessage(context, 'Could not launch WhatsApp.');
-        }
-      }
-    } catch (e) {
-      if (context.mounted) {
-        _showMessage(context, 'Error opening WhatsApp: $e');
-      }
-    }
-  }
-
-  void _showMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.blue.shade700,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        margin: const EdgeInsets.all(16),
-      ),
-    );
-  }
-
-  Widget _showItemGrid({bool isDesktopOrWeb = false}) {
-    final size = MediaQuery.of(context).size;
-    final isTablet = size.width > 600 && size.width <= 900;
-    final bool useWideLayout = isDesktopOrWeb || isTablet;
-    final bool isMobileView = size.width <= 600;
-
-    // Optimized column count for different screens
-    int crossAxisCount =
-        (size.width > 1200)
-            ? 3
-            : (size.width > 800)
-            ? 2
-            : (size.width > 600)
-            ? 2
-            : 1;
-
-    // Adjust aspect ratio dynamically
-    double aspectRatio = isMobileView ? 1.2 : (useWideLayout ? 1.6 : 1);
-
-    // Get filtered items based on search and filter criteria
-    // Get filtered items based on search and filter criteria
-    final filteredItems = PoojaItemUtils.getFilteredItems(
-      pItems: pItems,
-      searchController: searchController,
-      selectedCategoryIds: selectedCategoryId,
-      selectedItemsFunctionIds: selectedFunctionCategoryId,
-      selectedUnitIds: selectedUnitId, // Add this parameter
-    );
-
-    if (filteredItems.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.search_off_rounded, size: 70, color: Colors.grey[300]),
-            const SizedBox(height: 20),
-            Text(
-              'No items found',
-              style: TextStyle(
-                fontSize: useWideLayout ? 20 : 18,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey[600],
-              ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Try adjusting your search or filters',
-              style: TextStyle(
-                fontSize: useWideLayout ? 16 : 14,
-                color: Colors.grey[500],
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    // Use a staggered grid view for flexible heights
-    return isMobileView
-        ? ListView.builder(
-          padding: const EdgeInsets.only(bottom: 80),
-          itemCount: filteredItems.length,
-          itemBuilder: (context, index) {
-            final item = filteredItems[index];
-            int quantity = itemQuantities[item.id] ?? 0;
-
-            return Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: Colors.grey.shade200, width: 1),
-                ),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.name!,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          "${item.unitCount} ${PoojaItemUtils().getUnitName(item.unitId!, pUnits)}",
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontSize: 13,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            Text(
-                              "₹${item.sellingPrice}",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 15,
-                              ),
-                            ),
-                            if (item.mrp! > item.sellingPrice!) ...[
-                              const SizedBox(width: 6),
-                              Text(
-                                "₹${item.mrp}",
-                                style: TextStyle(
-                                  decoration: TextDecoration.lineThrough,
-                                  color: Colors.grey.shade500,
-                                  fontSize: 12,
-                                ),
-                              ),
-                              const SizedBox(width: 6),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 4,
-                                  vertical: 1,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.green.shade50,
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: Text(
-                                  "${((1 - (item.sellingPrice! / item.mrp!)) * 100).toStringAsFixed(0)}% off",
-                                  style: TextStyle(
-                                    color: Colors.green.shade700,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 11,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  quantity > 0
-                      ? PoojaItemUtils.buildQuantityControl(
-                        itemId: item.id!,
-                        quantity: quantity,
-                        onQuantityChanged: updateQuantity,
-                      )
-                      : PoojaItemUtils.buildAddButton(
-                        itemId: item.id!,
-                        onQuantityChanged: updateQuantity,
-                      ),
-                ],
-              ),
-            );
-          },
-        )
-        : Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GridView.builder(
-            padding: EdgeInsets.all(useWideLayout ? 0 : 12),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-              childAspectRatio: aspectRatio,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              // Remove fixed aspect ratio to allow flexible height
-              mainAxisExtent: null,
-            ),
-            itemCount: filteredItems.length,
-            itemBuilder: (context, index) {
-              final item = filteredItems[index];
-              final int quantity = itemQuantities[item.id] ?? 0;
-
-              // Use a more flexible container that adapts to content
-              return Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min, // Important for flexibility
-                    children: [
-                      // Item header
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ItemNameImgUnit(
-                            item: item,
-                            useWideLayout: useWideLayout,
-                            pUnits: pUnits,
-                          ),
-                          // Category tag if available
-                          if (item.itemCategoryId != null)
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color:
-                                    Theme.of(
-                                      context,
-                                    ).colorScheme.inversePrimary,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Text(
-                                _getCategoryName(item.itemCategoryId!),
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Theme.of(context).colorScheme.primary,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                      // Flexible spacer
-                      const Spacer(),
-                      // Divider for visual separation
-                      Divider(color: Colors.grey.shade200),
-                      // Price and add item controls
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // Price information
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // Show old price if discount available
-                              if (item.mrp != null &&
-                                  item.sellingPrice != null &&
-                                  item.mrp! > item.sellingPrice!)
-                                Text(
-                                  "₹${item.mrp?.toStringAsFixed(2)}",
-                                  style: TextStyle(
-                                    decoration: TextDecoration.lineThrough,
-                                    color: Colors.grey.shade500,
-                                    fontSize: useWideLayout ? 13 : 12,
-                                  ),
-                                ),
-
-                              // Current price
-                              Text(
-                                "₹${item.sellingPrice?.toStringAsFixed(2) ?? '-'}",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: useWideLayout ? 16 : 15,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          // Add or quantity controls
-                          quantity > 0
-                              ? SizedBox(
-                                width: 100,
-                                child:
-                                    PoojaItemUtils.buildResponsiveQuantityControl(
-                                      itemId: item.id!,
-                                      quantity: quantity,
-                                      onQuantityChanged: updateQuantity,
-                                      buttonSize: 33,
-                                      fontSize: 13,
-                                    ),
-                              )
-                              : SizedBox(
-                                height: 36,
-                                child: OutlinedButton(
-                                  onPressed: () => addItemToCart(item),
-                                  child: const Text(
-                                    "Add",
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        );
-  }
-
-  // Helper method to get category name from category ID
-  String _getCategoryName(int categoryId) {
-    final category = pCategories.firstWhere(
-      (category) => category.id == categoryId,
-      orElse: () => PoojaItemCategory(id: categoryId, name: "Category"),
-    );
-    return category.name ?? "Category";
   }
 }

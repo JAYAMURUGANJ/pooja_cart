@@ -124,15 +124,12 @@ class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     ),
-    iconTheme: const IconThemeData(color: Colors.black87),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         foregroundColor: Colors.deepOrange,
         backgroundColor: Colors.grey,
       ),
     ),
-
-    
   );
 
   // New method to get BoxDecoration for different themes

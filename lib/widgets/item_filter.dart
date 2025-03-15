@@ -221,9 +221,12 @@ class _PoojaItemFilterState extends State<PoojaItemFilter> {
   Widget _buildModalFilter() {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           "Filter Pooja Items",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.primary,
+          ),
         ),
         actions: [
           if (_selectedCategoryIds.isNotEmpty ||

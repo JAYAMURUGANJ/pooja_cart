@@ -83,7 +83,7 @@ var poojaItems = [
     "id": 8,
     "name": "Incense Sticks",
     "unit_id": 5, // ✅ Pack
-    "unit_count": 12,
+    "unit_count": 1,
     "item_category_id": 8,
     "items_function_ids": [1, 2, 3, 4, 5],
     "mrp": 60,
@@ -94,12 +94,12 @@ var poojaItems = [
   {
     "id": 9,
     "name": "Betel Leaves",
-    "unit_id": 5, // ✅ Pack
+    "unit_id": 9, // ✅ Pack
     "unit_count": 25,
     "item_category_id": 9,
     "items_function_ids": [1, 2, 5],
-    "mrp": 25,
-    "selling_price": 20,
+    "mrp": 250,
+    "selling_price": 220,
     "img":
         "https://m.media-amazon.com/images/I/51aoJREzIML._AC_UF1000,1000_QL80_.jpg",
   },
@@ -117,7 +117,7 @@ var poojaItems = [
   },
   {
     "id": 11,
-    "name": "Panchapathiram",
+    "name": "Pancha Pathiram",
     "unit_id": 6, // ✅ Piece
     "unit_count": 1,
     "item_category_id": 7,
@@ -130,9 +130,9 @@ var poojaItems = [
   {
     "id": 12,
     "name": "Navadhaniyam",
-    "unit_id": 5, // ✅ Pack
+    "unit_id": 2, // ✅ Pack
     "unit_count": 1,
-    "item_category_id": 9,
+    "item_category_id": 11,
     "items_function_ids": [4],
     "mrp": 100,
     "selling_price": 90,

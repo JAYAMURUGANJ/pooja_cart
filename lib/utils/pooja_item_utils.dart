@@ -13,7 +13,7 @@ class PoojaItemUtils {
       (u) => u.id == unitId,
       orElse: () => PoojaUnits(unitName: 'Unknown'),
     );
-    return unit.unitName ?? 'Unknown';
+    return unit.unitSymbol ?? 'Unknown';
   }
 
   // Filter items based filters

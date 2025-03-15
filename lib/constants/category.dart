@@ -12,7 +12,7 @@ var poojaItemCategory = [
   {"id": 3, "name": "Oil", "description": "Used for lighting lamps in pooja"},
   {
     "id": 4,
-    "name": "Turmeric",
+    "name": "Turmeric Powder",
     "description": "Used in religious rituals and purification",
   },
   {
@@ -37,4 +37,5 @@ var poojaItemCategory = [
     "description": "Used in religious offerings",
   },
   {"id": 10, "name": "Coconut", "description": "Used in pooja and rituals"},
+  {"id": 11, "name": "Seeds", "description": "Used in pooja and rituals"},
 ];
