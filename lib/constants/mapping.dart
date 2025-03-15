@@ -25,7 +25,7 @@ var categoryUnitJson = [
   },
   {
     "category_id": 7,
-    "unit_ids": [6, 9],
+    "unit_ids": [6, 7],
   },
   {
     "category_id": 8,

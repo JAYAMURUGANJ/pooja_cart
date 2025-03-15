@@ -32,11 +32,11 @@ class MyApp extends StatelessWidget {
         builder: (context, themeState) {
           return MaterialApp.router(
             // App configuration
-            title: "Palani Stores",
+            title: "Palani Store",
             debugShowCheckedModeBanner: false,
             // Theme configuration
             theme: AppTheme().lightTheme,
-            darkTheme: AppTheme().darkTheme,
+            //darkTheme: AppTheme().darkTheme,
             themeMode:
                 themeState == AppThemeState.dark
                     ? ThemeMode.dark

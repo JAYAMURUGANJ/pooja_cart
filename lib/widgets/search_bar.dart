@@ -75,6 +75,11 @@ class _PoojaItemSearchAnchorState extends State<PoojaItemSearchAnchor> {
           onChanged: widget.onSearch,
           onSubmitted: widget.onSearch,
           onTap: controller.openView,
+          // shape: WidgetStateProperty.all<OutlinedBorder>(
+          //   const RoundedRectangleBorder(
+          //     borderRadius: BorderRadius.zero, // Removes border radius
+          //   ),
+          // ),
         );
       },
       suggestionsBuilder: (BuildContext context, SearchController controller) {
@@ -133,7 +138,7 @@ class _PoojaItemSearchAnchorState extends State<PoojaItemSearchAnchor> {
                   ),
               ],
             ),
-            trailing: ElevatedButton(
+            trailing: OutlinedButton(
               onPressed: () {
                 controller.closeView(item.name);
                 widget.onItemSelected(item);

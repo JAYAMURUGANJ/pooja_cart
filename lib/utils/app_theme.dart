@@ -2,61 +2,74 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  final ThemeData darkTheme = ThemeData(
-    brightness: Brightness.dark,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: Colors.deepOrange,
-      brightness: Brightness.dark,
-    ),
-    useMaterial3: true,
-    visualDensity: VisualDensity.adaptivePlatformDensity,
-    scaffoldBackgroundColor: Colors.black,
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.black,
-      foregroundColor: Colors.white,
-      elevation: 0,
-    ),
-    textTheme: const TextTheme(
-      bodyLarge: TextStyle(color: Colors.white),
-      bodyMedium: TextStyle(color: Colors.white70),
-      bodySmall: TextStyle(color: Colors.white60),
-      headlineMedium: TextStyle(color: Colors.white),
-      headlineSmall: TextStyle(color: Colors.white70),
-    ),
-    cardTheme: CardTheme(
-      color: Colors.grey[900],
-      shadowColor: Colors.black54,
-      elevation: 2,
-    ),
-    inputDecorationTheme: InputDecorationTheme(
-      filled: true,
-      fillColor: Colors.grey[850],
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: Colors.white30),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: Colors.deepOrangeAccent),
-      ),
-      hintStyle: const TextStyle(color: Colors.white54),
-      labelStyle: const TextStyle(color: Colors.white70),
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.deepOrange,
-        foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-    ),
-    iconTheme: const IconThemeData(color: Colors.white),
-    textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(
-        foregroundColor: Colors.deepOrange,
-        backgroundColor: Colors.grey,
-      ),
-    ),
-  );
+  // final ThemeData darkTheme = ThemeData(
+  //   brightness: Brightness.dark,
+  //   colorScheme: ColorScheme.fromSeed(
+  //     seedColor: Colors.deepOrange,
+  //     brightness: Brightness.dark,
+  //   ),
+  //   useMaterial3: true,
+  //   visualDensity: VisualDensity.adaptivePlatformDensity,
+  //   scaffoldBackgroundColor: Colors.black,
+  //   appBarTheme: const AppBarTheme(
+  //     backgroundColor: Colors.black,
+  //     foregroundColor: Colors.white,
+  //     elevation: 0,
+  //   ),
+  //   textTheme: const TextTheme(
+  //     bodyLarge: TextStyle(color: Colors.white),
+  //     bodyMedium: TextStyle(color: Colors.white70),
+  //     bodySmall: TextStyle(color: Colors.white60),
+  //     headlineMedium: TextStyle(color: Colors.white),
+  //     headlineSmall: TextStyle(color: Colors.white70),
+  //   ),
+  //   cardTheme: CardTheme(
+  //     color: Colors.grey[900],
+  //     shadowColor: Colors.black54,
+  //     elevation: 2,
+  //   ),
+  //   inputDecorationTheme: InputDecorationTheme(
+  //     filled: true,
+  //     fillColor: Colors.grey[850],
+  //     border: OutlineInputBorder(
+  //       borderRadius: BorderRadius.circular(8),
+  //       borderSide: const BorderSide(color: Colors.white30),
+  //     ),
+  //     focusedBorder: OutlineInputBorder(
+  //       borderRadius: BorderRadius.circular(8),
+  //       borderSide: const BorderSide(color: Colors.deepOrangeAccent),
+  //     ),
+  //     hintStyle: const TextStyle(color: Colors.white54),
+  //     labelStyle: const TextStyle(color: Colors.white70),
+  //   ),
+  //   elevatedButtonTheme: ElevatedButtonThemeData(
+  //     style: ElevatedButton.styleFrom(
+  //       backgroundColor: Colors.deepOrange,
+  //       foregroundColor: Colors.white,
+  //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+  //     ),
+  //   ),
+  //   iconTheme: const IconThemeData(color: Colors.white),
+  //   textButtonTheme: TextButtonThemeData(
+  //     style: TextButton.styleFrom(
+  //       foregroundColor: Colors.deepOrange,
+  //       backgroundColor: Colors.grey,
+  //     ),
+  //   ),
+  //   outlinedButtonTheme: OutlinedButtonThemeData(
+  //     style: ButtonStyle(
+  //       padding: WidgetStateProperty.all<EdgeInsets>(EdgeInsets.zero),
+  //       side: WidgetStateProperty.all<BorderSide>(
+  //         const BorderSide(color: Colors.deepOrange),
+  //       ),
+  //       shape: WidgetStateProperty.all<OutlinedBorder>(
+  //         const RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.zero,
+  //         ), // No border radius
+  //       ),
+  //     ),
+  //   ),
+  // );
 
   final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
@@ -118,6 +131,8 @@ class AppTheme {
         backgroundColor: Colors.grey,
       ),
     ),
+
+    
   );
 
   // New method to get BoxDecoration for different themes

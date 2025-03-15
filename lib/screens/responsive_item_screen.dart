@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pooja_cart/models/pooja_items_units.dart';
+import 'package:pooja_cart/widgets/head_container.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../constants/category.dart';
@@ -12,10 +13,10 @@ import '../models/pooja_category_unit_mapping.dart';
 import '../models/pooja_item_category.dart';
 import '../models/pooja_item_functions.dart';
 import '../models/pooja_items.dart';
-import '../utils/app_theme.dart';
 import '../utils/pooja_item_utils.dart';
-import '../widgets/pooja_item_filter.dart';
-import '../widgets/pooja_item_search_bar.dart';
+import '../widgets/nav_bar.dart';
+import '../widgets/item_filter.dart';
+import '../widgets/search_bar.dart';
 
 class ResponsiveItemScreen extends StatefulWidget {
   const ResponsiveItemScreen({super.key});
@@ -117,54 +118,7 @@ class _ResponsiveItemScreenState extends State<ResponsiveItemScreen> {
     final totalItems = itemQuantities.values.fold(0, (sum, qty) => sum + qty);
 
     return Scaffold(
-      appBar: AppBar(
-        title: SizedBox(
-          width: 350,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image.asset("assets/icons/icon.png", width: 50),
-              const SizedBox(width: 2),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text("Palani Store", style: AppTypography().appTitleStyle),
-                  Text(
-                    "way to buy a pooja-related items",
-                    style: AppTypography().appSubTitleStyle,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 2,
-        shadowColor: Colors.black12,
-        actions: [
-          if (isMobile)
-            IconButton(
-              icon: Icon(
-                Icons.delete_outline,
-                size: isDesktopOrWeb ? 26 : (isTablet ? 24 : 22),
-                color:
-                    (itemQuantities.isNotEmpty)
-                        ? Colors.red.shade400
-                        : Colors.grey.shade400,
-              ),
-              onPressed:
-                  (itemQuantities.isNotEmpty)
-                      ? () {
-                        PoojaItemUtils.showClearCartDialog(
-                          context,
-                          clearAllItems,
-                        );
-                      }
-                      : null,
-            ),
-        ],
-      ),
+      appBar: _appBar(isMobile, isDesktopOrWeb, isTablet, context),
       body: _buildResponsiveLayout(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton:
@@ -253,6 +207,43 @@ class _ResponsiveItemScreenState extends State<ResponsiveItemScreen> {
     );
   }
 
+  AppBar _appBar(
+    bool isMobile,
+    bool isDesktopOrWeb,
+    bool isTablet,
+    BuildContext context,
+  ) {
+    return AppBar(
+      toolbarHeight: 80,
+      title: isDesktopOrWeb ? WebNavBar(currentRoute: '/') : AppTitle(),
+      backgroundColor: Colors.white,
+      elevation: 2,
+      shadowColor: Colors.black12,
+      actions: [
+        if (isMobile)
+          IconButton(
+            icon: Icon(
+              Icons.delete_outline,
+              size: isDesktopOrWeb ? 26 : (isTablet ? 24 : 22),
+              color:
+                  (itemQuantities.isNotEmpty)
+                      ? Colors.red.shade400
+                      : Colors.grey.shade400,
+            ),
+            onPressed:
+                (itemQuantities.isNotEmpty)
+                    ? () {
+                      PoojaItemUtils.showClearCartDialog(
+                        context,
+                        clearAllItems,
+                      );
+                    }
+                    : null,
+          ),
+      ],
+    );
+  }
+
   Widget _buildResponsiveLayout() {
     final orderSummary = getOrderSummary();
     final cartItems = getCartItems();
@@ -288,15 +279,7 @@ class _ResponsiveItemScreenState extends State<ResponsiveItemScreen> {
           Container(width: 1, color: Colors.grey.shade200),
 
           // Center - Item list view
-          Expanded(
-            flex: 4,
-            child: Column(
-              children: [
-                _searchAndFilterBar(context),
-                Expanded(child: _showItemGrid(isDesktopOrWeb: true)),
-              ],
-            ),
-          ),
+          Expanded(flex: 4, child: _showItemGrid(isDesktopOrWeb: true)),
 
           // Vertical divider
           Container(width: 1, color: Colors.grey.shade200),
@@ -399,9 +382,7 @@ class _ResponsiveItemScreenState extends State<ResponsiveItemScreen> {
             child: PoojaItemSearchAnchor(
               allItems: pItems,
               onSearch: (query) {
-                setState(() {
-                  // The search controller is already updated by the widget
-                });
+                setState(() {});
               },
               onItemSelected: (item) {
                 addItemToCart(item);
@@ -530,20 +511,8 @@ class _ResponsiveItemScreenState extends State<ResponsiveItemScreen> {
     );
   }
 
-  Container _orderSummaryHead(bool isDesktopOrWeb) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.onPrimaryContainer,
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).colorScheme.inversePrimary,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+  Widget _orderSummaryHead(bool isDesktopOrWeb) {
+    return HeadContainer(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -865,112 +834,6 @@ class _ResponsiveItemScreenState extends State<ResponsiveItemScreen> {
     );
   }
 
-  Widget _searchAndFilterBar(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final isMobile = size.width <= 600;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: PoojaItemSearchAnchor(
-              allItems: pItems,
-              onSearch: (query) {
-                setState(() {
-                  // The search controller is already updated by the widget
-                });
-              },
-              onItemSelected: (item) {
-                addItemToCart(item);
-              },
-              searchController: searchController,
-            ),
-          ),
-          const SizedBox(width: 12),
-
-          // Show filter button only for mobile
-          if (isMobile)
-            GestureDetector(
-              onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  backgroundColor: Colors.transparent,
-                  builder:
-                      (context) => Container(
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                          ),
-                        ),
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: PoojaItemFilter(
-                          poojaItemCategory: poojaItemCategory,
-                          poojaFunctions: poojaItemFunctions,
-                          poojaItemUnits: poojaItemUnits,
-                          categoryUnitMapping:
-                              PoojaItemUtils.convertMappingListToMap(
-                                categoryUnitMapping,
-                              ),
-                          onFilterApplied: (categoryIds, functionIds, unitIds) {
-                            setState(() {
-                              selectedCategoryId = categoryIds.toList();
-                              selectedFunctionCategoryId = functionIds.toList();
-                              selectedUnitId = unitIds.toList();
-                            });
-                          },
-                          isInline: false,
-                        ),
-                      ),
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color:
-                      (selectedCategoryId != null ||
-                              selectedFunctionCategoryId != null)
-                          ? Colors.blue.shade50
-                          : Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color:
-                        (selectedCategoryId != null ||
-                                selectedFunctionCategoryId != null)
-                            ? Colors.blue.shade200
-                            : Colors.grey.shade300,
-                  ),
-                ),
-                child: Icon(
-                  Icons.filter_list,
-                  color:
-                      (selectedCategoryId != null ||
-                              selectedFunctionCategoryId != null)
-                          ? Colors.blue.shade700
-                          : Colors.grey.shade700,
-                  size: 24,
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
   Widget _showItemGrid({bool isDesktopOrWeb = false}) {
     final size = MediaQuery.of(context).size;
     final isTablet = size.width > 600 && size.width <= 900;
@@ -1259,9 +1122,8 @@ class _ResponsiveItemScreenState extends State<ResponsiveItemScreen> {
                               )
                               : SizedBox(
                                 height: 36,
-                                child: ElevatedButton(
+                                child: OutlinedButton(
                                   onPressed: () => addItemToCart(item),
-
                                   child: const Text(
                                     "Add",
                                     style: TextStyle(

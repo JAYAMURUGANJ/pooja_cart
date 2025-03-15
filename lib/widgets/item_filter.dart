@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/pooja_item_category.dart';
 import '../models/pooja_item_functions.dart';
 import '../models/pooja_items_units.dart';
+import 'head_container.dart';
 
 class PoojaItemFilter extends StatefulWidget {
   final List<dynamic> poojaItemCategory;
@@ -176,19 +177,7 @@ class _PoojaItemFilterState extends State<PoojaItemFilter> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.onPrimaryContainer,
-              boxShadow: [
-                BoxShadow(
-                  color: Theme.of(context).colorScheme.inversePrimary,
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
+          HeadContainer(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

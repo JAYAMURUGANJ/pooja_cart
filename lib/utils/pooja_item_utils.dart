@@ -263,20 +263,11 @@ class PoojaItemUtils {
     required int itemId,
     required Function(int, int) onQuantityChanged,
   }) {
-    return SizedBox(
-      height: 32,
-      width: 60,
-      child: OutlinedButton(
-        onPressed: () => onQuantityChanged(itemId, 1),
-        style: OutlinedButton.styleFrom(
-          padding: EdgeInsets.zero,
-          side: BorderSide(color: Colors.grey.shade300),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-        ),
-        child: const Text(
-          "ADD",
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-        ),
+    return OutlinedButton(
+      onPressed: () => onQuantityChanged(itemId, 1),
+      child: const Text(
+        "ADD",
+        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
       ),
     );
   }
