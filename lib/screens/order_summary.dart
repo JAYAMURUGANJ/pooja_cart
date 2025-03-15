@@ -188,10 +188,9 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
           IconButton(
             icon: Icon(
               Icons.delete_outline,
-              color:
-                  _cartItems.isNotEmpty
-                      ? Colors.red.shade400
-                      : Colors.grey.shade400,
+              color: _cartItems.isNotEmpty
+                  ? Colors.red.shade400
+                  : Colors.grey.shade400,
             ),
             onPressed: _cartItems.isEmpty ? null : _clearOrder,
             tooltip: 'Clear Order',
@@ -199,37 +198,34 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
           IconButton(
             icon: Icon(
               Icons.share_outlined,
-              color:
-                  _cartItems.isNotEmpty
-                      ? Colors.green.shade400
-                      : Colors.grey.shade400,
+              color: _cartItems.isNotEmpty
+                  ? Colors.green.shade400
+                  : Colors.grey.shade400,
             ),
-            onPressed:
-                _cartItems.isEmpty
-                    ? null
-                    : () => _shareOrderViaWhatsApp(context),
+            onPressed: _cartItems.isEmpty
+                ? null
+                : () => _shareOrderViaWhatsApp(context),
             tooltip: 'Share Order',
           ),
         ],
       ),
-      body:
-          _cartItems.isEmpty
-              ? _buildEmptyOrderView()
-              : Column(
-                children: [
-                  Expanded(
-                    child: ListView.builder(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      itemCount: _cartItems.length,
-                      itemBuilder: (context, index) {
-                        final cartItem = _cartItems[index];
-                        return _buildCartItemTile(cartItem);
-                      },
-                    ),
+      body: _cartItems.isEmpty
+          ? _buildEmptyOrderView()
+          : Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    itemCount: _cartItems.length,
+                    itemBuilder: (context, index) {
+                      final cartItem = _cartItems[index];
+                      return _buildCartItemTile(cartItem);
+                    },
                   ),
-                  _buildOrderSummaryFooter(),
-                ],
-              ),
+                ),
+                _buildOrderSummaryFooter(),
+              ],
+            ),
     );
   }
 
@@ -284,12 +280,10 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
               "₹${itemTotal.toStringAsFixed(2)}",
               style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
             ),
-            IntrinsicWidth(
-              child: PoojaItemUtils.buildQuantityControl(
-                itemId: cartItem.item.id!,
-                quantity: cartItem.quantity,
-                onQuantityChanged: _updateCartItem,
-              ),
+            PoojaItemUtils.buildQuantityControl(
+              itemId: cartItem.item.id!,
+              quantity: cartItem.quantity,
+              onQuantityChanged: _updateCartItem,
             ),
           ],
         ),

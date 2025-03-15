@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
+import '../constants/unit.dart';
 import '../models/pooja_items.dart';
+import '../models/pooja_items_units.dart';
+import '../utils/pooja_item_utils.dart';
 
 class PoojaItemSearchAnchor extends StatefulWidget {
   final List<PoojaItems> allItems;
@@ -22,6 +26,8 @@ class PoojaItemSearchAnchor extends StatefulWidget {
 
 class _PoojaItemSearchAnchorState extends State<PoojaItemSearchAnchor> {
   final searchAnchorController = SearchController();
+
+  final List<PoojaUnits> pUnits = PoojaUnits.fromJsonList(poojaItemUnits);
 
   List<PoojaItems> _getSuggestions(String query) {
     if (query.isEmpty) {
@@ -111,8 +117,28 @@ class _PoojaItemSearchAnchorState extends State<PoojaItemSearchAnchor> {
 
         return suggestions.map(
           (item) => ListTile(
-            leading: const Icon(Icons.shopping_basket),
-            title: Text(item.name!),
+            leading: ClipOval(
+              child: item.img != null && item.img!.isNotEmpty
+                  ? Image.network(
+                      item.img!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(
+                          Icons.shopping_basket_outlined,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.6),
+                        );
+                      },
+                    )
+                  : Icon(
+                      Icons.shopping_basket_outlined,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 0.6),
+                    ),
+            ),
+            title: Text("${item.name}"),
             subtitle: Row(
               children: [
                 Text(
@@ -122,20 +148,22 @@ class _PoojaItemSearchAnchorState extends State<PoojaItemSearchAnchor> {
                   ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(width: 8),
-                if (item.mrp! > item.sellingPrice!)
-                  Text(
-                    "₹${item.mrp}",
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      decoration: TextDecoration.lineThrough,
-                    ),
+                // if (item.mrp! > item.sellingPrice!)
+                //   Text(
+                //     "₹${item.mrp}",
+                //     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                //           decoration: TextDecoration.lineThrough,
+                //         ),
+                //   ),
+                // if (item.mrp! > item.sellingPrice!)
+                Text(
+                  "(${item.unitCount}${PoojaItemUtils().getUnitName(item.unitId!, pUnits)})",
+                  style: GoogleFonts.aBeeZee(
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    fontWeight: FontWeight.bold,
                   ),
-                if (item.mrp! > item.sellingPrice!)
-                  Text(
-                    " (${((1 - (item.sellingPrice! / item.mrp!)) * 100).toStringAsFixed(0)}% off)",
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: Colors.red),
-                  ),
+                ),
               ],
             ),
             trailing: OutlinedButton(
