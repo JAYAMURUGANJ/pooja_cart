@@ -14,20 +14,5 @@ final GoRouter router = GoRouter(
       pageBuilder:
           (context, state) => NoTransitionPage(child: const ContactPage()),
     ),
-    // GoRoute(
-    //   path: '/services',
-    //   pageBuilder:
-    //       (context, state) => NoTransitionPage(child: const ServicesScreen()),
-    // ),
-    // GoRoute(
-    //   path: '/projects',
-    //   pageBuilder:
-    //       (context, state) => NoTransitionPage(child: const ProjectsScreen()),
-    // ),
-    // GoRoute(
-    //   path: '/contact',
-    //   pageBuilder:
-    //       (context, state) => NoTransitionPage(child: const ContactScreen()),
-    // ),
   ],
 );

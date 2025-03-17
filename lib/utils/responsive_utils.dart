@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Utility class for responsive UI handling across different device sizes
 class ResponsiveUtils {
   /// Device size breakpoints
   static const double mobileBreakpoint = 600;
@@ -54,8 +53,8 @@ class ResponsiveUtils {
     return responsiveValue<EdgeInsets>(
       context: context,
       mobile: const EdgeInsets.all(8.0),
-      tablet: const EdgeInsets.all(16.0),
-      desktop: const EdgeInsets.all(24.0),
+      tablet: const EdgeInsets.all(10.0),
+      desktop: const EdgeInsets.all(12.0),
     );
   }
 
@@ -114,9 +113,9 @@ class ResponsiveUtils {
   static double controlHeight(BuildContext context) {
     return responsiveValue<double>(
       context: context,
-      mobile: 36,
-      tablet: 40,
-      desktop: 46,
+      mobile: 30,
+      tablet: 30,
+      desktop: 32,
     );
   }
 
@@ -207,7 +206,6 @@ class ResponsiveUtils {
   }
 }
 
-/// Extension on BuildContext to easily access responsive utility methods
 extension ResponsiveContext on BuildContext {
   bool get isMobile => ResponsiveUtils.isMobile(this);
   bool get isTablet => ResponsiveUtils.isTablet(this);

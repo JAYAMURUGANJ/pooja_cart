@@ -6,13 +6,13 @@ import '../models/pooja_items.dart';
 import '../models/pooja_items_units.dart';
 import '../utils/pooja_item_utils.dart';
 
-class PoojaItemSearchAnchor extends StatefulWidget {
+class ItemSearchAnchor extends StatefulWidget {
   final List<PoojaItems> allItems;
   final Function(String) onSearch;
   final Function(PoojaItems) onItemSelected;
   final TextEditingController searchController;
 
-  const PoojaItemSearchAnchor({
+  const ItemSearchAnchor({
     super.key,
     required this.allItems,
     required this.onSearch,
@@ -21,10 +21,10 @@ class PoojaItemSearchAnchor extends StatefulWidget {
   });
 
   @override
-  State<PoojaItemSearchAnchor> createState() => _PoojaItemSearchAnchorState();
+  State<ItemSearchAnchor> createState() => _ItemSearchAnchorState();
 }
 
-class _PoojaItemSearchAnchorState extends State<PoojaItemSearchAnchor> {
+class _ItemSearchAnchorState extends State<ItemSearchAnchor> {
   final searchAnchorController = SearchController();
   final List<PoojaUnits> pUnits = PoojaUnits.fromJsonList(poojaItemUnits);
 
@@ -148,14 +148,6 @@ class _PoojaItemSearchAnchorState extends State<PoojaItemSearchAnchor> {
                   ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(width: 8),
-                // if (item.mrp! > item.sellingPrice!)
-                //   Text(
-                //     "₹${item.mrp}",
-                //     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                //           decoration: TextDecoration.lineThrough,
-                //         ),
-                //   ),
-                // if (item.mrp! > item.sellingPrice!)
                 Text(
                   "(${item.unitCount}${PoojaItemUtils().getUnitName(item.unitId!, pUnits)})",
                   style: GoogleFonts.aBeeZee(

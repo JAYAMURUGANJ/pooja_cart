@@ -198,7 +198,7 @@ class AppTypography {
   //Text styles with Google Theme
   TextStyle appTitleStyle = GoogleFonts.bungeeSpice(
     fontWeight: FontWeight.w700,
-    fontSize: 22,
+    fontSize: 20,
   );
 
   TextStyle appSubTitleStyle = GoogleFonts.eduVicWaNtBeginner(

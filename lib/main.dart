@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         builder: (context, themeState) {
           return MaterialApp.router(
             // App configuration
-            title: "Palani Store",
+            title: "S.Palani Store",
             debugShowCheckedModeBanner: false,
             // Theme configuration
             theme: AppTheme().lightTheme,

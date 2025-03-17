@@ -39,11 +39,13 @@ final navItems = [
 class WebNavBar extends StatefulWidget {
   final String currentRoute;
   final bool showSearchBar;
+  final Function(PoojaItems)? onItemSelected; // Add this callback
 
   const WebNavBar({
     super.key,
     required this.currentRoute,
     this.showSearchBar = true,
+    this.onItemSelected, // Add this parameter
   });
 
   @override
@@ -54,13 +56,20 @@ class _WebNavBarState extends State<WebNavBar> {
   final List<PoojaItems> pItems = PoojaItems.fromJsonList(poojaItems);
   final TextEditingController searchController = TextEditingController();
 
+  // Define itemQuantities as a class property
   final Map<int, int> itemQuantities = {};
 
   void addItemToCart(PoojaItems item) {
-    setState(() {
-      int currentQuantity = itemQuantities[item.id] ?? 0;
-      itemQuantities[item.id!] = currentQuantity + 1;
-    });
+    // Call the parent callback if provided
+    if (widget.onItemSelected != null) {
+      widget.onItemSelected!(item);
+    } else {
+      // Fallback to local state if needed
+      setState(() {
+        int currentQuantity = itemQuantities[item.id] ?? 0;
+        itemQuantities[item.id!] = currentQuantity + 1;
+      });
+    }
   }
 
   @override
@@ -74,16 +83,12 @@ class _WebNavBarState extends State<WebNavBar> {
           Visibility(
             visible: widget.showSearchBar,
             child: Expanded(
-              child: PoojaItemSearchAnchor(
+              child: ItemSearchAnchor(
                 allItems: pItems,
                 onSearch: (query) {
-                  setState(() {
-                    // The search controller is already updated by the widget
-                  });
+                  setState(() {});
                 },
-                onItemSelected: (item) {
-                  addItemToCart(item);
-                },
+                onItemSelected: addItemToCart, // Use the local method
                 searchController: searchController,
               ),
             ),
@@ -155,7 +160,7 @@ class AppTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 350,
+      width: 380,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [

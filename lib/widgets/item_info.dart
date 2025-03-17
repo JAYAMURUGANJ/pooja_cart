@@ -6,6 +6,7 @@ import '../models/pooja_item_category.dart';
 import '../models/pooja_items.dart';
 import '../models/pooja_items_units.dart';
 import '../utils/pooja_item_utils.dart';
+import '../utils/responsive_utils.dart';
 
 class ItemNameImgUnit extends StatefulWidget {
   const ItemNameImgUnit({
@@ -28,7 +29,6 @@ class _ItemNameImgUnitState extends State<ItemNameImgUnit> {
     poojaItemCategory,
   );
 
-  // Helper method to get category name from category ID
   String _getCategoryName(int categoryId) {
     final category = pCategories.firstWhere(
       (category) => category.id == categoryId,
@@ -39,22 +39,37 @@ class _ItemNameImgUnitState extends State<ItemNameImgUnit> {
 
   @override
   Widget build(BuildContext context) {
-    // Get the screen width
-    final screenWidth = MediaQuery.of(context).size.width;
     final bool effectiveWideLayout =
-        widget.useWideLayout ?? (screenWidth > 600);
+        widget.useWideLayout ?? ResponsiveUtils.isDesktop(context);
 
-    // Responsive dimensions
-    final double imageSize = effectiveWideLayout ? 50 : 45;
-    final double nameFontSize = effectiveWideLayout ? 15 : 14;
-    final double categoryFontSize = effectiveWideLayout ? 13 : 12;
-    final double unitFontSize = effectiveWideLayout ? 13 : 12;
+    final double imageSize = ResponsiveUtils.responsiveValue(
+      context: context,
+      mobile: 45,
+      desktop: 50,
+    );
+
+    final double nameFontSize = ResponsiveUtils.responsiveFontSize(
+      context,
+      mobile: 12,
+      desktop: 13,
+    );
+
+    final double categoryFontSize = ResponsiveUtils.responsiveFontSize(
+      context,
+      mobile: 10,
+      desktop: 11,
+    );
+
+    final double unitFontSize = ResponsiveUtils.responsiveFontSize(
+      context,
+      mobile: 10,
+      desktop: 11,
+    );
 
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Image with enhanced styling - aligned to top
           Container(
             width: imageSize,
             height: imageSize,
@@ -101,14 +116,11 @@ class _ItemNameImgUnitState extends State<ItemNameImgUnit> {
                       ),
             ),
           ),
-          // Perfect spacing between image and content
           SizedBox(width: effectiveWideLayout ? 6 : 4),
-          // Text content - top aligned
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
                   widget.item.name ?? 'Unknown Item',
@@ -116,15 +128,12 @@ class _ItemNameImgUnitState extends State<ItemNameImgUnit> {
                     fontWeight: FontWeight.w600,
                     fontSize: nameFontSize,
                     color: Theme.of(context).colorScheme.onSurface,
-                    height:
-                        1.2, // Tighter line height for better text alignment
+                    height: 1.2,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: effectiveWideLayout ? 6 : 4),
-
-                // Category tag with enhanced styling
                 if (widget.item.itemCategoryId != null)
                   Text(
                     _getCategoryName(widget.item.itemCategoryId!),
@@ -137,13 +146,9 @@ class _ItemNameImgUnitState extends State<ItemNameImgUnit> {
               ],
             ),
           ),
-          // Perfect spacing between content and unit
           SizedBox(width: effectiveWideLayout ? 6 : 0),
-          // Unit display - top aligned
           Padding(
-            padding: EdgeInsets.only(
-              top: 2,
-            ), // Slight adjustment to align with text
+            padding: const EdgeInsets.only(top: 2),
             child: Container(
               padding: EdgeInsets.symmetric(
                 horizontal: effectiveWideLayout ? 8 : 6,

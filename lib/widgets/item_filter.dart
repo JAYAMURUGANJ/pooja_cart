@@ -5,7 +5,7 @@ import '../models/pooja_item_functions.dart';
 import '../models/pooja_items_units.dart';
 import 'head_container.dart';
 
-class PoojaItemFilter extends StatefulWidget {
+class ItemFilter extends StatefulWidget {
   final List<dynamic> poojaItemCategory;
   final List<dynamic> poojaFunctions;
   final List<dynamic> poojaItemUnits;
@@ -15,7 +15,7 @@ class PoojaItemFilter extends StatefulWidget {
   // Add a new parameter for category-unit mapping
   final Map<int, List<int>> categoryUnitMapping;
 
-  const PoojaItemFilter({
+  const ItemFilter({
     required this.poojaItemCategory,
     required this.poojaFunctions,
     required this.poojaItemUnits,
@@ -26,10 +26,10 @@ class PoojaItemFilter extends StatefulWidget {
   });
 
   @override
-  State<PoojaItemFilter> createState() => _PoojaItemFilterState();
+  State<ItemFilter> createState() => _ItemFilterState();
 }
 
-class _PoojaItemFilterState extends State<PoojaItemFilter> {
+class _ItemFilterState extends State<ItemFilter> {
   final List<int> _selectedCategoryIds = [];
   final List<int> _selectedFunctionIds = [];
   final List<int> _selectedUnitIds = [];
@@ -48,7 +48,7 @@ class _PoojaItemFilterState extends State<PoojaItemFilter> {
   }
 
   @override
-  void didUpdateWidget(PoojaItemFilter oldWidget) {
+  void didUpdateWidget(ItemFilter oldWidget) {
     super.didUpdateWidget(oldWidget);
     // Check if data sources have changed
     if (widget.poojaItemCategory != oldWidget.poojaItemCategory ||
