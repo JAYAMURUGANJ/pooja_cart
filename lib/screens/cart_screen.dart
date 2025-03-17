@@ -123,69 +123,16 @@ class _CartScreenState extends State<CartScreen> {
       appBar: _appBar(isMobile, isDesktopOrWeb, isTablet, context),
       body: _buildResponsiveLayout(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: isMobile && totalItems > 0
-          ? _cartFootForMobile(context, totalItems)
-          : null,
-    );
-  }
 
-  Container _cartFootForMobile(BuildContext context, int totalItems) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.92,
-      height: 60,
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "$totalItems ${totalItems == 1 ? 'item' : 'items'}",
-                    style: TextStyle(color: Colors.grey.shade700, fontSize: 14),
-                  ),
-                  Text(
-                    "₹${PoojaItemUtils.getTotal(itemQuantities, pItems).toStringAsFixed(2)}",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                ],
-              ),
-              ElevatedButton.icon(
-                onPressed: viewOrderSummary,
-                icon: Icon(
-                  Icons.shopping_cart_outlined,
-                  size: 16,
-                  color: Colors.white,
-                ),
-                label: Text(
-                  "VIEW CART",
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      floatingActionButton:
+          isMobile && totalItems > 0
+              ? PoojaItemUtils.buildCartFooter(
+                context: context,
+                totalItems: totalItems,
+                total: PoojaItemUtils.getTotal(itemQuantities, pItems),
+                onViewCart: viewOrderSummary,
+              )
+              : null,
     );
   }
 
@@ -207,18 +154,20 @@ class _CartScreenState extends State<CartScreen> {
             icon: Icon(
               Icons.delete_outline,
               size: isDesktopOrWeb ? 26 : (isTablet ? 24 : 22),
-              color: (itemQuantities.isNotEmpty)
-                  ? Colors.red.shade400
-                  : Colors.grey.shade400,
+              color:
+                  (itemQuantities.isNotEmpty)
+                      ? Colors.red.shade400
+                      : Colors.grey.shade400,
             ),
-            onPressed: (itemQuantities.isNotEmpty)
-                ? () {
-                    PoojaItemUtils.showClearCartDialog(
-                      context,
-                      clearAllItems,
-                    );
-                  }
-                : null,
+            onPressed:
+                (itemQuantities.isNotEmpty)
+                    ? () {
+                      PoojaItemUtils.showClearCartDialog(
+                        context,
+                        clearAllItems,
+                      );
+                    }
+                    : null,
           ),
       ],
     );
@@ -421,7 +370,7 @@ class _CartScreenState extends State<CartScreen> {
   Future<void> _shareOrderViaWhatsApp(BuildContext context) async {
     final cartItems = getCartItems();
     if (cartItems.isEmpty) {
-      _showMessage(context, 'Your order is empty');
+      PoojaItemUtils.showMessage(context, 'Your order is empty');
       return;
     }
 
@@ -451,26 +400,14 @@ class _CartScreenState extends State<CartScreen> {
       );
       if (!launched) {
         if (context.mounted) {
-          _showMessage(context, 'Could not launch WhatsApp.');
+          PoojaItemUtils.showMessage(context, 'Could not launch WhatsApp.');
         }
       }
     } catch (e) {
       if (context.mounted) {
-        _showMessage(context, 'Error opening WhatsApp: $e');
+        PoojaItemUtils.showMessage(context, 'Error opening WhatsApp: $e');
       }
     }
-  }
-
-  void _showMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.blue.shade700,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        margin: const EdgeInsets.all(16),
-      ),
-    );
   }
 
   Widget _showItemGrid({bool isDesktopOrWeb = false}) {
@@ -480,13 +417,14 @@ class _CartScreenState extends State<CartScreen> {
     final bool isMobileView = size.width <= 600;
 
     // Optimized column count for different screens
-    int crossAxisCount = (size.width > 1200)
-        ? 3
-        : (size.width > 800)
+    int crossAxisCount =
+        (size.width > 1200)
+            ? 3
+            : (size.width > 800)
             ? 2
             : (size.width > 600)
-                ? 2
-                : 1;
+            ? 2
+            : 1;
 
     // Adjust aspect ratio dynamically
     double aspectRatio = isMobileView ? 1.2 : (useWideLayout ? 1.6 : 1);
@@ -531,190 +469,188 @@ class _CartScreenState extends State<CartScreen> {
     // Use a staggered grid view for flexible heights
     return isMobileView
         ? ListView.builder(
-            padding: const EdgeInsets.only(bottom: 80),
+          padding: const EdgeInsets.only(bottom: 80),
+          itemCount: filteredItems.length,
+          itemBuilder: (context, index) {
+            final item = filteredItems[index];
+            int quantity = itemQuantities[item.id] ?? 0;
+
+            return Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: Colors.grey.shade200, width: 1),
+                ),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Item info row
+                  ItemNameImgUnit(
+                    item: item,
+                    pUnits: pUnits,
+                    useWideLayout: false,
+                  ),
+                  const SizedBox(height: 8),
+                  // Price information row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            "₹${item.sellingPrice}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15,
+                            ),
+                          ),
+                          if (item.mrp != null &&
+                              item.sellingPrice != null &&
+                              item.mrp! > item.sellingPrice!) ...[
+                            const SizedBox(width: 6),
+                            Text(
+                              "₹${item.mrp}",
+                              style: TextStyle(
+                                decoration: TextDecoration.lineThrough,
+                                color: Colors.grey.shade500,
+                                fontSize: 12,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4,
+                                vertical: 1,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.green.shade50,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                "${((1 - (item.sellingPrice! / item.mrp!)) * 100).toStringAsFixed(0)}% off",
+                                style: TextStyle(
+                                  color: Colors.green.shade700,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+
+                      // Add/quantity controls
+                      quantity > 0
+                          ? PoojaItemUtils.buildQuantityControl(
+                            itemId: item.id!,
+                            quantity: quantity,
+                            onQuantityChanged: updateQuantity,
+                          )
+                          : PoojaItemUtils.buildAddButton(
+                            itemId: item.id!,
+                            onQuantityChanged: updateQuantity,
+                          ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        )
+        : Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GridView.builder(
+            padding: EdgeInsets.all(useWideLayout ? 0 : 12),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount,
+              childAspectRatio: aspectRatio,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              mainAxisExtent: null,
+            ),
             itemCount: filteredItems.length,
             itemBuilder: (context, index) {
               final item = filteredItems[index];
-              int quantity = itemQuantities[item.id] ?? 0;
+              final int quantity = itemQuantities[item.id] ?? 0;
 
-              return Container(
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(color: Colors.grey.shade200, width: 1),
-                  ),
-                ),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Item info row
-                    ItemNameImgUnit(
-                      item: item,
-                      pUnits: pUnits,
-                      useWideLayout: false,
-                    ),
-                    const SizedBox(height: 8),
-                    // Price information row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "₹${item.sellingPrice}",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 15,
-                              ),
-                            ),
-                            if (item.mrp != null &&
-                                item.sellingPrice != null &&
-                                item.mrp! > item.sellingPrice!) ...[
-                              const SizedBox(width: 6),
-                              Text(
-                                "₹${item.mrp}",
-                                style: TextStyle(
-                                  decoration: TextDecoration.lineThrough,
-                                  color: Colors.grey.shade500,
-                                  fontSize: 12,
-                                ),
-                              ),
-                              const SizedBox(width: 6),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 4,
-                                  vertical: 1,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.green.shade50,
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: Text(
-                                  "${((1 - (item.sellingPrice! / item.mrp!)) * 100).toStringAsFixed(0)}% off",
+              return Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ItemNameImgUnit(
+                        item: item,
+                        useWideLayout: useWideLayout,
+                        pUnits: pUnits,
+                      ),
+                      // Rest of the card remains unchanged
+                      const Spacer(),
+                      Divider(color: Colors.grey.shade200),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (item.mrp != null &&
+                                  item.sellingPrice != null &&
+                                  item.mrp! > item.sellingPrice!)
+                                Text(
+                                  "₹${item.mrp?.toStringAsFixed(2)}",
                                   style: TextStyle(
-                                    color: Colors.green.shade700,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 11,
+                                    decoration: TextDecoration.lineThrough,
+                                    color: Colors.grey.shade500,
+                                    fontSize: useWideLayout ? 13 : 12,
                                   ),
+                                ),
+                              Text(
+                                "₹${item.sellingPrice?.toStringAsFixed(2) ?? '-'}",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: useWideLayout ? 16 : 15,
+                                  color: Theme.of(context).colorScheme.primary,
                                 ),
                               ),
                             ],
-                          ],
-                        ),
-
-                        // Add/quantity controls
-                        quantity > 0
-                            ? PoojaItemUtils.buildQuantityControl(
-                                itemId: item.id!,
-                                quantity: quantity,
-                                onQuantityChanged: updateQuantity,
-                              )
-                            : PoojaItemUtils.buildAddButton(
-                                itemId: item.id!,
-                                onQuantityChanged: updateQuantity,
-                              ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            },
-          )
-        : Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GridView.builder(
-              padding: EdgeInsets.all(useWideLayout ? 0 : 12),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: crossAxisCount,
-                childAspectRatio: aspectRatio,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                mainAxisExtent: null,
-              ),
-              itemCount: filteredItems.length,
-              itemBuilder: (context, index) {
-                final item = filteredItems[index];
-                final int quantity = itemQuantities[item.id] ?? 0;
-
-                return Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ItemNameImgUnit(
-                          item: item,
-                          useWideLayout: useWideLayout,
-                          pUnits: pUnits,
-                        ),
-                        // Rest of the card remains unchanged
-                        const Spacer(),
-                        Divider(color: Colors.grey.shade200),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                if (item.mrp != null &&
-                                    item.sellingPrice != null &&
-                                    item.mrp! > item.sellingPrice!)
-                                  Text(
-                                    "₹${item.mrp?.toStringAsFixed(2)}",
-                                    style: TextStyle(
-                                      decoration: TextDecoration.lineThrough,
-                                      color: Colors.grey.shade500,
-                                      fontSize: useWideLayout ? 13 : 12,
-                                    ),
-                                  ),
-                                Text(
-                                  "₹${item.sellingPrice?.toStringAsFixed(2) ?? '-'}",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: useWideLayout ? 16 : 15,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            quantity > 0
-                                ? SizedBox(
-                                    width: 100,
-                                    child: PoojaItemUtils
-                                        .buildResponsiveQuantityControl(
+                          ),
+                          quantity > 0
+                              ? SizedBox(
+                                width: 100,
+                                child:
+                                    PoojaItemUtils.buildResponsiveQuantityControl(
                                       itemId: item.id!,
                                       quantity: quantity,
                                       onQuantityChanged: updateQuantity,
                                       buttonSize: 33,
                                       fontSize: 13,
                                     ),
-                                  )
-                                : SizedBox(
-                                    height: 36,
-                                    child: OutlinedButton(
-                                      onPressed: () => addItemToCart(item),
-                                      child: const Text(
-                                        "Add",
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
+                              )
+                              : SizedBox(
+                                height: 36,
+                                child: OutlinedButton(
+                                  onPressed: () => addItemToCart(item),
+                                  child: const Text(
+                                    "Add",
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                          ],
-                        ),
-                      ],
-                    ),
+                                ),
+                              ),
+                        ],
+                      ),
+                    ],
                   ),
-                );
-              },
-            ),
-          );
+                ),
+              );
+            },
+          ),
+        );
   }
 
   // Order Summary section
@@ -747,16 +683,17 @@ class _CartScreenState extends State<CartScreen> {
 
   Expanded _orderSummaryBody(List<CartItem> cartItems, bool isDesktopOrWeb) {
     return Expanded(
-      child: cartItems.isEmpty
-          ? EmptyCard(context: context)
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: cartItems.length,
-              itemBuilder: (context, index) {
-                final cartItem = cartItems[index];
-                return _buildCartItemTile(cartItem, isDesktopOrWeb);
-              },
-            ),
+      child:
+          cartItems.isEmpty
+              ? EmptyCard(context: context)
+              : ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: cartItems.length,
+                itemBuilder: (context, index) {
+                  final cartItem = cartItems[index];
+                  return _buildCartItemTile(cartItem, isDesktopOrWeb);
+                },
+              ),
     );
   }
 
@@ -777,18 +714,20 @@ class _CartScreenState extends State<CartScreen> {
             icon: Icon(
               Icons.delete_outline,
               size: 22,
-              color: (itemQuantities.isNotEmpty)
-                  ? Colors.red.shade400
-                  : Colors.grey.shade400,
+              color:
+                  (itemQuantities.isNotEmpty)
+                      ? Colors.red.shade400
+                      : Colors.grey.shade400,
             ),
-            onPressed: (itemQuantities.isNotEmpty)
-                ? () {
-                    PoojaItemUtils.showClearCartDialog(
-                      context,
-                      clearAllItems,
-                    );
-                  }
-                : null,
+            onPressed:
+                (itemQuantities.isNotEmpty)
+                    ? () {
+                      PoojaItemUtils.showClearCartDialog(
+                        context,
+                        clearAllItems,
+                      );
+                    }
+                    : null,
           ),
         ],
       ),

@@ -26,7 +26,6 @@ class PoojaItemSearchAnchor extends StatefulWidget {
 
 class _PoojaItemSearchAnchorState extends State<PoojaItemSearchAnchor> {
   final searchAnchorController = SearchController();
-
   final List<PoojaUnits> pUnits = PoojaUnits.fromJsonList(poojaItemUnits);
 
   List<PoojaItems> _getSuggestions(String query) {
@@ -118,25 +117,26 @@ class _PoojaItemSearchAnchorState extends State<PoojaItemSearchAnchor> {
         return suggestions.map(
           (item) => ListTile(
             leading: ClipOval(
-              child: item.img != null && item.img!.isNotEmpty
-                  ? Image.network(
-                      item.img!,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(
-                          Icons.shopping_basket_outlined,
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.primary.withValues(alpha: 0.6),
-                        );
-                      },
-                    )
-                  : Icon(
-                      Icons.shopping_basket_outlined,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.primary.withValues(alpha: 0.6),
-                    ),
+              child:
+                  item.img != null && item.img!.isNotEmpty
+                      ? Image.network(
+                        item.img!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(
+                            Icons.shopping_basket_outlined,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.primary.withValues(alpha: 0.6),
+                          );
+                        },
+                      )
+                      : Icon(
+                        Icons.shopping_basket_outlined,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.6),
+                      ),
             ),
             title: Text("${item.name}"),
             subtitle: Row(

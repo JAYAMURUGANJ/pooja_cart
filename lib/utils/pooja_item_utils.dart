@@ -22,7 +22,7 @@ class PoojaItemUtils {
     required TextEditingController searchController,
     List<int>? selectedCategoryIds,
     List<int>? selectedItemsFunctionIds,
-    List<int>? selectedUnitIds, // Add this parameter
+    List<int>? selectedUnitIds,
   }) {
     String searchQuery = searchController.text.toLowerCase();
 
@@ -48,7 +48,7 @@ class PoojaItemUtils {
                 (id) => selectedItemsFunctionIds.contains(id),
               ));
 
-      // Unit filter - add this block
+      // Unit filter
       bool matchesUnit =
           selectedUnitIds == null ||
           selectedUnitIds.isEmpty ||
@@ -149,6 +149,18 @@ class PoojaItemUtils {
     }).toList();
   }
 
+  static showMessage(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.blue.shade700,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        margin: const EdgeInsets.all(16),
+      ),
+    );
+  }
+
   // Navigate to order summary screen
   static void viewOrderSummary(
     BuildContext context,
@@ -158,9 +170,7 @@ class PoojaItemUtils {
     Function()? onClearOrder,
   ) {
     if (itemQuantities.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please add items to cart first')),
-      );
+      showMessage(context, 'Please add items to cart first');
       return;
     }
 
@@ -312,6 +322,7 @@ class PoojaItemUtils {
     return summary.toString();
   }
 
+  // Responsive quantity control widget with more customization options
   static Widget buildResponsiveQuantityControl({
     required int itemId,
     required int quantity,
@@ -388,6 +399,72 @@ class PoojaItemUtils {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // Mobile cart footer widget
+  static Widget buildCartFooter({
+    required BuildContext context,
+    required int totalItems,
+    required double total,
+    required VoidCallback onViewCart,
+  }) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.92,
+      height: 60,
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "$totalItems ${totalItems == 1 ? 'item' : 'items'}",
+                    style: TextStyle(color: Colors.grey.shade700, fontSize: 14),
+                  ),
+                  Text(
+                    "₹${total.toStringAsFixed(2)}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ],
+              ),
+              ElevatedButton.icon(
+                onPressed: onViewCart,
+                icon: const Icon(
+                  Icons.shopping_cart_outlined,
+                  size: 16,
+                  color: Colors.white,
+                ),
+                label: const Text(
+                  "VIEW CART",
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
