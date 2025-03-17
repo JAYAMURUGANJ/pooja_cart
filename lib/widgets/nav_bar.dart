@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -37,8 +38,13 @@ final navItems = [
 
 class WebNavBar extends StatefulWidget {
   final String currentRoute;
+  final bool showSearchBar;
 
-  const WebNavBar({super.key, required this.currentRoute});
+  const WebNavBar({
+    super.key,
+    required this.currentRoute,
+    this.showSearchBar = true,
+  });
 
   @override
   State<WebNavBar> createState() => _WebNavBarState();
@@ -65,18 +71,21 @@ class _WebNavBarState extends State<WebNavBar> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Column(children: [SizedBox(height: 10), AppTitle()]),
-          Expanded(
-            child: PoojaItemSearchAnchor(
-              allItems: pItems,
-              onSearch: (query) {
-                setState(() {
-                  // The search controller is already updated by the widget
-                });
-              },
-              onItemSelected: (item) {
-                addItemToCart(item);
-              },
-              searchController: searchController,
+          Visibility(
+            visible: widget.showSearchBar,
+            child: Expanded(
+              child: PoojaItemSearchAnchor(
+                allItems: pItems,
+                onSearch: (query) {
+                  setState(() {
+                    // The search controller is already updated by the widget
+                  });
+                },
+                onItemSelected: (item) {
+                  addItemToCart(item);
+                },
+                searchController: searchController,
+              ),
             ),
           ),
           Expanded(
@@ -155,7 +164,7 @@ class AppTitle extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text("Palani Store", style: AppTypography().appTitleStyle),
+              Text("S.Palani Store", style: AppTypography().appTitleStyle),
               Text(
                 "way to buy a pooja-related items",
                 style: AppTypography().appSubTitleStyle,

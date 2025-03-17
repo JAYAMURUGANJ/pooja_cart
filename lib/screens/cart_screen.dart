@@ -180,13 +180,10 @@ class _CartScreenState extends State<CartScreen> {
     final isTablet = size.width > 600 && size.width <= 900;
     final isDesktopOrWeb = size.width > 900;
 
-    // For desktop/web layout with sidebar filter
     if (isDesktopOrWeb) {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Left side - Filter panel (now includes units)
-          // In the _buildResponsiveLayout() method and other places where PoojaItemFilter is used
           PoojaItemFilter(
             poojaItemCategory: poojaItemCategory,
             poojaFunctions: poojaItemFunctions,
@@ -203,26 +200,19 @@ class _CartScreenState extends State<CartScreen> {
             },
             isInline: true,
           ),
-
-          // Vertical divider
           Container(width: 1, color: Colors.grey.shade200),
 
-          // Center - Item list view
           Expanded(flex: 4, child: _showItemGrid(isDesktopOrWeb: true)),
 
-          // Vertical divider
           Container(width: 1, color: Colors.grey.shade200),
 
-          // Right side - Order summary
           _orderSummary(true, cartItems, orderSummary),
         ],
       );
     } else if (isTablet) {
-      // Tablet layout with filter button to show bottom sheet
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Main content with filter button
           Expanded(
             flex: 4,
             child: Column(
@@ -234,15 +224,12 @@ class _CartScreenState extends State<CartScreen> {
             ),
           ),
 
-          // Vertical divider
           Container(width: 1, color: Colors.grey.shade200),
 
-          // Right side - Order summary
           _orderSummary(false, cartItems, orderSummary),
         ],
       );
     } else {
-      // Mobile layout (single column with bottom sheet for filter)
       return Column(
         children: [
           _searchAndFilterBarWithButton(context),
@@ -253,7 +240,6 @@ class _CartScreenState extends State<CartScreen> {
     }
   }
 
-  /// Helper function to check if any filter is applied
   bool _isAnyFilterApplied() {
     return (selectedCategoryId != null && selectedCategoryId!.isNotEmpty) ||
         (selectedFunctionCategoryId != null &&
@@ -297,7 +283,6 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  // Search bar with filter button to show bottom sheet
   Widget _searchAndFilterBarWithButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
