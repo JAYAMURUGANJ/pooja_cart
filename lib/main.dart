@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'app_bloc_providers.dart';
 import 'bloc/theme/theme_cubit.dart';
 import 'utils/app_route.dart';
 import 'utils/app_theme.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => ThemeCubit())],
+      providers: AppBlocProviders.providers,
       child: BlocBuilder<ThemeCubit, AppThemeState>(
         builder: (context, themeState) {
           return MaterialApp.router(
