@@ -4,10 +4,11 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'app_bloc_providers.dart';
-import 'bloc/theme/theme_cubit.dart';
+import 'di/di_module.dart';
+import 'features/presentation/ui/app_theme.dart';
+import 'features/presentation/ui/bloc/theme/theme_cubit.dart';
+import 'features/presentation/ui/enums.dart';
 import 'utils/app_route.dart';
-import 'utils/app_theme.dart';
-import 'utils/enums.dart';
 
 Future<void> main() async {
   // Ensure Flutter binding is initialized before any async operations
@@ -17,7 +18,7 @@ Future<void> main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-
+  await DiModule().init();
   // Run the app
   runApp(const MyApp());
 }

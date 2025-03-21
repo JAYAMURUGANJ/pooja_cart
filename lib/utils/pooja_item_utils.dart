@@ -4,7 +4,7 @@ import 'package:pooja_cart/models/pooja_items_units.dart';
 import '../models/pooja_cart_item.dart';
 import '../models/pooja_category_unit_mapping.dart';
 import '../models/pooja_items.dart';
-import '../screens/order_summary.dart';
+import '../features/presentation/screens/order_summary/order_summary.dart';
 
 class PoojaItemUtils {
   //get Unit name

@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
-import 'package:pooja_cart/screens/cart_screen.dart';
+import 'package:pooja_cart/features/presentation/screens/cart/cart_screen.dart';
 
-import '../screens/contact_screen.dart';
+import '../features/presentation/screens/contact/contact_screen.dart';
 
 final GoRouter router = GoRouter(
   routes: [

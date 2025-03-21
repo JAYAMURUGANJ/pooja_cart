@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:pooja_cart/widgets/quantity_controller.dart';
+import 'package:pooja_cart/features/presentation/screens/cart/widgets/quantity_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../models/pooja_cart_item.dart';
-import '../utils/pooja_item_utils.dart';
-import '../widgets/empty_cart.dart';
+import '../../../../models/pooja_cart_item.dart';
+import '../../../../utils/pooja_item_utils.dart';
+import '../cart/widgets/empty_cart.dart';
 
 class OrderSummaryScreen extends StatefulWidget {
   final List<CartItem> cartItems;

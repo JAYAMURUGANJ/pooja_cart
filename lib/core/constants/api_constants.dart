@@ -1,6 +1,5 @@
 class ApiConstants {
-  static const String baseUrl =
-      'http://pengwelltrading.shop.preview.services/order.php';
+  static const String baseUrl = 'http://10.163.2.53:5000';
   static const int connectionTimeout = 2; // 2 minutes
   static const int receiveTimeout = 3; // 3 minutes
 

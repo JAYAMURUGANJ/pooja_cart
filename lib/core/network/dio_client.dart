@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 
 import '../constants/api_constants.dart';
@@ -10,19 +8,16 @@ class DioClient {
   late Dio dio;
 
   DioClient() {
-    String username = "kavimca6@gmail.com";
-    String password = "Kavithakavi@123";
-
     // Encode credentials in Base64
-    String basicAuth =
-        'Basic ${base64Encode(utf8.encode('$username:$password'))}';
     final baseOptions = BaseOptions(
       baseUrl: ApiConstants.baseUrl,
       connectTimeout: const Duration(seconds: ApiConstants.connectionTimeout),
       receiveTimeout: const Duration(seconds: ApiConstants.receiveTimeout),
       responseType: ResponseType.json,
+
       headers: {
-        'Authorization': basicAuth,
+        'Authorization':
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc0MjU1NDU0OCwiZXhwIjoxNzQyNTU4MTQ4fQ.TdUh-QIZFFqC2244DBGSKXCSo76hHT_YiHkeAHnwnzc',
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
@@ -57,13 +52,13 @@ class DioClient {
             return handler.reject(
               DioException(
                 requestOptions: response.requestOptions,
-                error: apiResponse.errorMessage,
+                error: apiResponse.message,
               ),
             );
           }
 
           // If success, modify response.data to contain only the result
-          response.data = apiResponse.result;
+          response.data = apiResponse.data;
           return handler.next(response);
         },
         onError: (DioException e, handler) {
@@ -73,8 +68,8 @@ class DioClient {
     );
   }
 
-  Future<Response<T>> get<T>(
-    String path, {
+  Future<Response<T>> get<T>({
+    String path = "",
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,

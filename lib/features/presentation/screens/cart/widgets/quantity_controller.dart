@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../utils/responsive_utils.dart';
+import '../../../../../utils/responsive_utils.dart';
 
 class QuantityController extends StatelessWidget {
   const QuantityController({

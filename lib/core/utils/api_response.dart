@@ -1,31 +1,27 @@
-class ApiResponse<T> {
-  final String status;
-  final dynamic result;
-  final String? statusCode;
-  final String? errorMessage;
+class ApiResponse {
+  final int? statusCode;
+  final bool? status;
+  final List<dynamic>? data;
+  final String? message;
 
-  ApiResponse({
-    required this.status,
-    required this.result,
-    this.statusCode,
-    this.errorMessage,
-  });
+  ApiResponse({this.statusCode, this.status, this.data, this.message});
 
-  factory ApiResponse.fromJson(Map<String, dynamic> json) {
-    return ApiResponse(
-      status: json['status'],
-      result: json['result'],
-      statusCode: json['status_code'],
-      errorMessage: json['error_message'],
-    );
-  }
+  factory ApiResponse.fromJson(Map<String, dynamic> json) => ApiResponse(
+    statusCode: json["status_code"],
+    status: json["status"],
+    data:
+        json["data"] == null
+            ? []
+            : List<dynamic>.from(json["data"]!.map((x) => x)),
+    message: json["message"],
+  );
 
-  bool get isSuccess => status == 'success';
-  bool get isError => status == 'error';
+  bool get isSuccess => status == true;
+  bool get isError => status == false;
 
   String get error {
-    if (status == 'error') {
-      return errorMessage ?? result.toString();
+    if (status == false) {
+      return message.toString();
     }
     return '';
   }

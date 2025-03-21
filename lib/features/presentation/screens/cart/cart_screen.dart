@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pooja_cart/features/data/remote/model/common_request_model.dart';
+import 'package:pooja_cart/features/presentation/screens/cart/bloc/product/product_bloc.dart';
+import 'package:pooja_cart/features/presentation/screens/cart/bloc/unit/unit_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '/constants/category.dart';
@@ -14,15 +18,15 @@ import '/models/pooja_items.dart';
 import '/models/pooja_items_units.dart';
 import '/utils/pooja_item_utils.dart';
 import '/utils/responsive_utils.dart';
-import '../widgets/add_item_to_cart_btn.dart';
-import '/widgets/empty_cart.dart';
-import '/widgets/head_container.dart';
-import '/widgets/item_filter.dart';
-import '/widgets/item_info.dart';
-import '/widgets/mobile_cart_footer.dart';
-import '/widgets/nav_bar.dart';
-import '/widgets/quantity_controller.dart';
-import '/widgets/search_bar.dart';
+import '../../common_widgets/head_container.dart';
+import '../../common_widgets/nav_bar.dart';
+import 'widgets/add_item_to_cart_btn.dart';
+import 'widgets/empty_cart.dart';
+import 'widgets/item_filter.dart';
+import 'widgets/item_info.dart';
+import 'widgets/mobile_cart_footer.dart';
+import 'widgets/quantity_controller.dart';
+import 'widgets/search_bar.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -52,6 +56,10 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   void initState() {
+    BlocProvider.of<UnitBloc>(context).add(GetUnitsEvent(CommonRequestModel()));
+    BlocProvider.of<ProductBloc>(
+      context,
+    ).add(GetProductEvent(CommonRequestModel()));
     super.initState();
     searchController.addListener(() => setState(() {}));
   }

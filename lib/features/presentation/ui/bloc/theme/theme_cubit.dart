@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:universal_html/html.dart' as html;
 
-import '../../utils/enums.dart';
+import '../../enums.dart';
 
 class ThemeCubit extends Cubit<AppThemeState> {
   static const String _themePreferenceKey = 'appTheme';
