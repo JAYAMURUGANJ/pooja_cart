@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:pooja_cart/features/domain/entities/product/product_response.dart';
 import 'package:pooja_cart/models/pooja_items_units.dart';
 
+import '../features/presentation/screens/order_summary/order_summary.dart';
 import '../models/pooja_cart_item.dart';
 import '../models/pooja_category_unit_mapping.dart';
 import '../models/pooja_items.dart';
-import '../features/presentation/screens/order_summary/order_summary.dart';
 
 class PoojaItemUtils {
   //get Unit name
@@ -17,8 +18,8 @@ class PoojaItemUtils {
   }
 
   // Filter items based filters
-  static List<PoojaItems> getFilteredItems({
-    required List<PoojaItems> pItems,
+  static List<ProductResponse> getFilteredItems({
+    required List<ProductResponse> pItems,
     required TextEditingController searchController,
     List<int>? selectedCategoryIds,
     List<int>? selectedItemsFunctionIds,
@@ -36,25 +37,27 @@ class PoojaItemUtils {
       bool matchesCategory =
           selectedCategoryIds == null ||
           selectedCategoryIds.isEmpty ||
-          (item.itemCategoryId != null &&
-              selectedCategoryIds.contains(item.itemCategoryId));
+          (item.categoryId != null &&
+              selectedCategoryIds.contains(item.categoryId));
 
       // Function filter
-      bool matchesFunction =
-          selectedItemsFunctionIds == null ||
-          selectedItemsFunctionIds.isEmpty ||
-          (item.itemsFunctionsIds is List<int> &&
-              item.itemsFunctionsIds!.any(
-                (id) => selectedItemsFunctionIds.contains(id),
-              ));
+      // bool matchesFunction =
+      //     selectedItemsFunctionIds == null ||
+      //     selectedItemsFunctionIds.isEmpty ||
+      //     (item.itemsFunctionsIds is List<int> &&
+      //         item.itemsFunctionsIds!.any(
+      //           (id) => selectedItemsFunctionIds.contains(id),
+      //         ));
 
       // Unit filter
-      bool matchesUnit =
-          selectedUnitIds == null ||
-          selectedUnitIds.isEmpty ||
-          (item.unitId != null && selectedUnitIds.contains(item.unitId));
+      // bool matchesUnit =
+      //     selectedUnitIds == null ||
+      //     selectedUnitIds.isEmpty ||
+      //     (item.unitId != null && selectedUnitIds.contains(item.unitId));
 
-      return matchesSearch && matchesCategory && matchesFunction && matchesUnit;
+      return matchesSearch && matchesCategory
+      // && matchesFunction && matchesUnit
+      ;
     }).toList();
   }
 

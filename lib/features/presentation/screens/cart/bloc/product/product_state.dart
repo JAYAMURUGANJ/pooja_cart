@@ -4,12 +4,12 @@ enum ProductStatus { intial, loading, loaded, error }
 
 class ProductState {
   final ProductStatus status;
-  final List<ProductResponse>? unitResponse;
+  final List<ProductResponse>? productResponse;
   final String? errorMsg;
 
   const ProductState({
     this.status = ProductStatus.intial,
-    this.unitResponse,
+    this.productResponse,
     this.errorMsg,
   });
 
@@ -20,7 +20,7 @@ class ProductState {
   }) {
     return ProductState(
       status: status ?? this.status,
-      unitResponse: productResponse ?? this.unitResponse,
+      productResponse: productResponse ?? this.productResponse,
       errorMsg: errorMsg ?? this.errorMsg,
     );
   }

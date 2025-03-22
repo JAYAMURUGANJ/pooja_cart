@@ -18,6 +18,7 @@ import '/models/pooja_items.dart';
 import '/models/pooja_items_units.dart';
 import '/utils/pooja_item_utils.dart';
 import '/utils/responsive_utils.dart';
+import '../../../domain/entities/product/product_response.dart';
 import '../../common_widgets/head_container.dart';
 import '../../common_widgets/nav_bar.dart';
 import 'widgets/add_item_to_cart_btn.dart';
@@ -189,28 +190,42 @@ class _CartScreenState extends State<CartScreen> {
     final cartItems = getCartItems();
 
     // Use ResponsiveUtils.responsiveLayout for layout switching
-    return ResponsiveUtils.responsiveLayout(
-      context: context,
-      mobileLayout: _buildMobileLayout(),
-      tabletLayout: _buildTabletLayout(cartItems, orderSummary),
-      desktopLayout: _buildDesktopLayout(cartItems, orderSummary),
+    return BlocBuilder<ProductBloc, ProductState>(
+      builder: (context, state) {
+        switch (state.status) {
+          case ProductStatus.loading:
+            return Center(child: CircularProgressIndicator());
+          case ProductStatus.error:
+            return Text("Error loading products");
+          case ProductStatus.loaded:
+            List<ProductResponse> productsList = state.productResponse!;
+            return ResponsiveUtils.responsiveLayout(
+              context: context,
+              mobileLayout: _buildMobileLayout(productsList),
+              tabletLayout: _buildTabletLayout(productsList, orderSummary),
+              desktopLayout: _buildDesktopLayout(productsList, orderSummary),
+            );
+          default:
+            return Text("initial");
+        }
+      },
     );
   }
 
   // Mobile layout
-  Widget _buildMobileLayout() {
+  Widget _buildMobileLayout(List<ProductResponse> productsList) {
     return Column(
       children: [
         _searchAndFilterBarWithButton(context),
         if (_isAnyFilterApplied()) _clearFilter(),
-        Expanded(child: _showItemGrid()),
+        Expanded(child: _showItemGrid(productsList)),
       ],
     );
   }
 
   // Tablet layout
   Widget _buildTabletLayout(
-    List<CartItem> cartItems,
+    List<ProductResponse> productList,
     Map<String, double> orderSummary,
   ) {
     final contentSidebarRatio = context.contentSidebarRatio;
@@ -224,19 +239,19 @@ class _CartScreenState extends State<CartScreen> {
             children: [
               _searchAndFilterBarWithButton(context),
               if (_isAnyFilterApplied()) _clearFilter(),
-              Expanded(child: _showItemGrid()),
+              Expanded(child: _showItemGrid(productList)),
             ],
           ),
         ),
         Container(width: 1, color: Colors.grey.shade200),
-        _orderSummary(cartItems, orderSummary),
+        // _orderSummary(productList, orderSummary),
       ],
     );
   }
 
   // Desktop layout
   Widget _buildDesktopLayout(
-    List<CartItem> cartItems,
+    List<ProductResponse> productList,
     Map<String, double> orderSummary,
   ) {
     return Row(
@@ -259,9 +274,9 @@ class _CartScreenState extends State<CartScreen> {
           isInline: true,
         ),
         Container(width: 1, color: Colors.grey.shade200),
-        Expanded(flex: 4, child: _showItemGrid()),
+        Expanded(flex: 4, child: _showItemGrid(productList)),
         Container(width: 1, color: Colors.grey.shade200),
-        _orderSummary(cartItems, orderSummary),
+        // _orderSummary(productList, orderSummary),
       ],
     );
   }
@@ -761,7 +776,7 @@ class _CartScreenState extends State<CartScreen> {
     }
   }
 
-  Widget _showItemGrid() {
+  Widget _showItemGrid(List<ProductResponse> productList) {
     final isMobileView = context.isMobile;
 
     // Use ResponsiveUtils for grid columns and aspect ratio
@@ -770,7 +785,7 @@ class _CartScreenState extends State<CartScreen> {
 
     // Get filtered items
     final filteredItems = PoojaItemUtils.getFilteredItems(
-      pItems: pItems,
+      pItems: productList,
       searchController: searchController,
       selectedCategoryIds: selectedCategoryId,
       selectedItemsFunctionIds: selectedFunctionCategoryId,
@@ -813,7 +828,6 @@ class _CartScreenState extends State<CartScreen> {
           itemBuilder: (context, index) {
             final item = filteredItems[index];
             int quantity = itemQuantities[item.id] ?? 0;
-
             return Container(
               decoration: BoxDecoration(
                 border: Border(
