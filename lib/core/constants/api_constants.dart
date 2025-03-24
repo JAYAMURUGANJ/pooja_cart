@@ -1,5 +1,6 @@
 class ApiConstants {
-  static const String baseUrl = 'http://10.163.2.53:5000';
+  static const String baseUrl =
+      'https://poojacartbackend-production.up.railway.app';
   static const int connectionTimeout = 2; // 2 minutes
   static const int receiveTimeout = 3; // 3 minutes
 
