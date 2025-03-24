@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:pooja_cart/features/presentation/screens/cart/cart_screen.dart';
+import 'package:pooja_cart/features/presentation/screens/dashboard/dashboard_screen.dart';
 
 import '../features/presentation/screens/contact/contact_screen.dart';
 
@@ -13,6 +14,11 @@ final GoRouter router = GoRouter(
       path: '/contact',
       pageBuilder:
           (context, state) => NoTransitionPage(child: const ContactPage()),
+    ),
+    GoRoute(
+      path: '/dashboard',
+      pageBuilder:
+          (context, state) => NoTransitionPage(child: const DashboardScreen()),
     ),
   ],
 );
