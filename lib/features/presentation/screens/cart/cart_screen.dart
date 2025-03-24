@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pooja_cart/features/data/remote/model/common_request_model.dart';
+import 'package:pooja_cart/features/presentation/screens/cart/bloc/category/category_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/cart/bloc/product/product_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/cart/bloc/unit/unit_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -51,8 +52,7 @@ class _CartScreenState extends State<CartScreen> {
   final List<PoojaItemFunctions> pFunctions = PoojaItemFunctions.fromJsonList(
     poojaItemFunctions,
   );
-  final List<PoojaUnits> pUnits = PoojaUnits.fromJsonList(poojaItemUnits);
-
+  // final List<PoojaUnits> pUnits = PoojaUnits.fromJsonList(poojaItemUnits);
   final Map<int, int> itemQuantities = {};
 
   @override
@@ -61,6 +61,9 @@ class _CartScreenState extends State<CartScreen> {
     BlocProvider.of<ProductBloc>(
       context,
     ).add(GetProductEvent(CommonRequestModel()));
+    BlocProvider.of<CategoryBloc>(
+      context,
+    ).add(GetCategoryEvent(CommonRequestModel()));
     super.initState();
     searchController.addListener(() => setState(() {}));
   }
@@ -187,7 +190,6 @@ class _CartScreenState extends State<CartScreen> {
 
   Widget _buildResponsiveLayout() {
     final orderSummary = getOrderSummary();
-    final cartItems = getCartItems();
 
     // Use ResponsiveUtils.responsiveLayout for layout switching
     return BlocBuilder<ProductBloc, ProductState>(
@@ -229,7 +231,6 @@ class _CartScreenState extends State<CartScreen> {
     Map<String, double> orderSummary,
   ) {
     final contentSidebarRatio = context.contentSidebarRatio;
-
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -408,7 +409,7 @@ class _CartScreenState extends State<CartScreen> {
                 Flexible(
                   flex: 1,
                   child: Text(
-                    "${item.unitCount} ${PoojaItemUtils().getUnitName(item.unitId!, pUnits)}",
+                    "${item.unitCount} ${PoojaItemUtils().getUnitName(item.unitId!, [PoojaUnits()])}",
                     style: TextStyle(
                       color: Colors.grey.shade700,
                       fontSize: context.responsiveFontSize(
@@ -844,7 +845,7 @@ class _CartScreenState extends State<CartScreen> {
                   // Item info row
                   ItemNameImgUnit(
                     item: item,
-                    pUnits: pUnits,
+                    pUnits: productList,
                     useWideLayout: false,
                   ),
                   SizedBox(height: context.standardSpacing),
@@ -945,7 +946,7 @@ class _CartScreenState extends State<CartScreen> {
                     ItemNameImgUnit(
                       item: item,
                       useWideLayout: context.isDesktop || context.isTablet,
-                      pUnits: pUnits,
+                      pUnits: productList,
                     ),
                     const Spacer(),
                     Divider(color: Colors.grey.shade200),

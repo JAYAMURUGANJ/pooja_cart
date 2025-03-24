@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import "package:flutter/src/widgets/image.dart" as ui;
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pooja_cart/features/domain/entities/product/product_response.dart';
 
 import '../../../../../constants/category.dart';
 import '../../../../../models/pooja_item_category.dart';
-import '../../../../../models/pooja_items_units.dart';
 import '../../../../../utils/responsive_utils.dart';
+import '../cubit/unit_selection/unit_selection_cubit.dart';
 
 class ItemNameImgUnit extends StatefulWidget {
   const ItemNameImgUnit({
@@ -18,17 +19,17 @@ class ItemNameImgUnit extends StatefulWidget {
 
   final ProductResponse item;
   final bool? useWideLayout;
-  final List<PoojaUnits> pUnits;
+  final List<ProductResponse> pUnits;
 
   @override
   State<ItemNameImgUnit> createState() => _ItemNameImgUnitState();
 }
 
 class _ItemNameImgUnitState extends State<ItemNameImgUnit> {
+  final _unitSelectionCubit = UnitSelectionCubit();
   final List<PoojaItemCategory> pCategories = PoojaItemCategory.fromJsonList(
     poojaItemCategory,
   );
-
   String _getCategoryName(int categoryId) {
     final category = pCategories.firstWhere(
       (category) => category.id == categoryId,
@@ -136,7 +137,8 @@ class _ItemNameImgUnitState extends State<ItemNameImgUnit> {
                 SizedBox(height: effectiveWideLayout ? 6 : 4),
                 if (widget.item.categoryId != null)
                   Text(
-                    _getCategoryName(widget.item.categoryId!),
+                    widget.item.categoryId.toString(),
+                    // _getCategoryName(widget.item.categoryId!),
                     style: TextStyle(
                       fontSize: categoryFontSize,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -154,6 +156,7 @@ class _ItemNameImgUnitState extends State<ItemNameImgUnit> {
                 horizontal: effectiveWideLayout ? 8 : 6,
                 vertical: effectiveWideLayout ? 4 : 2,
               ),
+              width: 80,
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primaryContainer,
                 borderRadius: BorderRadius.circular(4),
@@ -167,16 +170,58 @@ class _ItemNameImgUnitState extends State<ItemNameImgUnit> {
                   ),
                 ],
               ),
-              child: Text(
-                "${widget.item.units!.first} ",
+              child: BlocBuilder<UnitSelectionCubit, UnitSelectionState>(
+                bloc: _unitSelectionCubit,
 
-                // ${PoojaItemUtils().getUnitName(widget.item.units.first, widget.pUnits)} ",
-                style: GoogleFonts.aBeeZee(
-                  fontSize: unitFontSize,
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
-                  fontWeight: FontWeight.bold,
-                ),
+                builder: (context, state) {
+                  return DropdownButton<Unit>(
+                    isDense: true,
+                    isExpanded: true,
+                    underline: const SizedBox(),
+                    value:
+                        state.status == UnitSelectionStatus.selected
+                            ? state.selectedUnit
+                            : widget.item.units!.firstWhere(
+                              (unit) => unit.isDefault == 1,
+                              orElse: () => widget.item.units!.first,
+                            ),
+                    items:
+                        widget.item.units!.map((unit) {
+                          return DropdownMenuItem<Unit>(
+                            value: unit,
+                            child: Text(
+                              "${unit.conversionFactor} ${unit.abbreviation.toString()}",
+                              style: GoogleFonts.aBeeZee(
+                                fontSize: unitFontSize,
+                                color:
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimaryContainer,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                    onChanged: (Unit? newValue) {
+                      _unitSelectionCubit.selectActivity(newValue!);
+                    },
+                  );
+                },
               ),
+              //  DropdownMenu(
+              //   menuStyle: MenuStyle(),
+              //   onSelected: (value) {},
+              //   dropdownMenuEntries:
+              //       widget.item.units!
+              //           .map(
+              //             (unit) => DropdownMenuEntry(
+              //               value: unit.unitId,
+              //               label:
+              //                   "${unit.conversionFactor} ${unit.abbreviation!}",
+              //             ),
+              //           )
+              //           .toList(),
+              // ),
             ),
           ),
         ],
