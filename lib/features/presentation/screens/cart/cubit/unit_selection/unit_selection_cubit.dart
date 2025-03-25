@@ -6,20 +6,47 @@ part 'unit_selection_state.dart';
 class UnitSelectionCubit extends Cubit<UnitSelectionState> {
   UnitSelectionCubit() : super(UnitSelectionState());
 
-  selectActivity(Unit unit) {
+  void initializeDefaultUnits(List<ProductResponse> products) {
+    final Map<int, Unit> defaultUnits = {};
+
+    for (var product in products) {
+      final defaultUnit = product.units!.firstWhere(
+        (unit) => unit.isDefault == 1,
+        orElse: () => product.units!.first,
+      );
+      defaultUnits[product.id!] = defaultUnit;
+    }
     emit(
-      UnitSelectionState().copyWith(
+      state.copyWith(
         status: UnitSelectionStatus.selected,
-        selectedUnit: unit,
+        selectedUnits: defaultUnits,
       ),
     );
   }
 
-  resetActivitySelection() {
+  void selectUnit(int productId, Unit unit) {
+    final updatedSelections = Map<int, Unit>.from(state.selectedUnits);
+    updatedSelections[productId] = unit;
+
     emit(
-      UnitSelectionState().copyWith(
-        status: UnitSelectionStatus.unSelected,
-        selectedUnit: null,
+      state.copyWith(
+        status: UnitSelectionStatus.selected,
+        selectedUnits: updatedSelections,
+      ),
+    );
+  }
+
+  void resetUnitSelection(int productId) {
+    final updatedSelections = Map<int, Unit>.from(state.selectedUnits);
+    updatedSelections.remove(productId);
+
+    emit(
+      state.copyWith(
+        status:
+            updatedSelections.isEmpty
+                ? UnitSelectionStatus.unSelected
+                : state.status,
+        selectedUnits: updatedSelections,
       ),
     );
   }

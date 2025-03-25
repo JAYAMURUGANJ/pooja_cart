@@ -4,6 +4,7 @@ import 'package:pooja_cart/features/data/remote/model/common_request_model.dart'
 import 'package:pooja_cart/features/presentation/screens/cart/bloc/category/category_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/cart/bloc/product/product_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/cart/bloc/unit/unit_bloc.dart';
+import 'package:pooja_cart/features/presentation/screens/cart/cubit/unit_selection/unit_selection_cubit.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '/constants/category.dart';
@@ -42,6 +43,7 @@ class _CartScreenState extends State<CartScreen> {
   List<int>? selectedCategoryId;
   List<int>? selectedFunctionCategoryId;
   List<int>? selectedUnitId;
+  final unitSelectionCubit = UnitSelectionCubit();
 
   final List<PoojaCategoryUnitMapping> categoryUnitMapping =
       PoojaCategoryUnitMapping.fromJsonList(categoryUnitJson);
@@ -75,7 +77,7 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   void updateQuantity(int itemId, int change) {
-    PoojaItemUtils.updateQuantity(itemQuantities, itemId, change, setState);
+    ProductUtils.updateQuantity(itemQuantities, itemId, change, setState);
   }
 
   void clearAllItems() {
@@ -86,7 +88,7 @@ class _CartScreenState extends State<CartScreen> {
 
   void viewOrderSummary() {
     if (MediaQuery.of(context).size.width < 600) {
-      PoojaItemUtils.viewOrderSummary(
+      ProductUtils.viewOrderSummary(
         context,
         itemQuantities,
         pItems,
@@ -133,14 +135,14 @@ class _CartScreenState extends State<CartScreen> {
 
     return Scaffold(
       appBar: _appBar(context),
-      body: _buildResponsiveLayout(),
+      body: _buildBody(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton:
           isMobile && totalItems > 0
               ? MobileCartFooter(
                 context: context,
                 totalItems: totalItems,
-                total: PoojaItemUtils.getTotal(itemQuantities, pItems),
+                total: ProductUtils.getTotal(itemQuantities, pItems),
                 onViewCart: viewOrderSummary,
               )
               : null,
@@ -177,10 +179,7 @@ class _CartScreenState extends State<CartScreen> {
             onPressed:
                 (itemQuantities.isNotEmpty)
                     ? () {
-                      PoojaItemUtils.showClearCartDialog(
-                        context,
-                        clearAllItems,
-                      );
+                      ProductUtils.showClearCartDialog(context, clearAllItems);
                     }
                     : null,
           ),
@@ -188,11 +187,20 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _buildResponsiveLayout() {
+  Widget _buildBody() {
     final orderSummary = getOrderSummary();
-
     // Use ResponsiveUtils.responsiveLayout for layout switching
-    return BlocBuilder<ProductBloc, ProductState>(
+    return BlocConsumer<ProductBloc, ProductState>(
+      listener: (context, state) {
+        switch (state.status) {
+          case ProductStatus.error:
+            break;
+          case ProductStatus.loaded:
+            unitSelectionCubit.initializeDefaultUnits(state.productResponse!);
+            break;
+          default:
+        }
+      },
       builder: (context, state) {
         switch (state.status) {
           case ProductStatus.loading:
@@ -262,7 +270,7 @@ class _CartScreenState extends State<CartScreen> {
           poojaItemCategory: poojaItemCategory,
           poojaFunctions: poojaItemFunctions,
           poojaItemUnits: poojaItemUnits,
-          categoryUnitMapping: PoojaItemUtils.convertMappingListToMap(
+          categoryUnitMapping: ProductUtils.convertMappingListToMap(
             categoryUnitMapping,
           ),
           onFilterApplied: (categoryIds, functionIds, unitIds) {
@@ -333,10 +341,7 @@ class _CartScreenState extends State<CartScreen> {
             onPressed:
                 (itemQuantities.isNotEmpty)
                     ? () {
-                      PoojaItemUtils.showClearCartDialog(
-                        context,
-                        clearAllItems,
-                      );
+                      ProductUtils.showClearCartDialog(context, clearAllItems);
                     }
                     : null,
           ),
@@ -409,7 +414,7 @@ class _CartScreenState extends State<CartScreen> {
                 Flexible(
                   flex: 1,
                   child: Text(
-                    "${item.unitCount} ${PoojaItemUtils().getUnitName(item.unitId!, [PoojaUnits()])}",
+                    "${item.unitCount} ${ProductUtils().getUnitName(item.unitId!, [PoojaUnits()])}",
                     style: TextStyle(
                       color: Colors.grey.shade700,
                       fontSize: context.responsiveFontSize(
@@ -650,7 +655,7 @@ class _CartScreenState extends State<CartScreen> {
               size: context.responsiveValue(mobile: 14.0, desktop: 16.0),
             ),
             onDeleted: () {
-              PoojaItemUtils.clearFilters(
+              ProductUtils.clearFilters(
                 searchController: searchController,
                 setState: setState,
                 onFilterReset: (categoryIds, functionIds, unitIds) {
@@ -717,7 +722,7 @@ class _CartScreenState extends State<CartScreen> {
             poojaItemCategory: poojaItemCategory,
             poojaFunctions: poojaItemFunctions,
             poojaItemUnits: poojaItemUnits,
-            categoryUnitMapping: PoojaItemUtils.convertMappingListToMap(
+            categoryUnitMapping: ProductUtils.convertMappingListToMap(
               categoryUnitMapping,
             ),
             onFilterApplied: (categoryIds, functionIds, unitIds) {
@@ -737,14 +742,14 @@ class _CartScreenState extends State<CartScreen> {
   Future<void> _shareOrderViaWhatsApp(BuildContext context) async {
     final cartItems = getCartItems();
     if (cartItems.isEmpty) {
-      PoojaItemUtils.showMessage(context, 'Your order is empty');
+      ProductUtils.showMessage(context, 'Your order is empty');
       return;
     }
 
     final orderSummary = getOrderSummary();
     final String whatsappNumber = "9566632370";
 
-    final String orderText = PoojaItemUtils.generateOrderSummary(
+    final String orderText = ProductUtils.generateOrderSummary(
       cartItems,
       orderSummary['mrpTotal']!,
       orderSummary['discount']!,
@@ -767,12 +772,12 @@ class _CartScreenState extends State<CartScreen> {
       );
       if (!launched) {
         if (context.mounted) {
-          PoojaItemUtils.showMessage(context, 'Could not launch WhatsApp.');
+          ProductUtils.showMessage(context, 'Could not launch WhatsApp.');
         }
       }
     } catch (e) {
       if (context.mounted) {
-        PoojaItemUtils.showMessage(context, 'Error opening WhatsApp: $e');
+        ProductUtils.showMessage(context, 'Error opening WhatsApp: $e');
       }
     }
   }
@@ -785,8 +790,8 @@ class _CartScreenState extends State<CartScreen> {
     double aspectRatio = context.gridAspectRatio;
 
     // Get filtered items
-    final filteredItems = PoojaItemUtils.getFilteredItems(
-      pItems: productList,
+    final filteredItems = ProductUtils.getFilteredItems(
+      items: productList,
       searchController: searchController,
       selectedCategoryIds: selectedCategoryId,
       selectedItemsFunctionIds: selectedFunctionCategoryId,
@@ -829,6 +834,7 @@ class _CartScreenState extends State<CartScreen> {
           itemBuilder: (context, index) {
             final item = filteredItems[index];
             int quantity = itemQuantities[item.id] ?? 0;
+
             return Container(
               decoration: BoxDecoration(
                 border: Border(
@@ -847,6 +853,7 @@ class _CartScreenState extends State<CartScreen> {
                     item: item,
                     pUnits: productList,
                     useWideLayout: false,
+                    unitSelectionCubit: unitSelectionCubit,
                   ),
                   SizedBox(height: context.standardSpacing),
                   // Price information row
@@ -935,7 +942,7 @@ class _CartScreenState extends State<CartScreen> {
           itemBuilder: (context, index) {
             final item = filteredItems[index];
             final int quantity = itemQuantities[item.id] ?? 0;
-
+            final unitSelectionCubit0 = UnitSelectionCubit();
             return Card(
               child: Padding(
                 padding: context.responsivePadding,
@@ -947,55 +954,15 @@ class _CartScreenState extends State<CartScreen> {
                       item: item,
                       useWideLayout: context.isDesktop || context.isTablet,
                       pUnits: productList,
+                      unitSelectionCubit: unitSelectionCubit0,
                     ),
                     const Spacer(),
                     Divider(color: Colors.grey.shade200),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (item.mrp != null &&
-                                item.sellingPrice != null &&
-                                item.mrp! > item.sellingPrice!)
-                              Text(
-                                "₹${item.mrp?.toStringAsFixed(2)}",
-                                style: TextStyle(
-                                  decoration: TextDecoration.lineThrough,
-                                  color: Colors.grey.shade500,
-                                  fontSize: context.responsiveFontSize(
-                                    mobile: 12,
-                                    desktop: 13,
-                                  ),
-                                ),
-                              ),
-                            Text(
-                              "₹${item.sellingPrice?.toStringAsFixed(2) ?? '-'}",
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: context.responsiveFontSize(
-                                  mobile: 15,
-                                  desktop: 16,
-                                ),
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                            ),
-                          ],
-                        ),
-                        quantity > 0
-                            ? QuantityController(
-                              itemId: item.id!,
-                              quantity: quantity,
-                              onQuantityChanged: updateQuantity,
-                              width: 100,
-                            )
-                            : AddItemToCartBtn(
-                              itemId: item.id!,
-                              onQuantityChanged: updateQuantity,
-                            ),
-                      ],
+                    _buildItemFooter(
+                      item,
+                      context,
+                      quantity,
+                      unitSelectionCubit0,
                     ),
                   ],
                 ),
@@ -1003,5 +970,73 @@ class _CartScreenState extends State<CartScreen> {
             );
           },
         );
+  }
+
+  Widget _buildItemFooter(
+    ProductResponse item,
+    BuildContext context,
+    int quantity,
+    UnitSelectionCubit unitSelectionCubit,
+  ) {
+    return BlocConsumer<UnitSelectionCubit, UnitSelectionState>(
+      bloc: unitSelectionCubit,
+      listener: (context, state) {},
+      builder: (context, state) {
+        final selectedUnit =
+            state.selectedUnits[item.id] ??
+            item.units!.firstWhere(
+              (unit) => unit.isDefault == 1,
+              orElse: () => item.units!.first,
+            );
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (selectedUnit.mrp != null &&
+                    selectedUnit.sellingPrice != null &&
+                    selectedUnit.mrp! > selectedUnit.sellingPrice!)
+                  Text(
+                    "₹${selectedUnit.mrp!.toStringAsFixed(2)}",
+                    style: TextStyle(
+                      decoration: TextDecoration.lineThrough,
+                      color: Colors.grey.shade500,
+                      fontSize: context.responsiveFontSize(
+                        mobile: 12,
+                        desktop: 13,
+                      ),
+                    ),
+                  ),
+                Text(
+                  "₹${selectedUnit.sellingPrice!.toStringAsFixed(2)}",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: context.responsiveFontSize(
+                      mobile: 15,
+                      desktop: 16,
+                    ),
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ],
+            ),
+            quantity > 0
+                ? QuantityController(
+                  itemId: selectedUnit.unitId!,
+                  quantity: quantity,
+                  onQuantityChanged: updateQuantity,
+                  width: 100,
+                )
+                : AddItemToCartBtn(
+                  itemId: selectedUnit.unitId!,
+                  onQuantityChanged: updateQuantity,
+                ),
+          ],
+        );
+      },
+    );
   }
 }

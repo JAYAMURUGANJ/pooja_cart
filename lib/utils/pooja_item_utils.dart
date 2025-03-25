@@ -7,7 +7,7 @@ import '../models/pooja_cart_item.dart';
 import '../models/pooja_category_unit_mapping.dart';
 import '../models/pooja_items.dart';
 
-class PoojaItemUtils {
+class ProductUtils {
   //get Unit name
   String getUnitName(int unitId, List<PoojaUnits> unitList) {
     final unit = unitList.firstWhere(
@@ -19,20 +19,18 @@ class PoojaItemUtils {
 
   // Filter items based filters
   static List<ProductResponse> getFilteredItems({
-    required List<ProductResponse> pItems,
+    required List<ProductResponse> items,
     required TextEditingController searchController,
     List<int>? selectedCategoryIds,
     List<int>? selectedItemsFunctionIds,
     List<int>? selectedUnitIds,
   }) {
     String searchQuery = searchController.text.toLowerCase();
-
-    return pItems.where((item) {
+    return items.where((item) {
       // Search query filter
       bool matchesSearch =
           searchQuery.isEmpty ||
           (item.name?.toLowerCase().contains(searchQuery) ?? false);
-
       // Category filter
       bool matchesCategory =
           selectedCategoryIds == null ||
@@ -40,24 +38,7 @@ class PoojaItemUtils {
           (item.categoryId != null &&
               selectedCategoryIds.contains(item.categoryId));
 
-      // Function filter
-      // bool matchesFunction =
-      //     selectedItemsFunctionIds == null ||
-      //     selectedItemsFunctionIds.isEmpty ||
-      //     (item.itemsFunctionsIds is List<int> &&
-      //         item.itemsFunctionsIds!.any(
-      //           (id) => selectedItemsFunctionIds.contains(id),
-      //         ));
-
-      // Unit filter
-      // bool matchesUnit =
-      //     selectedUnitIds == null ||
-      //     selectedUnitIds.isEmpty ||
-      //     (item.unitId != null && selectedUnitIds.contains(item.unitId));
-
-      return matchesSearch && matchesCategory
-      // && matchesFunction && matchesUnit
-      ;
+      return matchesSearch && matchesCategory;
     }).toList();
   }
 

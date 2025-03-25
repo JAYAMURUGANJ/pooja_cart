@@ -15,28 +15,23 @@ class ItemNameImgUnit extends StatefulWidget {
     required this.item,
     required this.pUnits,
     this.useWideLayout,
+    required this.unitSelectionCubit,
   });
 
   final ProductResponse item;
   final bool? useWideLayout;
   final List<ProductResponse> pUnits;
+  final UnitSelectionCubit unitSelectionCubit;
 
   @override
   State<ItemNameImgUnit> createState() => _ItemNameImgUnitState();
 }
 
 class _ItemNameImgUnitState extends State<ItemNameImgUnit> {
-  final _unitSelectionCubit = UnitSelectionCubit();
+  UnitSelectionCubit get _unitSelectionCubit => widget.unitSelectionCubit;
   final List<PoojaItemCategory> pCategories = PoojaItemCategory.fromJsonList(
     poojaItemCategory,
   );
-  String _getCategoryName(int categoryId) {
-    final category = pCategories.firstWhere(
-      (category) => category.id == categoryId,
-      orElse: () => PoojaItemCategory(id: categoryId, name: "Category"),
-    );
-    return category.name ?? "Category";
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -149,82 +144,77 @@ class _ItemNameImgUnitState extends State<ItemNameImgUnit> {
             ),
           ),
           SizedBox(width: effectiveWideLayout ? 6 : 0),
-          Padding(
-            padding: const EdgeInsets.only(top: 2),
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: effectiveWideLayout ? 8 : 6,
-                vertical: effectiveWideLayout ? 4 : 2,
-              ),
-              width: 80,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                borderRadius: BorderRadius.circular(4),
-                boxShadow: [
-                  BoxShadow(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.primary.withValues(alpha: 0.1),
-                    blurRadius: 3,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
-              ),
-              child: BlocBuilder<UnitSelectionCubit, UnitSelectionState>(
-                bloc: _unitSelectionCubit,
-
-                builder: (context, state) {
-                  return DropdownButton<Unit>(
-                    isDense: true,
-                    isExpanded: true,
-                    underline: const SizedBox(),
-                    value:
-                        state.status == UnitSelectionStatus.selected
-                            ? state.selectedUnit
-                            : widget.item.units!.firstWhere(
-                              (unit) => unit.isDefault == 1,
-                              orElse: () => widget.item.units!.first,
-                            ),
-                    items:
-                        widget.item.units!.map((unit) {
-                          return DropdownMenuItem<Unit>(
-                            value: unit,
-                            child: Text(
-                              "${unit.conversionFactor} ${unit.abbreviation.toString()}",
-                              style: GoogleFonts.aBeeZee(
-                                fontSize: unitFontSize,
-                                color:
-                                    Theme.of(
-                                      context,
-                                    ).colorScheme.onPrimaryContainer,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                    onChanged: (Unit? newValue) {
-                      _unitSelectionCubit.selectActivity(newValue!);
-                    },
-                  );
-                },
-              ),
-              //  DropdownMenu(
-              //   menuStyle: MenuStyle(),
-              //   onSelected: (value) {},
-              //   dropdownMenuEntries:
-              //       widget.item.units!
-              //           .map(
-              //             (unit) => DropdownMenuEntry(
-              //               value: unit.unitId,
-              //               label:
-              //                   "${unit.conversionFactor} ${unit.abbreviation!}",
-              //             ),
-              //           )
-              //           .toList(),
-              // ),
-            ),
-          ),
+          _buildUnitSelection(effectiveWideLayout, context, unitFontSize),
         ],
+      ),
+    );
+  }
+
+  Padding _buildUnitSelection(
+    bool effectiveWideLayout,
+    BuildContext context,
+    double unitFontSize,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 2),
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: effectiveWideLayout ? 8 : 6,
+          vertical: effectiveWideLayout ? 4 : 2,
+        ),
+        width: 80,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primaryContainer,
+          borderRadius: BorderRadius.circular(4),
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.1),
+              blurRadius: 3,
+              offset: const Offset(0, 1),
+            ),
+          ],
+        ),
+        child: BlocBuilder<UnitSelectionCubit, UnitSelectionState>(
+          bloc: _unitSelectionCubit,
+          builder: (context, state) {
+            final defaultUnit = widget.item.units!.firstWhere(
+              (unit) => unit.isDefault == 1,
+              orElse: () => widget.item.units!.first,
+            );
+
+            final selectedUnit =
+                state.selectedUnits[widget.item.id] ?? defaultUnit;
+            return DropdownButton<Unit>(
+              isDense: true,
+              isExpanded: true,
+              underline: const SizedBox(),
+              value: selectedUnit,
+              items:
+                  widget.item.units!.map((unit) {
+                    return DropdownMenuItem<Unit>(
+                      value: unit,
+                      child: Text(
+                        "${unit.conversionFactor} ${unit.abbreviation.toString()}",
+                        style: GoogleFonts.aBeeZee(
+                          fontSize: unitFontSize,
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+              onChanged: (Unit? selectedUnit) {
+                // BlocProvider.of<UnitSelectionCubit>(
+                //   context,
+                // ).selectUnit(widget.item.id!, selectedUnit!);
+                _unitSelectionCubit.selectUnit(widget.item.id!, selectedUnit!);
+              },
+            );
+          },
+        ),
       ),
     );
   }

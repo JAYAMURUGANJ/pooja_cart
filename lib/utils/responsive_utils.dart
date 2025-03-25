@@ -106,7 +106,7 @@ class ResponsiveUtils {
     } else if (isTablet(context)) {
       return 1.4;
     }
-    return 1.2; // Mobile
+    return 2.2; // Mobile
   }
 
   /// Returns the appropriate height for controls like buttons

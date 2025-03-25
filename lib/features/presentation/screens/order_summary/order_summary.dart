@@ -84,7 +84,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
   }
 
   void _clearOrder() {
-    PoojaItemUtils.showClearCartDialog(context, () {
+    ProductUtils.showClearCartDialog(context, () {
       if (widget.onClearOrder != null) {
         widget.onClearOrder!();
       }
@@ -134,7 +134,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
       return;
     }
 
-    final String orderSummary = PoojaItemUtils.generateOrderSummary(
+    final String orderSummary = ProductUtils.generateOrderSummary(
       _cartItems,
       _subtotal,
       _discount,

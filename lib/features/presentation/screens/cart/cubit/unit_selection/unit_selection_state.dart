@@ -4,22 +4,23 @@ enum UnitSelectionStatus { unSelected, selected, error }
 
 class UnitSelectionState {
   final UnitSelectionStatus status;
-  final Unit? selectedUnit;
+  final Map<int, Unit> selectedUnits;
   final String? error;
+
   const UnitSelectionState({
     this.status = UnitSelectionStatus.unSelected,
-    this.selectedUnit,
+    this.selectedUnits = const {},
     this.error,
   });
 
   UnitSelectionState copyWith({
     UnitSelectionStatus? status,
-    Unit? selectedUnit,
+    Map<int, Unit>? selectedUnits,
     String? error,
   }) {
     return UnitSelectionState(
       status: status ?? this.status,
-      selectedUnit: selectedUnit ?? selectedUnit,
+      selectedUnits: selectedUnits ?? this.selectedUnits,
       error: error ?? this.error,
     );
   }

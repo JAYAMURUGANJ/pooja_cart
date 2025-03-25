@@ -149,7 +149,7 @@ class _ItemSearchAnchorState extends State<ItemSearchAnchor> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  "(${item.unitCount}${PoojaItemUtils().getUnitName(item.unitId!, pUnits)})",
+                  "(${item.unitCount}${ProductUtils().getUnitName(item.unitId!, pUnits)})",
                   style: GoogleFonts.aBeeZee(
                     fontSize: 14,
                     color: Theme.of(context).colorScheme.onPrimaryContainer,
