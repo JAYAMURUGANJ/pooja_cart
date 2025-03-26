@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../constants/items.dart';
 import '../../../models/pooja_items.dart';
-import '../ui/app_theme.dart';
 import '../screens/cart/widgets/search_bar.dart';
+import '../ui/app_theme.dart';
 
 typedef NavItemRecord = ({IconData icon, String text, String route});
 
@@ -84,7 +84,7 @@ class _WebNavBarState extends State<WebNavBar> {
             visible: widget.showSearchBar,
             child: Expanded(
               child: ItemSearchAnchor(
-                allItems: pItems,
+                allItems: /* pItems */ [],
                 onSearch: (query) {
                   setState(() {});
                 },

@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart' as ui;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pooja_cart/features/domain/entities/product/product_response.dart';
 
 import '../../../../../constants/unit.dart';
 import '../../../../../models/pooja_items.dart';
@@ -7,7 +9,7 @@ import '../../../../../models/pooja_items_units.dart';
 import '../../../../../utils/pooja_item_utils.dart';
 
 class ItemSearchAnchor extends StatefulWidget {
-  final List<PoojaItems> allItems;
+  final List<ProductResponse> allItems;
   final Function(String) onSearch;
   final Function(PoojaItems) onItemSelected;
   final TextEditingController searchController;
@@ -32,9 +34,10 @@ class _ItemSearchAnchorState extends State<ItemSearchAnchor> {
     if (query.isEmpty) {
       return [];
     }
-    return widget.allItems
-        .where((item) => item.name!.toLowerCase().contains(query.toLowerCase()))
-        .toList();
+    return [];
+    // return widget.allItems
+    //     .where((item) => item.name!.toLowerCase().contains(query.toLowerCase()))
+    //     .toList();
   }
 
   @override
@@ -119,7 +122,7 @@ class _ItemSearchAnchorState extends State<ItemSearchAnchor> {
             leading: ClipOval(
               child:
                   item.img != null && item.img!.isNotEmpty
-                      ? Image.network(
+                      ? ui.Image.network(
                         item.img!,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {

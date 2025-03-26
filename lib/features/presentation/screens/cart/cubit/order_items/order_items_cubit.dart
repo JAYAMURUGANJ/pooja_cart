@@ -6,43 +6,61 @@ part 'order_items_state.dart';
 class OrderItemsCubit extends Cubit<OrderItemsState> {
   OrderItemsCubit() : super(OrderItemsState(orderItems: []));
 
-  void addOrderItem(int productId, String unit) {
-    final updatedCart = List<OrderItems>.from(state.orderItems);
+  void addOrderItem(OrderItems item) {
+    final updatedItems = List<OrderItems>.from(state.orderItems);
 
-    // Check if the product with the same variant exists
-    final existingItemIndex = updatedCart.indexWhere(
-      (item) => item.id == productId && item.name == unit,
+    // Check if the item with the same ID and unitId already exists
+    final existingIndex = updatedItems.indexWhere(
+      (element) => element.id == item.id && element.unitId == item.unitId,
     );
 
-    if (existingItemIndex != -1) {
-      // If exists, increase quantity
-      updatedCart[existingItemIndex] = updatedCart[existingItemIndex];
-    } else {
-      // If not exists, add new item
-      updatedCart.add(OrderItems(id: productId, name: unit, unitId: 1));
+    if (existingIndex == -1) {
+      // Add new item if not found
+      updatedItems.add(item);
     }
 
-    emit(state.copyWith(orderItems: updatedCart));
+    emit(
+      state.copyWith(
+        status: OrderItemsStatus.updated,
+        orderItems: updatedItems,
+      ),
+    );
   }
 
   void removeOrderItem(int productId, int unitId) {
-    final updatedCart = List<OrderItems>.from(state.orderItems);
+    final updatedItems =
+        state.orderItems
+            .where((item) => !(item.id == productId && item.unitId == unitId))
+            .toList();
 
-    final existingItemIndex = updatedCart.indexWhere(
-      (item) => item.unitId == productId && item.unitId == unitId,
+    emit(
+      state.copyWith(
+        status: OrderItemsStatus.updated,
+        orderItems: updatedItems,
+      ),
     );
+  }
 
-    if (existingItemIndex != -1) {
-      final existingItem = updatedCart[existingItemIndex];
+  // ✅ New method to update quantity
+  void updateQuantity(int productId, int unitId, int newQuantity) {
+    final updatedItems =
+        state.orderItems.map((item) {
+          if (item.id == productId && item.unitId == unitId) {
+            return OrderItems(
+              id: item.id,
+              name: item.name,
+              unitId: item.unitId,
+              quantity: newQuantity, // Update quantity
+            );
+          }
+          return item;
+        }).toList();
 
-      // if (existingItem.quantity > 1) {
-      //   updatedCart[existingItemIndex] = existingItem.copyWith(
-      //     quantity: existingItem.quantity - 1,
-      //   );
-    } else {
-      updatedCart.removeAt(existingItemIndex);
-    }
-
-    emit(state.copyWith(orderItems: updatedCart));
+    emit(
+      state.copyWith(
+        status: OrderItemsStatus.updated,
+        orderItems: updatedItems,
+      ),
+    );
   }
 }

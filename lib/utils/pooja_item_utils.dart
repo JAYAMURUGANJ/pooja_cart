@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pooja_cart/features/domain/entities/product/product_response.dart';
+import 'package:pooja_cart/features/presentation/screens/order_summary/order_summary_screen.dart';
 import 'package:pooja_cart/models/pooja_items_units.dart';
 
-import '../features/presentation/screens/order_summary/order_summary.dart';
 import '../models/pooja_cart_item.dart';
 import '../models/pooja_category_unit_mapping.dart';
 import '../models/pooja_items.dart';
@@ -162,12 +162,12 @@ class ProductUtils {
       MaterialPageRoute(
         builder:
             (context) => OrderSummaryScreen(
-              cartItems: getCartItems(itemQuantities, pItems),
-              mrptotal: getMrpTotal(itemQuantities, pItems),
-              discount: getDiscount(itemQuantities, pItems),
-              total: getTotal(itemQuantities, pItems),
-              onQuantityChanged: onQuantityChanged,
-              onClearOrder: onClearOrder,
+              // cartItems: getCartItems(itemQuantities, pItems),
+              // mrptotal: getMrpTotal(itemQuantities, pItems),
+              // discount: getDiscount(itemQuantities, pItems),
+              // total: getTotal(itemQuantities, pItems),
+              // onQuantityChanged: onQuantityChanged,
+              // onClearOrder: onClearOrder,
             ),
       ),
     );

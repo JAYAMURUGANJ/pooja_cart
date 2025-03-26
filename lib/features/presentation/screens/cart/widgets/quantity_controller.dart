@@ -5,16 +5,14 @@ import '../../../../../utils/responsive_utils.dart';
 class QuantityController extends StatelessWidget {
   const QuantityController({
     super.key,
-    required this.itemId,
     required this.quantity,
     required this.onQuantityChanged,
     this.height = 32.0,
     required this.width,
   });
 
-  final int itemId;
   final int quantity;
-  final Function(int p1, int p2) onQuantityChanged;
+  final Function(int quantity) onQuantityChanged;
   final double? height;
   final double? width;
 
@@ -48,7 +46,7 @@ class QuantityController extends StatelessWidget {
             width: iconButtonWidth,
             height: height,
             child: InkWell(
-              onTap: () => onQuantityChanged(itemId, -1),
+              onTap: () => onQuantityChanged(quantity - 1),
               child: FittedBox(
                 fit: BoxFit.contain,
                 child: Icon(
@@ -83,7 +81,7 @@ class QuantityController extends StatelessWidget {
             width: iconButtonWidth,
             height: height,
             child: InkWell(
-              onTap: () => onQuantityChanged(itemId, 1),
+              onTap: () => onQuantityChanged(quantity + 1),
               child: FittedBox(
                 fit: BoxFit.contain,
                 child: Icon(
