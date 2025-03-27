@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../constants/items.dart';
 import '../../../models/pooja_items.dart';
-import '../screens/cart/widgets/search_bar.dart';
+import '../screens/home/widgets/search_bar.dart';
 import '../ui/app_theme.dart';
 
 typedef NavItemRecord = ({IconData icon, String text, String route});
@@ -34,6 +34,7 @@ final navItems = [
     text: 'Contact',
     route: '/contact',
   )),
+  NavItem.fromRecord((icon: Icons.person, text: 'Profile', route: '/profile')),
 ];
 
 class WebNavBar extends StatefulWidget {

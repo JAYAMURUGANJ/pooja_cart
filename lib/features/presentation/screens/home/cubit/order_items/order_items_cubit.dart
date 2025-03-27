@@ -11,7 +11,8 @@ class OrderItemsCubit extends Cubit<OrderItemsState> {
 
     // Check if the item with the same ID and unitId already exists
     final existingIndex = updatedItems.indexWhere(
-      (element) => element.id == item.id && element.unitId == item.unitId,
+      (element) =>
+          element.productId == item.productId && element.unitId == item.unitId,
     );
 
     if (existingIndex == -1) {
@@ -30,7 +31,9 @@ class OrderItemsCubit extends Cubit<OrderItemsState> {
   void removeOrderItem(int productId, int unitId) {
     final updatedItems =
         state.orderItems
-            .where((item) => !(item.id == productId && item.unitId == unitId))
+            .where(
+              (item) => !(item.productId == productId && item.unitId == unitId),
+            )
             .toList();
 
     emit(
@@ -45,12 +48,14 @@ class OrderItemsCubit extends Cubit<OrderItemsState> {
   void updateQuantity(int productId, int unitId, int newQuantity) {
     final updatedItems =
         state.orderItems.map((item) {
-          if (item.id == productId && item.unitId == unitId) {
+          if (item.productId == productId && item.unitId == unitId) {
             return OrderItems(
-              id: item.id,
+              productId: item.productId,
               name: item.name,
               unitId: item.unitId,
               quantity: newQuantity, // Update quantity
+              sellingPrice: item.sellingPrice,
+              mrp: item.mrp,
             );
           }
           return item;

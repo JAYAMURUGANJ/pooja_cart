@@ -6,7 +6,7 @@ import 'package:pooja_cart/utils/responsive_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../common_widgets/head_container.dart';
-import '../cart/widgets/empty_cart.dart';
+import '../home/widgets/empty_cart.dart';
 
 Widget _orderSummary(
   BuildContext context,

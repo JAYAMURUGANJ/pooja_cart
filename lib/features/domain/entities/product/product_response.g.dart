@@ -20,8 +20,6 @@ ProductResponse _$ProductResponseFromJson(Map<String, dynamic> json) =>
           (json['images'] as List<dynamic>?)
               ?.map((e) => Image.fromJson(e as Map<String, dynamic>))
               .toList(),
-      mrp: (json['mrp'] as num?)?.toInt(),
-      sellingPrice: (json['selling_price'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$ProductResponseToJson(ProductResponse instance) =>
@@ -32,8 +30,6 @@ Map<String, dynamic> _$ProductResponseToJson(ProductResponse instance) =>
       'name': instance.name,
       'units': instance.units,
       'images': instance.images,
-      'mrp': instance.mrp,
-      'selling_price': instance.sellingPrice,
     };
 
 Image _$ImageFromJson(Map<String, dynamic> json) => Image(

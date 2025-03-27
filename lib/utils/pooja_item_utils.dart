@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pooja_cart/features/domain/entities/order_items/order_items.dart';
 import 'package:pooja_cart/features/domain/entities/product/product_response.dart';
 import 'package:pooja_cart/features/presentation/screens/order_summary/order_summary_screen.dart';
 import 'package:pooja_cart/models/pooja_items_units.dart';
 
+import '../features/domain/helpers/order_calculation_helper.dart';
 import '../models/pooja_cart_item.dart';
 import '../models/pooja_category_unit_mapping.dart';
 import '../models/pooja_items.dart';
@@ -148,29 +151,17 @@ class ProductUtils {
   // Navigate to order summary screen
   static void viewOrderSummary(
     BuildContext context,
-    Map<int, int> itemQuantities,
-    List<PoojaItems> pItems,
-    Function(int, int)? onQuantityChanged,
-    Function()? onClearOrder,
+    List<OrderItems> cartItems,
   ) {
-    if (itemQuantities.isEmpty) {
+    if (cartItems.isEmpty) {
       showMessage(context, 'Please add items to cart first');
       return;
     }
+    context.go("/cart");
 
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder:
-            (context) => OrderSummaryScreen(
-              // cartItems: getCartItems(itemQuantities, pItems),
-              // mrptotal: getMrpTotal(itemQuantities, pItems),
-              // discount: getDiscount(itemQuantities, pItems),
-              // total: getTotal(itemQuantities, pItems),
-              // onQuantityChanged: onQuantityChanged,
-              // onClearOrder: onClearOrder,
-            ),
-      ),
-    );
+    // Navigator.of(
+    //   context,
+    // ).push(MaterialPageRoute(builder: (context) => OrderSummaryScreen()));
   }
 
   // Show confirmation dialog for clearing cart
@@ -201,42 +192,41 @@ class ProductUtils {
   // Create "Add" button for items not in cart
 
   // Generate WhatsApp order summary text
-  static String generateOrderSummary(
-    List<CartItem> cartItems,
-    double subtotal,
-    double discount,
-    double total,
-  ) {
+  static String generateOrderSummary(List<OrderItems> cartItems) {
+    final calculator = OrderCalculationHelper(cartItems);
+    int subtotal = calculator.subtotal;
+    int discount = calculator.discount;
+    int total = calculator.total;
+    int discountPercentage = calculator.discountPercentage.toInt();
     final StringBuffer summary =
         StringBuffer()
           ..writeln('*POOJA ITEMS ORDER SUMMARY*')
           ..writeln('--------------------------------');
-
     for (int i = 0; i < cartItems.length; i++) {
-      final CartItem item = cartItems[i];
+      final OrderItems item = cartItems[i];
+      int itemtotal = (item.sellingPrice! * item.quantity!);
+      int itemdiscount = (item.mrp! - item.sellingPrice!) * item.quantity!;
       summary
-        ..writeln('${i + 1}. *${item.item.name}*')
+        ..writeln('${i + 1}. *${item.name}*')
         ..writeln(
-          '   Qty: ${item.quantity} × ₹${item.item.sellingPrice!.toStringAsFixed(2)} = ₹${item.totalPrice.toStringAsFixed(2)}',
+          '   Qty: ${item.quantity} × ₹${item.sellingPrice!.toStringAsFixed(2)} = ₹${itemtotal.toStringAsFixed(2)}',
         );
-      if (item.totalDiscount > 0) {
-        summary.writeln('   Saved: ₹${item.totalDiscount.toStringAsFixed(2)}');
+      if (itemdiscount > 0) {
+        summary.writeln('   Saved: ₹${(itemdiscount).toStringAsFixed(2)}');
       }
       summary.writeln('');
     }
-
     summary
       ..writeln('--------------------------------')
       ..writeln('*Subtotal (MRP):* ₹${subtotal.toStringAsFixed(2)}');
-
     if (discount > 0) {
-      summary.writeln('*Discount:* ₹${discount.toStringAsFixed(2)}');
+      summary.writeln(
+        '*Discount($discountPercentage%):* ₹${discount.toStringAsFixed(2)}',
+      );
     }
-
     summary
       ..writeln('*TOTAL:* ₹${total.toStringAsFixed(2)}')
       ..writeln('Thank you for your order!');
-
     return summary.toString();
   }
 

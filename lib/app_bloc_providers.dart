@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nested/nested.dart';
-import 'package:pooja_cart/features/presentation/screens/cart/bloc/category/category_bloc.dart';
-import 'package:pooja_cart/features/presentation/screens/cart/bloc/product/product_bloc.dart';
-import 'package:pooja_cart/features/presentation/screens/cart/bloc/unit/unit_bloc.dart';
-import 'package:pooja_cart/features/presentation/screens/cart/cubit/order_items/order_items_cubit.dart';
-import 'package:pooja_cart/features/presentation/screens/cart/cubit/unit_selection/unit_selection_cubit.dart';
+import 'package:pooja_cart/features/presentation/screens/home/bloc/category/category_bloc.dart';
+import 'package:pooja_cart/features/presentation/screens/home/bloc/product/product_bloc.dart';
+import 'package:pooja_cart/features/presentation/screens/home/bloc/unit/unit_bloc.dart';
+import 'package:pooja_cart/features/presentation/screens/home/cubit/order_items/order_items_cubit.dart';
+import 'package:pooja_cart/features/presentation/screens/home/cubit/unit_selection/unit_selection_cubit.dart';
 import 'package:pooja_cart/features/presentation/ui/bloc/theme/theme_cubit.dart';
 
 import 'di/di_module.dart';

@@ -8,7 +8,7 @@ import 'di/di_module.dart';
 import 'features/presentation/ui/app_theme.dart';
 import 'features/presentation/ui/bloc/theme/theme_cubit.dart';
 import 'features/presentation/ui/enums.dart';
-import 'utils/app_route.dart';
+import 'app_route.dart';
 
 Future<void> main() async {
   // Ensure Flutter binding is initialized before any async operations

@@ -13,29 +13,35 @@ OrderItems orderItemsFromJson(String str) =>
 
 String orderItemsToJson(OrderItems data) => json.encode(data.toJson());
 
+List orderItemsListToJson(List<OrderItems> data) =>
+    data.map((e) => json.encode(e.toJson())).toList();
+
 @JsonSerializable()
 class OrderItems {
-  @JsonKey(name: "id")
-  final int? id;
-
+  @JsonKey(name: "product_id")
+  final int? productId;
   @JsonKey(name: "name")
   final String? name;
-
   @JsonKey(name: "unit_id")
   final int? unitId;
-
   @JsonKey(name: "quantity")
-  int? quantity; // Add quantity field
+  int? quantity;
+  @JsonKey(name: "selling_price")
+  int? sellingPrice;
+  @JsonKey(name: "mrp")
+  int? mrp;
 
   OrderItems({
-    required this.id,
+    required this.productId,
     required this.name,
     required this.unitId,
     required this.quantity, // Initialize quantity
+    required this.sellingPrice,
+    required this.mrp,
   });
 
-  factory OrderItems.fromJson(Map<String, dynamic> json) => _$OrderItemsFromJson(json);
+  factory OrderItems.fromJson(Map<String, dynamic> json) =>
+      _$OrderItemsFromJson(json);
 
   Map<String, dynamic> toJson() => _$OrderItemsToJson(this);
 }
-

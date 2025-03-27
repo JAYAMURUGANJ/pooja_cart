@@ -20,7 +20,7 @@ class ResponsiveUtils {
 
   /// Determines if the current screen size is desktop or web
   static bool isDesktop(BuildContext context) {
-    return MediaQuery.of(context).size.width > tabletBreakpoint;
+    return MediaQuery.of(context).size.width > desktopBreakpoint;
   }
 
   /// Determines if the current screen size is large desktop

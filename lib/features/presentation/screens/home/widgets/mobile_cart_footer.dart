@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
 
+import '../../../../domain/entities/order_items/order_items.dart';
+import '../../../../domain/helpers/order_calculation_helper.dart';
+
 class MobileCartFooter extends StatelessWidget {
   const MobileCartFooter({
     super.key,
     required this.context,
-    required this.totalItems,
-    required this.total,
+    required this.orderItems,
     required this.onViewCart,
   });
 
   final BuildContext context;
-  final int totalItems;
-  final double total;
+  final List<OrderItems> orderItems;
   final VoidCallback onViewCart;
 
   @override
   Widget build(BuildContext context) {
+    List<OrderItems> items = orderItems;
+    int itemsCount = items.length;
+    final calculator = OrderCalculationHelper(items);
+    int total = calculator.total;
     return Container(
       width: MediaQuery.of(context).size.width * 0.92,
       height: 60,
@@ -43,7 +48,7 @@ class MobileCartFooter extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "$totalItems ${totalItems == 1 ? 'item' : 'items'}",
+                    "$itemsCount ${itemsCount == 1 ? 'item' : 'items'}",
                     style: TextStyle(color: Colors.grey.shade700, fontSize: 14),
                   ),
                   Text(

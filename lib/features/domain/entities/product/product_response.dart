@@ -28,10 +28,7 @@ class ProductResponse {
   final List<Unit>? units;
   @JsonKey(name: "images")
   final List<Image>? images;
-  @JsonKey(name: "mrp")
-  final int? mrp;
-  @JsonKey(name: "selling_price")
-  final int? sellingPrice;
+ 
 
   ProductResponse({
     this.id,
@@ -40,8 +37,6 @@ class ProductResponse {
     this.name,
     this.units,
     this.images,
-    this.mrp,
-    this.sellingPrice,
   });
 
   factory ProductResponse.fromJson(Map<String, dynamic> json) =>

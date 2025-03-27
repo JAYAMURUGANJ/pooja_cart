@@ -20,8 +20,6 @@ class ProductResponseModel extends ProductResponse {
     required super.name,
     required super.units,
     required super.images,
-    required super.mrp,
-    required super.sellingPrice,
   });
 
   factory ProductResponseModel.fromJson(Map<String, dynamic> json) =>
@@ -40,7 +38,5 @@ class ProductResponseModel extends ProductResponse {
                 : List<Image>.from(
                   json["images"]!.map((x) => Image.fromJson(x)),
                 ),
-        mrp: json["mrp"],
-        sellingPrice: json["selling_price"],
       );
 }

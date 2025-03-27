@@ -11,9 +11,9 @@ import 'package:pooja_cart/features/domain/repository/units_repository.dart';
 import 'package:pooja_cart/features/domain/usecase/category/get_category_usecase.dart';
 import 'package:pooja_cart/features/domain/usecase/product/get_products_usecase.dart';
 import 'package:pooja_cart/features/domain/usecase/units/get_units_usecase.dart';
-import 'package:pooja_cart/features/presentation/screens/cart/bloc/category/category_bloc.dart';
-import 'package:pooja_cart/features/presentation/screens/cart/bloc/product/product_bloc.dart';
-import 'package:pooja_cart/features/presentation/screens/cart/bloc/unit/unit_bloc.dart';
+import 'package:pooja_cart/features/presentation/screens/home/bloc/category/category_bloc.dart';
+import 'package:pooja_cart/features/presentation/screens/home/bloc/product/product_bloc.dart';
+import 'package:pooja_cart/features/presentation/screens/home/bloc/unit/unit_bloc.dart';
 
 import '../core/network/dio_client.dart';
 import '../core/network/network_info.dart';

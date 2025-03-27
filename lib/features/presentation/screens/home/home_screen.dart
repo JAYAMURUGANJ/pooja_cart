@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pooja_cart/features/data/remote/model/common_request_model.dart';
-import 'package:pooja_cart/features/presentation/screens/cart/bloc/category/category_bloc.dart';
-import 'package:pooja_cart/features/presentation/screens/cart/bloc/product/product_bloc.dart';
-import 'package:pooja_cart/features/presentation/screens/cart/bloc/unit/unit_bloc.dart';
-import 'package:pooja_cart/features/presentation/screens/cart/cubit/unit_selection/unit_selection_cubit.dart';
+import 'package:pooja_cart/features/presentation/screens/home/bloc/category/category_bloc.dart';
+import 'package:pooja_cart/features/presentation/screens/home/bloc/product/product_bloc.dart';
+import 'package:pooja_cart/features/presentation/screens/home/bloc/unit/unit_bloc.dart';
+import 'package:pooja_cart/features/presentation/screens/home/cubit/unit_selection/unit_selection_cubit.dart';
 
 import '/constants/category.dart';
 import '/constants/function.dart';
@@ -23,14 +23,14 @@ import 'widgets/mobile_cart_footer.dart';
 import 'widgets/quantity_controller.dart';
 import 'widgets/search_bar.dart';
 
-class CartScreen extends StatefulWidget {
-  const CartScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  _CartScreenState createState() => _CartScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _CartScreenState extends State<CartScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController searchController = TextEditingController();
   List<int>? selectedCategoryId;
   List<int>? selectedFunctionCategoryId;
@@ -56,36 +56,28 @@ class _CartScreenState extends State<CartScreen> {
     super.dispose();
   }
 
-  // void viewOrderSummary() {
-  //   if (MediaQuery.of(context).size.width < 600) {
-  //     ProductUtils.viewOrderSummary(
-  //       context,
-  //       itemQuantities,
-  //       pItems,
-  //       updateQuantity,
-  //       clearAllItems,
-  //     );
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     final isMobile = context.isMobile;
-    final totalItems = 0;
-
     return Scaffold(
       appBar: _appBar(context),
       body: _buildBody(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton:
-          isMobile && totalItems > 0
+      floatingActionButton: BlocBuilder<OrderItemsCubit, OrderItemsState>(
+        builder: (context, orderState) {
+          return isMobile && orderState.orderItems.isNotEmpty
               ? MobileCartFooter(
                 context: context,
-                totalItems: totalItems,
-                total: /* ProductUtils.getTotal(itemQuantities, pItems) */ 500,
-                onViewCart: () {} /*viewOrderSummary*/,
+                orderItems: orderState.orderItems,
+                onViewCart:
+                    () => ProductUtils.viewOrderSummary(
+                      context,
+                      orderState.orderItems,
+                    ),
               )
-              : null,
+              : const SizedBox();
+        },
+      ),
     );
   }
 
@@ -401,7 +393,6 @@ class _CartScreenState extends State<CartScreen> {
           itemBuilder: (context, index) {
             final item = filteredItems[index];
             // int quantity = itemQuantities[item.id] ?? 0;
-
             return Container(
               decoration: BoxDecoration(
                 border: Border(
@@ -423,76 +414,7 @@ class _CartScreenState extends State<CartScreen> {
                     unitSelectionCubit: unitSelectionCubit,
                   ),
                   SizedBox(height: context.standardSpacing),
-                  // Price information row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            "₹${item.sellingPrice}",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: context.responsiveFontSize(
-                                mobile: 14,
-                                desktop: 16,
-                              ),
-                            ),
-                          ),
-                          if (item.mrp != null &&
-                              item.sellingPrice != null &&
-                              item.mrp! > item.sellingPrice!) ...[
-                            const SizedBox(width: 6),
-                            Text(
-                              "₹${item.mrp}",
-                              style: TextStyle(
-                                decoration: TextDecoration.lineThrough,
-                                color: Colors.grey.shade500,
-                                fontSize: context.responsiveFontSize(
-                                  mobile: 11,
-                                  desktop: 13,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 6),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 4,
-                                vertical: 1,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.green.shade50,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Text(
-                                "${((1 - (item.sellingPrice! / item.mrp!)) * 100).toStringAsFixed(0)}% off",
-                                style: TextStyle(
-                                  color: Colors.green.shade700,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: context.responsiveFontSize(
-                                    mobile: 10,
-                                    desktop: 12,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                      1 /* quantity */ > 0
-                          ? QuantityController(
-                            quantity: /* quantity */ 1,
-                            onQuantityChanged: (newvalue) {},
-                            // updateQuantity,
-                            width: 100,
-                          )
-                          : AddItemToCartBtn(
-                            itemId: item.id!,
-                            onQuantityChanged: (value, newvalue) {},
-                            // updateQuantity,
-                          ),
-                    ],
-                  ),
+                  _buildItemFooter(item, context, unitSelectionCubit),
                 ],
               ),
             );
@@ -509,7 +431,6 @@ class _CartScreenState extends State<CartScreen> {
           itemCount: filteredItems.length,
           itemBuilder: (context, index) {
             final item = filteredItems[index];
-            final int quantity = /* itemQuantities[item.id] ?? */ 0;
             final unitSelectionCubit = UnitSelectionCubit();
             return Card(
               child: Padding(
@@ -526,12 +447,7 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                     const Spacer(),
                     Divider(color: Colors.grey.shade200),
-                    _buildItemFooter(
-                      item,
-                      context,
-                      quantity,
-                      unitSelectionCubit,
-                    ),
+                    _buildItemFooter(item, context, unitSelectionCubit),
                   ],
                 ),
               ),
@@ -543,7 +459,6 @@ class _CartScreenState extends State<CartScreen> {
   Widget _buildItemFooter(
     ProductResponse item,
     BuildContext context,
-    int quantity,
     UnitSelectionCubit unitSelectionCubit,
   ) {
     return BlocConsumer<UnitSelectionCubit, UnitSelectionState>(
@@ -563,21 +478,23 @@ class _CartScreenState extends State<CartScreen> {
 
             final isAdded = orderState.orderItems.any(
               (orderItem) =>
-                  orderItem.id == item.id &&
+                  orderItem.productId == item.id &&
                   orderItem.unitId == selectedUnit.unitId,
             );
             final currentItemQuantity =
                 orderState.orderItems
                     .firstWhere(
                       (orderItem) =>
-                          orderItem.id == item.id &&
+                          orderItem.productId == item.id &&
                           orderItem.unitId == selectedUnit.unitId,
                       orElse:
                           () => OrderItems(
-                            id: item.id!,
+                            productId: item.id!,
                             name: item.name!,
                             unitId: selectedUnit.unitId!,
                             quantity: 0,
+                            sellingPrice: selectedUnit.sellingPrice,
+                            mrp: selectedUnit.mrp,
                           ),
                     )
                     .quantity!;
@@ -641,10 +558,12 @@ class _CartScreenState extends State<CartScreen> {
                       onQuantityChanged: (itemId, newValue) {
                         orderItemsCubit.addOrderItem(
                           OrderItems(
-                            id: item.id!,
+                            productId: item.id!,
                             name: item.name!,
                             unitId: selectedUnit.unitId!,
                             quantity: 1,
+                            sellingPrice: selectedUnit.sellingPrice,
+                            mrp: selectedUnit.mrp,
                           ),
                         );
                       },
