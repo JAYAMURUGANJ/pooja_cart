@@ -13,7 +13,6 @@ import '/utils/pooja_item_utils.dart';
 import '/utils/responsive_utils.dart';
 import '../../../domain/entities/order_items/order_items.dart';
 import '../../../domain/entities/product/product_response.dart';
-import '../../common_widgets/nav_bar.dart';
 import '../order_summary/order_summary_screen.dart';
 import 'cubit/order_items/order_items_cubit.dart';
 import 'widgets/add_item_to_cart_btn.dart';
@@ -60,7 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final isMobile = context.isMobile;
     return Scaffold(
-      appBar: _appBar(context),
       body: _buildBody(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: BlocBuilder<OrderItemsCubit, OrderItemsState>(
@@ -78,46 +76,6 @@ class _HomeScreenState extends State<HomeScreen> {
               : const SizedBox();
         },
       ),
-    );
-  }
-
-  PreferredSizeWidget _appBar(BuildContext context) {
-    final isDesktopOrWeb = context.isDesktop;
-
-    return AppBar(
-      toolbarHeight: context.responsiveValue(mobile: 70.0, desktop: 80.0),
-      title:
-          isDesktopOrWeb
-              ? WebNavBar(
-                currentRoute: '/',
-                onItemSelected: (value) {},
-                // addItemToCart, // Pass this function to WebNavBar
-              )
-              : AppTitle(),
-      backgroundColor: Colors.white,
-      elevation: 2,
-      shadowColor: Colors.black12,
-      actions: [
-        if (context.isMobile)
-          IconButton(
-            icon: Icon(
-              Icons.delete_outline,
-              size: context.responsiveIconSize,
-              color:
-                  /*  (itemQuantities.isNotEmpty)
-                      ? Colors.red.shade400
-                      :  */
-                  Colors.grey.shade400,
-            ),
-            onPressed:
-                /* (itemQuantities.isNotEmpty)
-                    ? () {
-                      ProductUtils.showClearCartDialog(context, () {});
-                    }
-                    :  */
-                null,
-          ),
-      ],
     );
   }
 

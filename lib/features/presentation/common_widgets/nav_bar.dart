@@ -38,16 +38,10 @@ final navItems = [
 ];
 
 class WebNavBar extends StatefulWidget {
-  final String currentRoute;
   final bool showSearchBar;
   final Function(PoojaItems)? onItemSelected; // Add this callback
 
-  const WebNavBar({
-    super.key,
-    required this.currentRoute,
-    this.showSearchBar = true,
-    this.onItemSelected, // Add this parameter
-  });
+  const WebNavBar({super.key, this.showSearchBar = true, this.onItemSelected});
 
   @override
   State<WebNavBar> createState() => _WebNavBarState();
@@ -97,10 +91,7 @@ class _WebNavBarState extends State<WebNavBar> {
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children:
-                  navItems
-                      .map((item) => _WebNavItem(item, widget.currentRoute))
-                      .toList(),
+              children: navItems.map((item) => _WebNavItem(item)).toList(),
             ),
           ),
         ],
@@ -111,12 +102,11 @@ class _WebNavBarState extends State<WebNavBar> {
 
 class _WebNavItem extends StatelessWidget {
   final NavItem item;
-  final String currentRoute;
-  const _WebNavItem(this.item, this.currentRoute);
+  const _WebNavItem(this.item);
 
   @override
   Widget build(BuildContext context) {
-    final isSelected = currentRoute == item.route;
+    final isSelected = GoRouterState.of(context).uri.toString() == item.route;
     final theme = Theme.of(context);
 
     return Padding(

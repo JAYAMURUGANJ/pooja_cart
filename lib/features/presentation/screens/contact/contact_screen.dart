@@ -5,7 +5,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../utils/responsive_utils.dart';
-import '../../common_widgets/nav_bar.dart';
 
 class ContactPage extends StatefulWidget {
   const ContactPage({super.key});
@@ -65,26 +64,12 @@ class _ContactPageState extends State<ContactPage> {
     const double latitude = 12.920295;
     const double longitude = 79.133179;
 
-    return ResponsiveUtils.responsiveScaffold(
-      context: context,
-      appBar: AppBar(
-        toolbarHeight: 80,
-        title:
-            ResponsiveUtils.isDesktop(context)
-                ? WebNavBar(currentRoute: '/contact', showSearchBar: false)
-                : const AppTitle(),
-        backgroundColor: Colors.white,
-        elevation: 2,
-        shadowColor: Colors.black12,
-      ),
+    return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Hero section with carousel
             _buildCarouselSection(context),
-
-            // Store info card
             _buildStoreInfoCard(
               context,
               storeName,
@@ -101,8 +86,6 @@ class _ContactPageState extends State<ContactPage> {
               latitude,
               longitude,
             ),
-
-            // Bottom padding for FAB
             const SizedBox(height: 80),
           ],
         ),

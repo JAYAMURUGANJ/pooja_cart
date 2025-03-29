@@ -4,34 +4,46 @@ import 'package:pooja_cart/features/presentation/screens/home/home_screen.dart';
 import 'package:pooja_cart/features/presentation/screens/order_summary/order_summary_screen.dart';
 import 'package:pooja_cart/features/presentation/screens/profile/profile_screen.dart';
 
+import 'features/presentation/common_widgets/app_scaffold.dart';
 import 'features/presentation/screens/contact/contact_screen.dart';
 
 final GoRouter router = GoRouter(
+  initialLocation: '/',
   routes: [
-    GoRoute(
-      path: '/',
-      pageBuilder: (context, state) => NoTransitionPage(child: HomeScreen()),
-    ),
-    GoRoute(
-      path: '/contact',
-      pageBuilder:
-          (context, state) => NoTransitionPage(child: const ContactPage()),
-    ),
-    GoRoute(
-      path: '/dashboard',
-      pageBuilder:
-          (context, state) => NoTransitionPage(child: const DashboardScreen()),
-    ),
-    GoRoute(
-      path: '/cart',
-      pageBuilder:
-          (context, state) =>
-              NoTransitionPage(child: const OrderSummaryScreen()),
-    ),
-    GoRoute(
-      path: '/profile',
-      pageBuilder:
-          (context, state) => NoTransitionPage(child: const ProfileScreen()),
+    ShellRoute(
+      builder: (context, state, child) {
+        return AppScaffold(state: state, child: child);
+      },
+      routes: [
+        GoRoute(
+          path: '/',
+          pageBuilder:
+              (context, state) => NoTransitionPage(child: HomeScreen()),
+        ),
+        GoRoute(
+          path: '/contact',
+          pageBuilder:
+              (context, state) => NoTransitionPage(child: const ContactPage()),
+        ),
+        GoRoute(
+          path: '/dashboard',
+          pageBuilder:
+              (context, state) =>
+                  NoTransitionPage(child: const DashboardScreen()),
+        ),
+        GoRoute(
+          path: '/cart',
+          pageBuilder:
+              (context, state) =>
+                  NoTransitionPage(child: const OrderSummaryScreen()),
+        ),
+        GoRoute(
+          path: '/profile',
+          pageBuilder:
+              (context, state) =>
+                  NoTransitionPage(child: const ProfileScreen()),
+        ),
+      ],
     ),
   ],
 );
