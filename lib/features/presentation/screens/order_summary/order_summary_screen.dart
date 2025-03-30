@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pooja_cart/features/domain/entities/order_items/order_items.dart';
 import 'package:pooja_cart/utils/responsive_utils.dart';
 
 import '../../common_widgets/head_container.dart';
@@ -76,80 +77,82 @@ class OrderSummaryScreen extends StatelessWidget {
           (context, index) => const Divider(height: 20, thickness: 0.5),
       itemBuilder: (context, index) {
         final item = state.orderItems[index];
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
+        return _buildOrderItem(item, context);
+      },
+    );
+  }
+
+  Padding _buildOrderItem(OrderItems item, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    item.name ?? "Unknown",
-                    style: const TextStyle(fontWeight: FontWeight.w500),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      context.read<OrderItemsCubit>().removeOrderItem(
-                        item.productId!,
-                        item.unitId!,
-                      );
-                    },
-                    child: Icon(Icons.close, size: 18),
-                  ),
-                ],
-              ),
               Text(
-                "₹${item.sellingPrice!.toStringAsFixed(2)} × ${item.quantity}",
-                style: const TextStyle(color: Colors.grey),
+                item.name ?? "Unknown",
+                style: const TextStyle(fontWeight: FontWeight.w500),
               ),
-
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "You Save ₹${((item.mrp! - item.sellingPrice!) * item.quantity!).toStringAsFixed(2)}",
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    "₹${(item.sellingPrice! * item.quantity!).toStringAsFixed(2)}",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
-              QuantityController(
-                quantity: item.quantity!,
-                onQuantityChanged: (newQuantity) {
-                  if (newQuantity <= 0) {
-                    BlocProvider.of<OrderItemsCubit>(
-                      context,
-                    ).removeOrderItem(item.productId!, item.unitId!);
-                  } else {
-                    BlocProvider.of<OrderItemsCubit>(context).updateQuantity(
-                      item.productId!,
-                      item.unitId!,
-                      newQuantity,
-                    );
-
-                    // Update quantity logic if needed
-                  }
+              InkWell(
+                onTap: () {
+                  context.read<OrderItemsCubit>().removeOrderItem(
+                    item.productId!,
+                    item.unitId!,
+                  );
                 },
-                width: 120,
+                child: Icon(Icons.close, size: 18),
               ),
             ],
           ),
-        );
-      },
+          Text(
+            "₹${item.sellingPrice!.toStringAsFixed(2)} × ${item.quantity}",
+            style: const TextStyle(color: Colors.grey),
+          ),
+
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "You Save ₹${((item.mrp! - item.sellingPrice!) * item.quantity!).toStringAsFixed(2)}",
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              Text(
+                "₹${(item.sellingPrice! * item.quantity!).toStringAsFixed(2)}",
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+          QuantityController(
+            quantity: item.quantity!,
+            onQuantityChanged: (newQuantity) {
+              if (newQuantity <= 0) {
+                BlocProvider.of<OrderItemsCubit>(
+                  context,
+                ).removeOrderItem(item.productId!, item.unitId!);
+              } else {
+                BlocProvider.of<OrderItemsCubit>(
+                  context,
+                ).updateQuantity(item.productId!, item.unitId!, newQuantity);
+
+                // Update quantity logic if needed
+              }
+            },
+            width: 120,
+          ),
+        ],
+      ),
     );
   }
 }

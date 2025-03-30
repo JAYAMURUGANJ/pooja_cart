@@ -69,6 +69,8 @@ class _WebNavBarState extends State<WebNavBar> {
 
   @override
   Widget build(BuildContext context) {
+    bool isConfirmOrder =
+        GoRouterState.of(context).uri.toString() == '/confirm_order';
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
@@ -76,7 +78,7 @@ class _WebNavBarState extends State<WebNavBar> {
         children: [
           const Column(children: [SizedBox(height: 10), AppTitle()]),
           Visibility(
-            visible: widget.showSearchBar,
+            visible: widget.showSearchBar && !isConfirmOrder,
             child: Expanded(
               child: ItemSearchAnchor(
                 allItems: /* pItems */ [],
@@ -88,12 +90,13 @@ class _WebNavBarState extends State<WebNavBar> {
               ),
             ),
           ),
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: navItems.map((item) => _WebNavItem(item)).toList(),
+          if (!isConfirmOrder)
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: navItems.map((item) => _WebNavItem(item)).toList(),
+              ),
             ),
-          ),
         ],
       ),
     );
