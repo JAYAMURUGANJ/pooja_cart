@@ -7,47 +7,49 @@ class AddressForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 10,
-        children: [
-          const Text(
-            "Address",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+    return Opacity(
+      opacity: true ? 1.0 : 0.4,
+      child: AbsorbPointer(
+        absorbing: false,
+        child: Form(
+          key: formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 10,
+            children: [
+              if (context.isMobile) ...[
+                _buildNameField(),
+                _buildMobileField(),
+                _buildAddress1(),
+                _buildDistrictField(),
+                _buildStateField(),
+                _buildPincodeField(),
+              ] else ...[
+                Row(
+                  children: [
+                    Expanded(child: _buildNameField()),
+                    const SizedBox(width: 20),
+                    Expanded(child: _buildMobileField()),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(child: _buildAddress1()),
+                    const SizedBox(width: 20),
+                    Expanded(child: _buildDistrictField()),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(child: _buildStateField()),
+                    const SizedBox(width: 20),
+                    Expanded(child: _buildPincodeField()),
+                  ],
+                ),
+              ],
+            ],
           ),
-          if (context.isMobile) ...[
-            _buildNameField(),
-            _buildMobileField(),
-            _buildAddress1(),
-            _buildDistrictField(),
-            _buildStateField(),
-            _buildPincodeField(),
-          ] else ...[
-            Row(
-              children: [
-                Expanded(child: _buildNameField()),
-                const SizedBox(width: 20),
-                Expanded(child: _buildMobileField()),
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(child: _buildAddress1()),
-                const SizedBox(width: 20),
-                Expanded(child: _buildDistrictField()),
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(child: _buildStateField()),
-                const SizedBox(width: 20),
-                Expanded(child: _buildPincodeField()),
-              ],
-            ),
-          ],
-        ],
+        ),
       ),
     );
   }

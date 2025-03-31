@@ -32,6 +32,11 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
             children: [
               ConfirmOrderItems(orderItems: orderItems),
               20.ph,
+              const Text(
+                "Address",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              10.ph,
               AddressForm(formKey: _addressFormkey),
               20.ph,
               Text(
@@ -67,7 +72,26 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
         ),
         onPressed: () {
           if (_addressFormkey.currentState!.validate()) {
-            print("object");
+            var confirmOrder = {
+              "shipping_details": {
+                "name": "",
+                "mobile_no": "",
+                "shipping_address": "",
+              },
+              "order_items": [
+                {
+                  "product_id": 0,
+                  "unit_id": 0,
+                  "quantity": 2,
+                  "selling_price": 0,
+                  "mrp": 0,
+                },
+              ],
+              "sub_total": "",
+              "total": "",
+              "discount": "",
+            };
+            print(confirmOrder);
           }
           // print(orderItemsListToJson(items));
           // _shareOrderViaWhatsApp(context, items);
