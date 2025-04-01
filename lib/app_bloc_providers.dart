@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nested/nested.dart';
+import 'package:pooja_cart/features/presentation/screens/confirm_order/bloc/place_order/place_order_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/home/bloc/category/category_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/home/bloc/product/product_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/home/bloc/unit/unit_bloc.dart';
@@ -20,6 +21,7 @@ class AppBlocProviders {
         create: (context) => UnitSelectionCubit(),
       ),
       BlocProvider<OrderItemsCubit>(create: (context) => OrderItemsCubit()),
+      BlocProvider<PlaceOrderBloc>(create: (context) => PlaceOrderBloc(sl())),
     ];
   }
 }

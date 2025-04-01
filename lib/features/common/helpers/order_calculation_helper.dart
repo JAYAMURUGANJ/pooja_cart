@@ -1,4 +1,4 @@
-import '../entities/order_items/order_items.dart';
+import '../../domain/entities/order_items/order_items.dart';
 
 class OrderCalculationHelper {
   final List<OrderItems> items;

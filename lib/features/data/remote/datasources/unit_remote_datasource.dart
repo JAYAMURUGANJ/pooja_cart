@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:pooja_cart/core/constants/api_routes.dart';
 import 'package:pooja_cart/core/network/dio_client.dart';
-import 'package:pooja_cart/features/data/remote/model/unit/unit_response_model.dart';
+import 'package:pooja_cart/features/data/remote/model/response/unit/unit_response_model.dart';
 
 import '../../../../core/errors/exceptions.dart';
-import '../model/common_request_model.dart';
+import '../model/request/common_request_model.dart';
 
 abstract class UnitRemoteDatasource {
   Future<List<UnitResponseModel>> getUnits(CommonRequestModel request);

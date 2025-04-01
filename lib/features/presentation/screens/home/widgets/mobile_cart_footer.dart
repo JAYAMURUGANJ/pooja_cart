@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../domain/entities/order_items/order_items.dart';
-import '../../../../domain/helpers/order_calculation_helper.dart';
+import '../../../../common/helpers/order_calculation_helper.dart';
 
 class MobileCartFooter extends StatelessWidget {
   const MobileCartFooter({

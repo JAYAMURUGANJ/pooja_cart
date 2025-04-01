@@ -3,7 +3,7 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/failures.dart';
 import '../../../../../core/usecases/usecase.dart';
-import '../../../data/remote/model/common_request_model.dart';
+import '../../../data/remote/model/request/common_request_model.dart';
 import '../../entities/category/category_response.dart';
 import '../../repository/category_repository.dart';
 

@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 
-import '../../../../../data/remote/model/common_request_model.dart';
+import '../../../../../data/remote/model/request/common_request_model.dart';
 import '../../../../../domain/entities/product/product_response.dart';
 import '../../../../../domain/usecase/product/get_products_usecase.dart';
 

@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import '../../../../domain/entities/unit/unit_response.dart';
+import '../../../../../domain/entities/unit/unit_response.dart';
 
 UnitResponseModel unitResponseModelFromJson(String str) =>
     UnitResponseModel.fromJson(json.decode(str));

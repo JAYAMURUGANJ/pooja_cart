@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pooja_cart/utils/responsive_utils.dart';
 
 import '../../../../domain/entities/order_items/order_items.dart';
-import '../../../../domain/helpers/order_calculation_helper.dart';
+import '../../../../common/helpers/order_calculation_helper.dart';
 
 class PriceDetailsWidget extends StatelessWidget {
   const PriceDetailsWidget({super.key, required this.items});

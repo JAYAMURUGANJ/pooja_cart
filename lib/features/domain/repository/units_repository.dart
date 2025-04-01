@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:pooja_cart/features/domain/entities/unit/unit_response.dart';
 
 import '../../../core/errors/failures.dart';
-import '../../data/remote/model/common_request_model.dart';
+import '../../data/remote/model/request/common_request_model.dart';
 
 abstract class UnitsRepository {
   Future<Either<Failure, List<UnitResponse>>> getUnit(

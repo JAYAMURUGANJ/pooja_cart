@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:pooja_cart/core/errors/failures.dart';
 import 'package:pooja_cart/features/data/remote/datasources/unit_remote_datasource.dart';
-import 'package:pooja_cart/features/data/remote/model/common_request_model.dart';
+import 'package:pooja_cart/features/data/remote/model/request/common_request_model.dart';
 import 'package:pooja_cart/features/domain/entities/unit/unit_response.dart';
 import 'package:pooja_cart/features/domain/repository/units_repository.dart';
 

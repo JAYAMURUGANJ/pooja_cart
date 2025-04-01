@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'place_order_request.dart';
+
 CommonRequestModel commonRequestModelFromJson(String str) =>
     CommonRequestModel.fromJson(json.decode(str));
 
@@ -16,6 +18,7 @@ class CommonRequestModel {
   final List<Translation>? translations;
   final List<Unit>? units;
   final List<Image>? images;
+  final PlaceOrderRequest? placeOrderRequest;
 
   CommonRequestModel({
     this.categoryId,
@@ -23,6 +26,7 @@ class CommonRequestModel {
     this.translations,
     this.units,
     this.images,
+    this.placeOrderRequest,
   });
 
   CommonRequestModel copyWith({
@@ -31,12 +35,14 @@ class CommonRequestModel {
     List<Translation>? translations,
     List<Unit>? units,
     List<Image>? images,
+    PlaceOrderRequest? placeOrderRequest,
   }) => CommonRequestModel(
     categoryId: categoryId ?? this.categoryId,
     isActive: isActive ?? this.isActive,
     translations: translations ?? this.translations,
     units: units ?? this.units,
     images: images ?? this.images,
+    placeOrderRequest: placeOrderRequest ?? this.placeOrderRequest,
   );
 
   factory CommonRequestModel.fromJson(Map<String, dynamic> json) =>
@@ -59,21 +65,32 @@ class CommonRequestModel {
                 : List<Image>.from(
                   json["images"]!.map((x) => Image.fromJson(x)),
                 ),
+        placeOrderRequest:
+            json["place_order_request"] == null
+                ? null
+                : PlaceOrderRequest.fromJson(json["place_order_request"]),
       );
 
   Map<String, dynamic> toJson() => {
-    "category_id": categoryId,
-    "is_active": isActive,
-    "translations":
-        translations == null
-            ? []
-            : List<dynamic>.from(translations!.map((x) => x.toJson())),
-    "units":
-        units == null ? [] : List<dynamic>.from(units!.map((x) => x.toJson())),
-    "images":
-        images == null
-            ? []
-            : List<dynamic>.from(images!.map((x) => x.toJson())),
+    if (categoryId != null) "category_id": categoryId,
+    if (isActive != null) "is_active": isActive,
+    if (translations != null)
+      "translations":
+          translations == null
+              ? []
+              : List<dynamic>.from(translations!.map((x) => x.toJson())),
+    if (units != null)
+      "units":
+          units == null
+              ? []
+              : List<dynamic>.from(units!.map((x) => x.toJson())),
+    if (images != null)
+      "images":
+          images == null
+              ? []
+              : List<dynamic>.from(images!.map((x) => x.toJson())),
+    if (placeOrderRequest != null)
+      "place_order_request": placeOrderRequest!.toJson(),
   };
 }
 

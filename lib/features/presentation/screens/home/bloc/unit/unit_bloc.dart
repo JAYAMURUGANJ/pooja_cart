@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:pooja_cart/features/domain/entities/unit/unit_response.dart';
 
-import '../../../../../data/remote/model/common_request_model.dart';
+import '../../../../../data/remote/model/request/common_request_model.dart';
 import '../../../../../domain/usecase/units/get_units_usecase.dart';
 
 part 'unit_event.dart';

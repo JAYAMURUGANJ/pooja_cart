@@ -9,10 +9,10 @@ part of 'order_items.dart';
 OrderItems _$OrderItemsFromJson(Map<String, dynamic> json) => OrderItems(
   productId: (json['product_id'] as num?)?.toInt(),
   name: json['name'] as String?,
-  unitId: json['unit_id'] as int?,
-  quantity: json['quantity'] as int?,
-  sellingPrice: json['selling_price'] as int?,
-  mrp: json['mrp'] as int?,
+  unitId: (json['unit_id'] as num?)?.toInt(),
+  quantity: (json['quantity'] as num?)?.toInt(),
+  sellingPrice: (json['selling_price'] as num?)?.toInt(),
+  mrp: (json['mrp'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$OrderItemsToJson(OrderItems instance) =>

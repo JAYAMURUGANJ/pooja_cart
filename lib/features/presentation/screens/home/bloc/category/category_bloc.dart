@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:pooja_cart/features/domain/usecase/category/get_category_usecase.dart';
 
-import '../../../../../data/remote/model/common_request_model.dart';
+import '../../../../../data/remote/model/request/common_request_model.dart';
 import '../../../../../domain/entities/category/category_response.dart';
 
 part 'category_event.dart';

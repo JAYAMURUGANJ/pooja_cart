@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../utils/pooja_item_utils.dart';
 import '../../../../domain/entities/order_items/order_items.dart';
-import '../../../../domain/helpers/order_calculation_helper.dart';
+import '../../../../common/helpers/order_calculation_helper.dart';
 import '../../home/cubit/order_items/order_items_cubit.dart';
 import 'price_details_widget.dart';
 
@@ -47,15 +47,13 @@ Widget buildOrderSummaryFooter(BuildContext context, OrderItemsState state) {
           child: ElevatedButton.icon(
             icon: const Icon(Icons.shopify_sharp, color: Colors.white),
             label: Text(
-              "Place Order",
+              "Checkout",
               style: TextStyle(
                 fontSize: context.responsiveFontSize(mobile: 14, desktop: 16),
                 fontWeight: FontWeight.w600,
               ),
             ),
             onPressed: () {
-              // print(orderItemsListToJson(items));
-              // _shareOrderViaWhatsApp(context, items);
               if (items.isNotEmpty) {
                 context.go('/confirm_order', extra: items);
               } else {

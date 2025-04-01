@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pooja_cart/features/data/remote/model/common_request_model.dart';
+import 'package:pooja_cart/features/data/remote/model/request/common_request_model.dart';
 import 'package:pooja_cart/features/presentation/screens/home/bloc/category/category_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/home/bloc/product/product_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/home/bloc/unit/unit_bloc.dart';

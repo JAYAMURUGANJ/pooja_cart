@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pooja_cart/features/domain/entities/order_items/order_items.dart';
 import 'package:pooja_cart/utils/responsive_utils.dart';
-
-import '../../home/cubit/order_items/order_items_cubit.dart';
-import '../../home/widgets/quantity_controller.dart';
 
 class ConfirmOrderItems extends StatefulWidget {
   final List<OrderItems> orderItems;

@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:pooja_cart/core/errors/failures.dart';
-import 'package:pooja_cart/features/data/remote/model/common_request_model.dart';
+import 'package:pooja_cart/features/data/remote/model/request/common_request_model.dart';
 
 import '../../../core/errors/exceptions.dart';
 import '../../../core/network/network_info.dart';
