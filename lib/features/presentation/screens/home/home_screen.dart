@@ -145,7 +145,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         Container(width: 1, color: Colors.grey.shade200),
         OrderSummaryScreen(),
-        // _orderSummary(productList, orderSummary),
       ],
     );
   }

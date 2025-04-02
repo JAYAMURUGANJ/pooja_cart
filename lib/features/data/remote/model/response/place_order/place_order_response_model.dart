@@ -47,8 +47,8 @@ class PlaceOrderResponseModel extends PlaceOrderResponse {
         orderItems:
             json["order_items"] == null
                 ? []
-                : List<OrderItem>.from(
-                  json["order_items"]!.map((x) => OrderItem.fromJson(x)),
+                : List<PlacedOrderItem>.from(
+                  json["order_items"]!.map((x) => PlacedOrderItem.fromJson(x)),
                 ),
         subTotal: json["sub_total"]?.toDouble(),
         discount: json["discount"]?.toDouble(),

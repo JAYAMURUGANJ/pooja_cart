@@ -19,6 +19,13 @@ class ConfirmOrderScreen extends StatefulWidget {
 class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
   List<OrderItems> get orderItems => widget.orderItems;
   @override
+  void initState() {
+    BlocProvider.of<PlaceOrderBloc>(context).add(ResetPlaceOrderEvent());
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<PlaceOrderBloc, PlaceOrderState>(
       builder: (context, state) {

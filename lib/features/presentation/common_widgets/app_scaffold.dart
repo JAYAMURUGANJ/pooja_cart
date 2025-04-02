@@ -30,6 +30,7 @@ class AppScaffold extends StatelessWidget {
       elevation: 2,
       shadowColor: Colors.black12,
       actions: [
+        //
         if (context.isMobile)
           IconButton(
             icon: Icon(

@@ -4,7 +4,7 @@ import 'package:pooja_cart/features/domain/entities/order_items/order_items.dart
 import 'package:pooja_cart/features/domain/entities/product/product_response.dart';
 import 'package:pooja_cart/models/pooja_items_units.dart';
 
-import '../features/common/helpers/order_calculation_helper.dart';
+import '../features/domain/entities/place_order/place_order_response.dart';
 import '../models/pooja_cart_item.dart';
 import '../models/pooja_category_unit_mapping.dart';
 import '../models/pooja_items.dart';
@@ -191,22 +191,23 @@ class ProductUtils {
   // Create "Add" button for items not in cart
 
   // Generate WhatsApp order summary text
-  static String generateOrderSummary(List<OrderItems> cartItems) {
-    final calculator = OrderCalculationHelper(cartItems);
-    int subtotal = calculator.subtotal;
-    int discount = calculator.discount;
-    int total = calculator.total;
-    int discountPercentage = calculator.discountPercentage.toInt();
+  static String generateOrderSummary(PlaceOrderResponse orderResponse) {
+    // final calculator = OrderCalculationHelper(cartItems);
+    // int subtotal = calculator.subtotal;
+    // int discount = calculator.discount;
+    // int total = calculator.total;
+    // int discountPercentage = calculator.discountPercentage.toInt();
+    List<PlacedOrderItem> cartItems = orderResponse.orderItems!;
     final StringBuffer summary =
         StringBuffer()
           ..writeln('*POOJA ITEMS ORDER SUMMARY*')
           ..writeln('--------------------------------');
     for (int i = 0; i < cartItems.length; i++) {
-      final OrderItems item = cartItems[i];
-      int itemtotal = (item.sellingPrice! * item.quantity!);
-      int itemdiscount = (item.mrp! - item.sellingPrice!) * item.quantity!;
+      final PlacedOrderItem item = cartItems[i];
+      double itemtotal = (item.sellingPrice! * item.quantity!);
+      double itemdiscount = (item.mrp! - item.sellingPrice!) * item.quantity!;
       summary
-        ..writeln('${i + 1}. *${item.name}*')
+        ..writeln('${i + 1}. *${item.productName}*')
         ..writeln(
           '   Qty: ${item.quantity} × ₹${item.sellingPrice!.toStringAsFixed(2)} = ₹${itemtotal.toStringAsFixed(2)}',
         );
@@ -217,14 +218,20 @@ class ProductUtils {
     }
     summary
       ..writeln('--------------------------------')
-      ..writeln('*Subtotal (MRP):* ₹${subtotal.toStringAsFixed(2)}');
-    if (discount > 0) {
+      ..writeln(
+        '*Subtotal (MRP):* ₹${orderResponse.subTotal!.toStringAsFixed(2)}',
+      );
+    if (orderResponse.discount! > 0) {
+      double discountPercentage =
+          ((orderResponse.subTotal! - orderResponse.total!) /
+              orderResponse.subTotal!) *
+          100;
       summary.writeln(
-        '*Discount($discountPercentage%):* ₹${discount.toStringAsFixed(2)}',
+        '*Discount($discountPercentage%):* ₹${orderResponse.discount!.toStringAsFixed(2)}',
       );
     }
     summary
-      ..writeln('*TOTAL:* ₹${total.toStringAsFixed(2)}')
+      ..writeln('*TOTAL:* ₹${orderResponse.total!.toStringAsFixed(2)}')
       ..writeln('Thank you for your order!');
     return summary.toString();
   }

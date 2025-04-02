@@ -27,7 +27,7 @@ class PlaceOrderResponse {
   @JsonKey(name: "shipping_details")
   final ShippingDetails? shippingDetails;
   @JsonKey(name: "order_items")
-  final List<OrderItem>? orderItems;
+  final List<PlacedOrderItem>? orderItems;
   @JsonKey(name: "sub_total")
   final double? subTotal;
   @JsonKey(name: "discount")
@@ -72,7 +72,7 @@ class PlaceOrderResponse {
 }
 
 @JsonSerializable()
-class OrderItem {
+class PlacedOrderItem {
   @JsonKey(name: "order_item_id")
   final int? orderItemId;
   @JsonKey(name: "product_id")
@@ -100,7 +100,7 @@ class OrderItem {
   @JsonKey(name: "product_image")
   final String? productImage;
 
-  OrderItem({
+  PlacedOrderItem({
     this.orderItemId,
     this.productId,
     this.unitId,
@@ -116,7 +116,7 @@ class OrderItem {
     this.productImage,
   });
 
-  factory OrderItem.fromJson(Map<String, dynamic> json) =>
+  factory PlacedOrderItem.fromJson(Map<String, dynamic> json) =>
       _$OrderItemFromJson(json);
 
   Map<String, dynamic> toJson() => _$OrderItemToJson(this);

@@ -1,96 +1,106 @@
+import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:pooja_cart/utils/responsive_utils.dart';
 
-import '../../../../domain/entities/order_items/order_items.dart';
 import '../../../../common/helpers/order_calculation_helper.dart';
+import '../../../../domain/entities/order_items/order_items.dart';
 
 class PriceDetailsWidget extends StatelessWidget {
-  const PriceDetailsWidget({super.key, required this.items});
-
   final List<OrderItems> items;
+
+  const PriceDetailsWidget({super.key, required this.items});
 
   @override
   Widget build(BuildContext context) {
     final calculator = OrderCalculationHelper(items);
-    int subtotal = calculator.subtotal;
-    int discount = calculator.discount;
-    int total = calculator.total;
-    int discountPercentage = calculator.discountPercentage.toInt();
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // MRP total
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "Subtotal (MRP)",
-              style: TextStyle(
-                fontSize: context.responsiveFontSize(mobile: 14, desktop: 16),
-                color: Colors.grey.shade700,
-              ),
+    final subtotal = calculator.subtotal;
+    final discount = calculator.discount;
+    final total = calculator.total;
+    final discountPercentage = calculator.discountPercentage.toInt();
+
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+    final responsiveSize = context.responsiveFontSize(mobile: 14, desktop: 14);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
+        spacing: 6,
+        children: [
+          _buildPriceRow(
+            context,
+            "Subtotal (MRP)",
+            "₹${subtotal.toStringAsFixed(2)}",
+            labelStyle: textTheme.bodyMedium?.copyWith(
+              fontSize: responsiveSize,
+              color: Colors.grey.shade700,
             ),
-            Text(
-              "₹${subtotal.toStringAsFixed(2)}",
-              style: TextStyle(
-                fontSize: context.responsiveFontSize(mobile: 14, desktop: 16),
+            valueStyle: textTheme.bodyMedium?.copyWith(
+              fontSize: responsiveSize,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+
+          if (discount > 0) ...[
+            _buildPriceRow(
+              context,
+              "Discount ($discountPercentage%)",
+              "-₹${discount.toStringAsFixed(2)}",
+              labelStyle: textTheme.bodyMedium?.copyWith(
+                fontSize: responsiveSize,
+                color: Colors.green.shade600,
+                fontWeight: FontWeight.w500,
+              ),
+              valueStyle: textTheme.bodyMedium?.copyWith(
+                fontSize: responsiveSize,
+                color: Colors.green.shade600,
                 fontWeight: FontWeight.w500,
               ),
             ),
           ],
-        ),
-        SizedBox(height: context.standardSpacing / 2),
-        // If discount available
-        if (discount > 0)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Discount($discountPercentage%)",
-                style: TextStyle(
-                  color: Colors.green.shade600,
-                  fontSize: context.responsiveFontSize(mobile: 14, desktop: 16),
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              Text(
-                "-₹${discount.toStringAsFixed(2)}",
-                style: TextStyle(
-                  color: Colors.green.shade600,
-                  fontSize: context.responsiveFontSize(mobile: 14, desktop: 16),
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        Divider(color: Colors.grey.shade300, thickness: 1),
-        SizedBox(height: context.standardSpacing / 2),
-        // Total amount
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "Total",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: context.responsiveFontSize(mobile: 18, desktop: 20),
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            Text(
-              "₹${total.toStringAsFixed(2)}",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: context.responsiveFontSize(mobile: 18, desktop: 20),
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: context.standardSpacing),
 
-        // Share WhatsApp button
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: DottedLine(dashColor: Colors.grey.shade300),
+          ),
+
+          _buildPriceRow(
+            context,
+            "Total Amount",
+            "₹${total.toStringAsFixed(2)}",
+            labelStyle: textTheme.titleMedium?.copyWith(
+              fontSize: context.responsiveFontSize(mobile: 16, desktop: 18),
+              fontWeight: FontWeight.bold,
+              color: colorScheme.primary,
+            ),
+            valueStyle: textTheme.titleMedium?.copyWith(
+              fontSize: context.responsiveFontSize(mobile: 16, desktop: 18),
+              fontWeight: FontWeight.bold,
+              color: colorScheme.primary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPriceRow(
+    BuildContext context,
+    String label,
+    String value, {
+    TextStyle? labelStyle,
+    TextStyle? valueStyle,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label, style: labelStyle),
+        Text(value, style: valueStyle),
       ],
     );
   }

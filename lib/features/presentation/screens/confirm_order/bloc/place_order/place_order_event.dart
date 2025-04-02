@@ -21,3 +21,7 @@ class DeletePlaceOrderEvent extends PlaceOrderEvent {
   final CommonRequestModel requestData;
   DeletePlaceOrderEvent(this.requestData);
 }
+
+class ResetPlaceOrderEvent extends PlaceOrderEvent {
+  ResetPlaceOrderEvent();
+}

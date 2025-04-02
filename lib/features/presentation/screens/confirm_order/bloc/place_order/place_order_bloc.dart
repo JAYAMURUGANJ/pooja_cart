@@ -10,7 +10,11 @@ part 'place_order_state.dart';
 class PlaceOrderBloc extends Bloc<PlaceOrderEvent, PlaceOrderState> {
   final CreatePlaceOrderUseCase _createPlaceOrderUseCase;
   PlaceOrderBloc(this._createPlaceOrderUseCase) : super(PlaceOrderState()) {
+    on<ResetPlaceOrderEvent>(_resetInitial);
     on<CreatePlaceOrderEvent>(_createPlaceOrder);
+  }
+  _resetInitial(ResetPlaceOrderEvent event, Emitter<PlaceOrderState> emit) {
+    emit(state.copyWith(status: PlaceOrderStatus.intial));
   }
 
   _createPlaceOrder(

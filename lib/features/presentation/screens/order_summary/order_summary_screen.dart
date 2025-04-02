@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pooja_cart/features/domain/entities/order_items/order_items.dart';
 import 'package:pooja_cart/utils/responsive_utils.dart';
 
+import '../../../../utils/pooja_item_utils.dart';
 import '../../common_widgets/head_container.dart';
 import '../home/cubit/order_items/order_items_cubit.dart';
 import '../home/widgets/quantity_controller.dart';
@@ -18,33 +19,36 @@ class OrderSummaryScreen extends StatelessWidget {
       flex: contentSidebarRatio[1],
       child: BlocBuilder<OrderItemsCubit, OrderItemsState>(
         builder: (context, state) {
+          List<OrderItems> cartItems = state.orderItems;
           return Scaffold(
             appBar: PreferredSize(
               preferredSize: Size(200, 80),
-              child: _orderSummaryHead(context),
+              child: _buildHead(context, cartItems),
             ),
             body:
                 state.orderItems.isNotEmpty
                     ? _buildBody(state)
                     : const Center(child: Text("No items in cart")),
-            bottomNavigationBar: buildOrderSummaryFooter(context, state),
+            bottomNavigationBar: Visibility(
+              visible: cartItems.isNotEmpty,
+              child: buildOrderSummaryFooter(context, state)),
           );
         },
       ),
     );
   }
 
-  Widget _orderSummaryHead(BuildContext context) {
+  Widget _buildHead(BuildContext context, List<OrderItems> cartItems) {
     return HeadContainer(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            "Order Summary",
+            "Cart",
             style: TextStyle(
-              fontSize: context.responsiveFontSize(mobile: 18, desktop: 22),
-              fontWeight: FontWeight.w600,
+              fontSize: context.responsiveFontSize(mobile: 16, desktop: 18),
+              fontWeight: FontWeight.w500,
               color: Theme.of(context).colorScheme.onSecondary,
             ),
           ),
@@ -52,18 +56,17 @@ class OrderSummaryScreen extends StatelessWidget {
             icon: Icon(
               Icons.delete_outline,
               size: context.responsiveIconSize,
-              // color:
-              //     (itemQuantities.isNotEmpty)
-              //         ? Colors.red.shade400
-              //         : Colors.grey.shade400,
+              color:
+                  (cartItems.isNotEmpty)
+                      ? Colors.red.shade400
+                      : Colors.grey.shade400,
             ),
             onPressed:
-                // (itemQuantities.isNotEmpty)
-                //     ? () {
-                //       ProductUtils.showClearCartDialog(context, clearAllItems);
-                //     }
-                //     :
-                null,
+                (cartItems.isNotEmpty)
+                    ? () {
+                      ProductUtils.showClearCartDialog(context, () {});
+                    }
+                    : null,
           ),
         ],
       ),
