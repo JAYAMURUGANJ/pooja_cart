@@ -19,13 +19,7 @@ class AppScaffold extends StatelessWidget {
     return AppBar(
       toolbarHeight: context.responsiveValue(mobile: 70.0, desktop: 80.0),
       title:
-          isDesktopOrWeb
-              ? WebNavBar(
-                onItemSelected: (value) {},
-
-                // addItemToCart, // Pass this function to WebNavBar
-              )
-              : AppTitle(),
+          isDesktopOrWeb ? WebNavBar(onItemSelected: (value) {}) : AppTitle(),
       backgroundColor: Colors.white,
       elevation: 2,
       shadowColor: Colors.black12,

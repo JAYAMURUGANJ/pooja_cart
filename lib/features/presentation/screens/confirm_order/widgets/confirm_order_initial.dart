@@ -186,13 +186,12 @@ class ConfirmOrderInitial extends StatelessWidget {
           orderItems: orderItems,
           paymentDetails: PaymentDetails(
             paymentMethod: "COD",
-            transactionId: "",
+            transactionId: "COD",
           ),
           couponCode: "SAVE10",
           orderNotes: "Please deliver after 2 PM",
         ),
       );
-
       context.read<PlaceOrderBloc>().add(
         CreatePlaceOrderEvent(placeOrderRequest),
       );

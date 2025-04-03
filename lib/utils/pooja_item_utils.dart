@@ -192,16 +192,32 @@ class ProductUtils {
 
   // Generate WhatsApp order summary text
   static String generateOrderSummary(PlaceOrderResponse orderResponse) {
-    // final calculator = OrderCalculationHelper(cartItems);
-    // int subtotal = calculator.subtotal;
-    // int discount = calculator.discount;
-    // int total = calculator.total;
-    // int discountPercentage = calculator.discountPercentage.toInt();
     List<PlacedOrderItem> cartItems = orderResponse.orderItems!;
     final StringBuffer summary =
         StringBuffer()
           ..writeln('*POOJA ITEMS ORDER SUMMARY*')
+          ..writeln('--------------------------------')
+          ..writeln('*Order #:* ${orderResponse.orderReference ?? "N/A"}')
+          ..writeln(
+            '*Date:* ${orderResponse.orderDate?.toLocal().toString().split(' ')[0] ?? "N/A"}',
+          )
+          ..writeln('*Status:* ${orderResponse.orderStatus ?? "N/A"}')
           ..writeln('--------------------------------');
+
+    // Shipping Details
+    if (orderResponse.shippingDetails != null) {
+      summary
+        ..writeln('*SHIPPING TO:*')
+        ..writeln(orderResponse.shippingDetails!.name ?? "N/A")
+        ..writeln(orderResponse.shippingDetails!.shippingAddress ?? "N/A")
+        ..writeln('Phone: ${orderResponse.shippingDetails!.mobileNo ?? "N/A"}');
+      if (orderResponse.shippingDetails!.email != null) {
+        summary.writeln('Email: ${orderResponse.shippingDetails!.email}');
+      }
+      summary.writeln('--------------------------------');
+    }
+
+    // Order Items
     for (int i = 0; i < cartItems.length; i++) {
       final PlacedOrderItem item = cartItems[i];
       double itemtotal = (item.sellingPrice! * item.quantity!);
@@ -216,23 +232,64 @@ class ProductUtils {
       }
       summary.writeln('');
     }
+
+    // Order Summary
     summary
       ..writeln('--------------------------------')
       ..writeln(
         '*Subtotal (MRP):* ₹${orderResponse.subTotal!.toStringAsFixed(2)}',
       );
+
     if (orderResponse.discount! > 0) {
       double discountPercentage =
           ((orderResponse.subTotal! - orderResponse.total!) /
               orderResponse.subTotal!) *
           100;
       summary.writeln(
-        '*Discount($discountPercentage%):* ₹${orderResponse.discount!.toStringAsFixed(2)}',
+        '*Discount(${discountPercentage.toStringAsFixed(1)}%):* ₹${orderResponse.discount!.toStringAsFixed(2)}',
+      );
+      if (orderResponse.couponCode != null) {
+        summary.writeln('  (Coupon: ${orderResponse.couponCode})');
+      }
+    }
+
+    if (orderResponse.shippingCost! > 0) {
+      summary.writeln(
+        '*Shipping:* ₹${orderResponse.shippingCost!.toStringAsFixed(2)}',
       );
     }
+
+    if (orderResponse.tax! > 0) {
+      summary.writeln('*Tax:* ₹${orderResponse.tax!.toStringAsFixed(2)}');
+    }
+
     summary
       ..writeln('*TOTAL:* ₹${orderResponse.total!.toStringAsFixed(2)}')
-      ..writeln('Thank you for your order!');
+      ..writeln('--------------------------------');
+
+    // Payment Method
+    if (orderResponse.paymentDetails != null) {
+      summary.writeln(
+        '*Payment Method:* ${orderResponse.paymentDetails!.paymentMethod ?? "N/A"}',
+      );
+      if (orderResponse.paymentDetails!.transactionId != null) {
+        summary.writeln(
+          '*Transaction ID:* ${orderResponse.paymentDetails!.transactionId}',
+        );
+      }
+      summary.writeln('--------------------------------');
+    }
+
+    // Order Notes
+    if (orderResponse.orderNotes != null &&
+        orderResponse.orderNotes!.isNotEmpty) {
+      summary
+        ..writeln('*ORDER NOTES:*')
+        ..writeln(orderResponse.orderNotes!)
+        ..writeln('--------------------------------');
+    }
+
+    summary.writeln('Thank you for your order! 🙏');
     return summary.toString();
   }
 

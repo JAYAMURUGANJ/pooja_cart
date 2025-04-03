@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pooja_cart/features/data/remote/model/request/common_request_model.dart';
+import 'package:pooja_cart/features/presentation/common_widgets/alert_widgets.dart';
 import 'package:pooja_cart/features/presentation/screens/home/bloc/category/category_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/home/bloc/product/product_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/home/bloc/unit/unit_bloc.dart';
@@ -144,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         Container(width: 1, color: Colors.grey.shade200),
-        OrderSummaryScreen(),
+        OrderSummaryScreen(showHeader: true),
       ],
     );
   }
@@ -174,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Container(width: 1, color: Colors.grey.shade200),
         Expanded(flex: 4, child: _showItemGrid(productList)),
         Container(width: 1, color: Colors.grey.shade200),
-        OrderSummaryScreen(),
+        OrderSummaryScreen(showHeader: true),
       ],
     );
   }
@@ -495,9 +496,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       quantity: currentItemQuantity,
                       onQuantityChanged: (newQuantity) {
                         if (newQuantity <= 0) {
-                          orderItemsCubit.removeOrderItem(
-                            item.id!,
-                            selectedUnit.unitId!,
+                          AlertWidgets(context).showCommonAlertDialog(
+                            content: "Are you sure want to remove from cart?",
+                            actionBtnTxt: "Remove",
+                            action: () {
+                              orderItemsCubit.removeOrderItem(
+                                item.id!,
+                                selectedUnit.unitId!,
+                              );
+                            },
                           );
                         } else {
                           orderItemsCubit.updateQuantity(

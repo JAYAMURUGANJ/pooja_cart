@@ -63,7 +63,7 @@ Map<String, dynamic> _$PlaceOrderResponseToJson(PlaceOrderResponse instance) =>
       'status_history': instance.statusHistory,
     };
 
-PlacedOrderItem _$OrderItemFromJson(Map<String, dynamic> json) =>
+PlacedOrderItem _$PlacedOrderItemFromJson(Map<String, dynamic> json) =>
     PlacedOrderItem(
       orderItemId: (json['order_item_id'] as num?)?.toInt(),
       productId: (json['product_id'] as num?)?.toInt(),
@@ -80,7 +80,7 @@ PlacedOrderItem _$OrderItemFromJson(Map<String, dynamic> json) =>
       productImage: json['product_image'] as String?,
     );
 
-Map<String, dynamic> _$OrderItemToJson(PlacedOrderItem instance) =>
+Map<String, dynamic> _$PlacedOrderItemToJson(PlacedOrderItem instance) =>
     <String, dynamic>{
       'order_item_id': instance.orderItemId,
       'product_id': instance.productId,

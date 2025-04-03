@@ -34,7 +34,12 @@ final navItems = [
     text: 'Contact',
     route: '/contact',
   )),
-  NavItem.fromRecord((icon: Icons.person, text: 'Profile', route: '/profile')),
+  // NavItem.fromRecord((icon: Icons.person, text: 'Profile', route: '/profile')),
+  NavItem.fromRecord((
+    icon: Icons.list,
+    text: 'My Orders',
+    route: '/my_orders',
+  )),
 ];
 
 class WebNavBar extends StatefulWidget {

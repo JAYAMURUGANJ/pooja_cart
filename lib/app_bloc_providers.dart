@@ -6,6 +6,7 @@ import 'package:pooja_cart/features/presentation/screens/home/bloc/product/produ
 import 'package:pooja_cart/features/presentation/screens/home/bloc/unit/unit_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/home/cubit/order_items/order_items_cubit.dart';
 import 'package:pooja_cart/features/presentation/screens/home/cubit/unit_selection/unit_selection_cubit.dart';
+import 'package:pooja_cart/features/presentation/screens/my_orders/bloc/my_orders/my_orders_bloc.dart';
 import 'package:pooja_cart/features/presentation/ui/bloc/theme/theme_cubit.dart';
 
 import 'di/di_module.dart';
@@ -22,6 +23,7 @@ class AppBlocProviders {
       ),
       BlocProvider<OrderItemsCubit>(create: (context) => OrderItemsCubit()),
       BlocProvider<PlaceOrderBloc>(create: (context) => PlaceOrderBloc(sl())),
+      BlocProvider<MyOrdersBloc>(create: (context) => MyOrdersBloc(sl(), sl())),
     ];
   }
 }

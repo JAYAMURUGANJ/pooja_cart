@@ -19,6 +19,8 @@ class CommonRequestModel {
   final List<Unit>? units;
   final List<Image>? images;
   final PlaceOrderRequest? placeOrderRequest;
+  final String? orderId;
+  final String? mobileNo;
 
   CommonRequestModel({
     this.categoryId,
@@ -27,6 +29,8 @@ class CommonRequestModel {
     this.units,
     this.images,
     this.placeOrderRequest,
+    this.orderId,
+    this.mobileNo,
   });
 
   CommonRequestModel copyWith({
@@ -36,6 +40,8 @@ class CommonRequestModel {
     List<Unit>? units,
     List<Image>? images,
     PlaceOrderRequest? placeOrderRequest,
+    String? orderId,
+    String? mobileNo,
   }) => CommonRequestModel(
     categoryId: categoryId ?? this.categoryId,
     isActive: isActive ?? this.isActive,
@@ -43,6 +49,8 @@ class CommonRequestModel {
     units: units ?? this.units,
     images: images ?? this.images,
     placeOrderRequest: placeOrderRequest ?? this.placeOrderRequest,
+    orderId: orderId ?? this.orderId,
+    mobileNo: mobileNo ?? this.mobileNo,
   );
 
   factory CommonRequestModel.fromJson(Map<String, dynamic> json) =>
@@ -69,6 +77,8 @@ class CommonRequestModel {
             json["place_order_request"] == null
                 ? null
                 : PlaceOrderRequest.fromJson(json["place_order_request"]),
+        orderId: json["order_id"],
+        mobileNo: json["mobile_no"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -91,6 +101,8 @@ class CommonRequestModel {
               : List<dynamic>.from(images!.map((x) => x.toJson())),
     if (placeOrderRequest != null)
       "place_order_request": placeOrderRequest!.toJson(),
+    if (orderId != null) "order_id": orderId,
+    if (mobileNo != null) "mobile_no": mobileNo,
   };
 }
 

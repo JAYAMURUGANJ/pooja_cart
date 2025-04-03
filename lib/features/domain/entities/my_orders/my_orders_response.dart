@@ -1,33 +1,39 @@
 // To parse this JSON data, do
 //
-//     final placeOrderResponse = placeOrderResponseFromJson(jsonString);
+//     final myOrdersResponse = myOrdersResponseFromJson(jsonString);
 
 import 'dart:convert';
 
 import 'package:json_annotation/json_annotation.dart';
 
-part 'place_order_response.g.dart';
+part 'my_orders_response.g.dart';
 
-PlaceOrderResponse placeOrderResponseFromJson(String str) =>
-    PlaceOrderResponse.fromJson(json.decode(str));
+List<MyOrdersResponse> myOrdersResponseFromJson(String str) =>
+    List<MyOrdersResponse>.from(
+      json.decode(str).map((x) => MyOrdersResponse.fromJson(x)),
+    );
 
-String placeOrderResponseToJson(PlaceOrderResponse data) =>
-    json.encode(data.toJson());
+String myOrdersResponseToJson(List<MyOrdersResponse> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 @JsonSerializable()
-class PlaceOrderResponse {
+class MyOrdersResponse {
   @JsonKey(name: "order_id")
   final int? orderId;
-  @JsonKey(name: "order_reference")
-  final String? orderReference;
   @JsonKey(name: "order_date")
   final DateTime? orderDate;
   @JsonKey(name: "order_status")
   final String? orderStatus;
-  @JsonKey(name: "shipping_details")
-  final ShippingDetails? shippingDetails;
-  @JsonKey(name: "order_items")
-  final List<PlacedOrderItem>? orderItems;
+  @JsonKey(name: "name")
+  final String? name;
+  @JsonKey(name: "mobile_no")
+  final String? mobileNo;
+  @JsonKey(name: "email")
+  final dynamic email;
+  @JsonKey(name: "shipping_address")
+  final String? shippingAddress;
+  @JsonKey(name: "shipping_method")
+  final String? shippingMethod;
   @JsonKey(name: "sub_total")
   final double? subTotal;
   @JsonKey(name: "discount")
@@ -38,41 +44,52 @@ class PlaceOrderResponse {
   final double? tax;
   @JsonKey(name: "total")
   final double? total;
-  @JsonKey(name: "payment_details")
-  final PaymentDetails? paymentDetails;
+  @JsonKey(name: "payment_method")
+  final String? paymentMethod;
+  @JsonKey(name: "transaction_id")
+  final String? transactionId;
   @JsonKey(name: "coupon_code")
   final String? couponCode;
   @JsonKey(name: "order_notes")
   final String? orderNotes;
+  @JsonKey(name: "order_reference")
+  final String? orderReference;
+  @JsonKey(name: "order_items")
+  final List<OrderItem>? orderItems;
   @JsonKey(name: "status_history")
   final List<StatusHistory>? statusHistory;
 
-  PlaceOrderResponse({
+  MyOrdersResponse({
     this.orderId,
-    this.orderReference,
     this.orderDate,
     this.orderStatus,
-    this.shippingDetails,
-    this.orderItems,
+    this.name,
+    this.mobileNo,
+    this.email,
+    this.shippingAddress,
+    this.shippingMethod,
     this.subTotal,
     this.discount,
     this.shippingCost,
     this.tax,
     this.total,
-    this.paymentDetails,
+    this.paymentMethod,
+    this.transactionId,
     this.couponCode,
     this.orderNotes,
+    this.orderReference,
+    this.orderItems,
     this.statusHistory,
   });
 
-  factory PlaceOrderResponse.fromJson(Map<String, dynamic> json) =>
-      _$PlaceOrderResponseFromJson(json);
+  factory MyOrdersResponse.fromJson(Map<String, dynamic> json) =>
+      _$MyOrdersResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => _$PlaceOrderResponseToJson(this);
+  Map<String, dynamic> toJson() => _$MyOrdersResponseToJson(this);
 }
 
 @JsonSerializable()
-class PlacedOrderItem {
+class OrderItem {
   @JsonKey(name: "order_item_id")
   final int? orderItemId;
   @JsonKey(name: "product_id")
@@ -100,7 +117,7 @@ class PlacedOrderItem {
   @JsonKey(name: "product_image")
   final String? productImage;
 
-  PlacedOrderItem({
+  OrderItem({
     this.orderItemId,
     this.productId,
     this.unitId,
@@ -116,52 +133,10 @@ class PlacedOrderItem {
     this.productImage,
   });
 
-  factory PlacedOrderItem.fromJson(Map<String, dynamic> json) =>
-      _$PlacedOrderItemFromJson(json);
+  factory OrderItem.fromJson(Map<String, dynamic> json) =>
+      _$OrderItemFromJson(json);
 
-  Map<String, dynamic> toJson() => _$PlacedOrderItemToJson(this);
-}
-
-@JsonSerializable()
-class PaymentDetails {
-  @JsonKey(name: "payment_method")
-  final String? paymentMethod;
-  @JsonKey(name: "transaction_id")
-  final String? transactionId;
-
-  PaymentDetails({this.paymentMethod, this.transactionId});
-
-  factory PaymentDetails.fromJson(Map<String, dynamic> json) =>
-      _$PaymentDetailsFromJson(json);
-
-  Map<String, dynamic> toJson() => _$PaymentDetailsToJson(this);
-}
-
-@JsonSerializable()
-class ShippingDetails {
-  @JsonKey(name: "name")
-  final String? name;
-  @JsonKey(name: "mobile_no")
-  final String? mobileNo;
-  @JsonKey(name: "email")
-  final dynamic email;
-  @JsonKey(name: "shipping_address")
-  final String? shippingAddress;
-  @JsonKey(name: "shipping_method")
-  final String? shippingMethod;
-
-  ShippingDetails({
-    this.name,
-    this.mobileNo,
-    this.email,
-    this.shippingAddress,
-    this.shippingMethod,
-  });
-
-  factory ShippingDetails.fromJson(Map<String, dynamic> json) =>
-      _$ShippingDetailsFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ShippingDetailsToJson(this);
+  Map<String, dynamic> toJson() => _$OrderItemToJson(this);
 }
 
 @JsonSerializable()

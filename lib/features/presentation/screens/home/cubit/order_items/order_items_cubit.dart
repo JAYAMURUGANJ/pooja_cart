@@ -68,4 +68,9 @@ class OrderItemsCubit extends Cubit<OrderItemsState> {
       ),
     );
   }
+
+  void clearAllItems() {
+    state.orderItems.clear();
+    emit(state.copyWith(status: OrderItemsStatus.updated, orderItems: []));
+  }
 }

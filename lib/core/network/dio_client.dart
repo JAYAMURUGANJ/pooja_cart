@@ -113,13 +113,11 @@ class DioClient {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
-        return NetworkException(
+        return ServerException(
           message: 'Connection timeout. Please try again.',
         );
       case DioExceptionType.badResponse:
-        return ServerException(
-          message: _getErrorMessage(error.response?.statusCode),
-        );
+        return ServerException(message: _getErrorMessage(error.response));
       case DioExceptionType.cancel:
         return ServerException(message: 'Request cancelled');
       default:
@@ -129,20 +127,28 @@ class DioClient {
     }
   }
 
-  String _getErrorMessage(int? statusCode) {
-    switch (statusCode) {
-      case 400:
-        return 'Bad request';
-      case 401:
-        return 'Unauthorized';
-      case 403:
-        return 'Forbidden';
-      case 404:
-        return 'Not found';
-      case 500:
-        return 'Internal server error';
-      default:
-        return 'Something went wrong';
+  String _getErrorMessage(Response? response) {
+    int? statusCode = response?.statusCode;
+    try {
+      if (response!.data['message'] != null && response.data['message'] != "") {
+        return response.data['message'];
+      }
+      switch (statusCode) {
+        case 400:
+          return 'Bad request';
+        case 401:
+          return 'Unauthorized';
+        case 403:
+          return 'Forbidden';
+        case 404:
+          return 'Not found';
+        case 500:
+          return 'Internal server error';
+        default:
+          return 'Something went wrong';
+      }
+    } catch (e) {
+      return 'Something went wrong : ${e.toString()}';
     }
   }
 }

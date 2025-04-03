@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pooja_cart/features/domain/entities/order_items/order_items.dart';
 import 'package:pooja_cart/features/presentation/screens/dashboard/dashboard_screen.dart';
 import 'package:pooja_cart/features/presentation/screens/home/home_screen.dart';
+import 'package:pooja_cart/features/presentation/screens/my_orders/my_orders_screen.dart';
 import 'package:pooja_cart/features/presentation/screens/order_summary/order_summary_screen.dart';
 import 'package:pooja_cart/features/presentation/screens/profile/profile_screen.dart';
 
@@ -44,6 +45,12 @@ final GoRouter router = GoRouter(
           pageBuilder:
               (context, state) =>
                   NoTransitionPage(child: const ProfileScreen()),
+        ),
+        GoRoute(
+          path: '/my_orders',
+          pageBuilder:
+              (context, state) =>
+                  NoTransitionPage(child: const MyOrdersScreen()),
         ),
         GoRoute(
           path: '/confirm_order',
