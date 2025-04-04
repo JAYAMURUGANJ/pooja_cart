@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:pooja_cart/features/common/utils/whatsapp_utils.dart';
 import 'package:pooja_cart/features/domain/entities/place_order/place_order_response.dart';
+
+import '../../../../common/utils/whatsapp_utils.dart';
 
 class OrderSuccessWidget extends StatelessWidget {
   final PlaceOrderResponse orderResponse;
@@ -135,7 +137,7 @@ class OrderSuccessWidget extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 4.0),
                                     Text(
-                                      '${item.quantity} × ${item.unitName} (${item.unitAbbreviation})',
+                                      '${item.quantity} × (${item.conversionFactor}${item.unitAbbreviation})',
                                       style: TextStyle(color: Colors.grey[700]),
                                     ),
                                   ],
@@ -214,46 +216,13 @@ class OrderSuccessWidget extends StatelessWidget {
                   ),
                 ),
               ),
-
-              const SizedBox(height: 32.0),
-
-              // Share Order Button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    WhatsappUtils().shareOrderViaWhatsApp(
-                      context: context,
-                      orderResponse: orderResponse,
-                      mobileNo: shippingDetails.mobileNo!,
-                    );
-                  },
-                  icon: const Icon(Icons.share),
-                  label: const Text('Share Order Details'),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 16.0),
-
-              // Continue Shopping Button
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  onPressed: () {
-                    Navigator.of(context).popUntil((route) => route.isFirst);
-                  },
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  ),
-                  child: const Text('Continue Shopping'),
-                ),
-              ),
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: _buildBottomSection(
+        context,
+        shippingDetails.mobileNo!,
       ),
     );
   }
@@ -321,6 +290,46 @@ class OrderSuccessWidget extends StatelessWidget {
               color: isDiscount ? Colors.green[700] : null,
               fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
               fontSize: isTotal ? 16.0 : 14.0,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  _buildBottomSection(BuildContext context, String mobileNo) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+      child: Row(
+        spacing: 16,
+        children: [
+          // Continue Shopping Button
+          Expanded(
+            child: OutlinedButton(
+              onPressed: () {
+                context.replace("/");
+              },
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+              ),
+              child: const Text('Continue Shopping'),
+            ),
+          ),
+          // Share Order Button
+          Expanded(
+            child: ElevatedButton.icon(
+              onPressed: () {
+                WhatsappUtils().shareOrderViaWhatsApp(
+                  context: context,
+                  orderResponse: orderResponse,
+                  mobileNo: mobileNo,
+                );
+              },
+              icon: const Icon(Icons.share),
+              label: const Text('Share Order Details'),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+              ),
             ),
           ),
         ],

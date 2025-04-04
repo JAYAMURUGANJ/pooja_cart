@@ -4,6 +4,7 @@ import 'package:pooja_cart/features/domain/entities/order_items/order_items.dart
 import 'package:pooja_cart/features/presentation/screens/confirm_order/widgets/order_failed_widget.dart';
 import 'package:pooja_cart/features/presentation/screens/confirm_order/widgets/oreder_success_widget.dart';
 
+import '../home/cubit/order_items/order_items_cubit.dart';
 import 'bloc/place_order/place_order_bloc.dart';
 import 'widgets/confirm_order_initial.dart';
 import 'widgets/order_processing_widget.dart';
@@ -29,7 +30,15 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PlaceOrderBloc, PlaceOrderState>(
+    return BlocConsumer<PlaceOrderBloc, PlaceOrderState>(
+      listener: (context, state) {
+        switch (state.status) {
+          case PlaceOrderStatus.loaded:
+            BlocProvider.of<OrderItemsCubit>(context).clearAllItems();
+            break;
+          default:
+        }
+      },
       builder: (context, state) {
         switch (state.status) {
           case PlaceOrderStatus.intial:

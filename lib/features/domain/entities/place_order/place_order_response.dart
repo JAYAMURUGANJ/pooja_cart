@@ -99,6 +99,8 @@ class PlacedOrderItem {
   final String? unitAbbreviation;
   @JsonKey(name: "product_image")
   final String? productImage;
+  @JsonKey(name: "conversion_factor")
+  final int? conversionFactor;
 
   PlacedOrderItem({
     this.orderItemId,
@@ -114,6 +116,7 @@ class PlacedOrderItem {
     this.unitName,
     this.unitAbbreviation,
     this.productImage,
+    this.conversionFactor,
   });
 
   factory PlacedOrderItem.fromJson(Map<String, dynamic> json) =>

@@ -104,7 +104,7 @@ class OrderSummaryScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                item.name ?? "Unknown",
+                "${item.name} (${item.conversionFactor}${item.unitAbbreviation})",
                 style: const TextStyle(fontWeight: FontWeight.w500),
               ),
               InkWell(

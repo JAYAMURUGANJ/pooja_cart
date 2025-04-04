@@ -30,6 +30,10 @@ class OrderItems {
   int? sellingPrice;
   @JsonKey(name: "mrp")
   int? mrp;
+  @JsonKey(name: "conversion_factor")
+  int? conversionFactor;
+  @JsonKey(name: "unit_abbreviation")
+  String? unitAbbreviation;
 
   OrderItems({
     required this.productId,
@@ -38,6 +42,8 @@ class OrderItems {
     required this.quantity, // Initialize quantity
     required this.sellingPrice,
     required this.mrp,
+    this.conversionFactor,
+    this.unitAbbreviation,
   });
 
   factory OrderItems.fromJson(Map<String, dynamic> json) =>

@@ -56,6 +56,8 @@ class OrderItemsCubit extends Cubit<OrderItemsState> {
               quantity: newQuantity, // Update quantity
               sellingPrice: item.sellingPrice,
               mrp: item.mrp,
+              conversionFactor: item.conversionFactor,
+              unitAbbreviation: item.unitAbbreviation,
             );
           }
           return item;

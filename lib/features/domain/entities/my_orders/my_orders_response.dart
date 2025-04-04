@@ -112,6 +112,8 @@ class OrderItem {
   final String? productDescription;
   @JsonKey(name: "unit_name")
   final String? unitName;
+  @JsonKey(name: "conversion_factor")
+  final int? conversionFactor;
   @JsonKey(name: "unit_abbreviation")
   final String? unitAbbreviation;
   @JsonKey(name: "product_image")
@@ -129,6 +131,7 @@ class OrderItem {
     this.productName,
     this.productDescription,
     this.unitName,
+    this.conversionFactor,
     this.unitAbbreviation,
     this.productImage,
   });

@@ -11,12 +11,14 @@ import '../../order_summary/widgets/price_details_widget.dart';
 import 'components/address_form.dart';
 import 'components/confirm_order_items.dart';
 
-final _nameController = TextEditingController();
-final _mobileController = TextEditingController();
-final _addressController = TextEditingController();
-final _districtController = TextEditingController();
-final _stateController = TextEditingController();
-final _pincodeController = TextEditingController();
+final _nameController = TextEditingController(text: "Dhinakaran");
+final _mobileController = TextEditingController(text: "8220922365");
+final _addressController = TextEditingController(
+  text: "123, 4th Street, muthaiya nagar",
+);
+final _districtController = TextEditingController(text: "Cuddalore");
+final _stateController = TextEditingController(text: "TamilNadu");
+final _pincodeController = TextEditingController(text: "607002");
 
 class ConfirmOrderInitial extends StatelessWidget {
   final GlobalKey<FormState> addressFormkey;
@@ -148,20 +150,13 @@ class ConfirmOrderInitial extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.shopping_bag_outlined),
-              const SizedBox(width: 8),
-              Text(
-                "PLACE ORDER",
-                style: TextStyle(
-                  fontSize: context.responsiveFontSize(mobile: 16, desktop: 18),
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.5,
-                ),
-              ),
-            ],
+          child: Text(
+            "PLACE ORDER",
+            style: TextStyle(
+              fontSize: context.responsiveFontSize(mobile: 16, desktop: 18),
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.5,
+            ),
           ),
         ),
       ),
@@ -184,10 +179,7 @@ class ConfirmOrderInitial extends StatelessWidget {
             shippingMethod: "Professional courier",
           ),
           orderItems: orderItems,
-          paymentDetails: PaymentDetails(
-            paymentMethod: "COD",
-            transactionId: "COD",
-          ),
+          paymentDetails: PaymentDetails(paymentMethod: "COD"),
           couponCode: "SAVE10",
           orderNotes: "Please deliver after 2 PM",
         ),

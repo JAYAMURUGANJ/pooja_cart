@@ -17,6 +17,6 @@ class GetMyOrdersByMobileUseCase
   Future<Either<Failure, List<MyOrdersResponse>>> call(
     CommonRequestModel params,
   ) async {
-    return await repository.getMyOrdersById(params);
+    return await repository.getMyOrdersByMobile(params);
   }
 }

@@ -42,7 +42,7 @@ class MyOrdersRemoteDatasourceImpl implements MyOrdersRemoteDatasource {
   ) async {
     try {
       final response = await dioClient.post(
-        path: ApiRoutes.getOrderById,
+        path: ApiRoutes.getOrderByMobile,
         data: request.toJson(),
       );
       return (response.data as List)

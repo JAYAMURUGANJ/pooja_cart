@@ -77,6 +77,7 @@ PlacedOrderItem _$PlacedOrderItemFromJson(Map<String, dynamic> json) =>
       productDescription: json['product_description'] as String?,
       unitName: json['unit_name'] as String?,
       unitAbbreviation: json['unit_abbreviation'] as String?,
+      conversionFactor: (json['conversion_factor'] as num?)?.toInt(),
       productImage: json['product_image'] as String?,
     );
 
@@ -94,6 +95,7 @@ Map<String, dynamic> _$PlacedOrderItemToJson(PlacedOrderItem instance) =>
       'product_description': instance.productDescription,
       'unit_name': instance.unitName,
       'unit_abbreviation': instance.unitAbbreviation,
+      'conversion_factor': instance.conversionFactor,
       'product_image': instance.productImage,
     };
 

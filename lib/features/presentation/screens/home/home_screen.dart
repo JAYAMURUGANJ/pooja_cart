@@ -7,7 +7,6 @@ import 'package:pooja_cart/features/presentation/screens/home/bloc/product/produ
 import 'package:pooja_cart/features/presentation/screens/home/bloc/unit/unit_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/home/cubit/unit_selection/unit_selection_cubit.dart';
 
-import '/constants/category.dart';
 import '/constants/function.dart';
 import '/constants/unit.dart';
 import '/utils/pooja_item_utils.dart';
@@ -159,7 +158,6 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ItemFilter(
-          poojaItemCategory: poojaItemCategory,
           poojaFunctions: poojaItemFunctions,
           poojaItemUnits: poojaItemUnits,
           categoryUnitMapping: ProductUtils.convertMappingListToMap([]),
@@ -281,7 +279,6 @@ class _HomeScreenState extends State<HomeScreen> {
         return FractionallySizedBox(
           heightFactor: 0.9,
           child: ItemFilter(
-            poojaItemCategory: poojaItemCategory,
             poojaFunctions: poojaItemFunctions,
             poojaItemUnits: poojaItemUnits,
             categoryUnitMapping: ProductUtils.convertMappingListToMap([]),
@@ -528,6 +525,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             quantity: 1,
                             sellingPrice: selectedUnit.sellingPrice,
                             mrp: selectedUnit.mrp,
+                            conversionFactor: selectedUnit.conversionFactor,
+                            unitAbbreviation: selectedUnit.abbreviation,
                           ),
                         );
                       },

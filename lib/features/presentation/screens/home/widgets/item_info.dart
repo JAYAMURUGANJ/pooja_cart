@@ -4,8 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pooja_cart/features/domain/entities/product/product_response.dart';
 
-import '../../../../../constants/category.dart';
-import '../../../../../models/pooja_item_category.dart';
 import '../../../../../utils/responsive_utils.dart';
 import '../cubit/unit_selection/unit_selection_cubit.dart';
 
@@ -29,9 +27,6 @@ class ItemNameImgUnit extends StatefulWidget {
 
 class _ItemNameImgUnitState extends State<ItemNameImgUnit> {
   UnitSelectionCubit get _unitSelectionCubit => widget.unitSelectionCubit;
-  final List<PoojaItemCategory> pCategories = PoojaItemCategory.fromJsonList(
-    poojaItemCategory,
-  );
 
   @override
   Widget build(BuildContext context) {
