@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pooja_cart/features/domain/entities/product/product_response.dart';
 
-import '../../../../../constants/unit.dart';
 import '../../../../../models/pooja_items.dart';
-import '../../../../../models/pooja_items_units.dart';
-import '../../../../../utils/pooja_item_utils.dart';
 
 class ItemSearchAnchor extends StatefulWidget {
   final List<ProductResponse> allItems;
@@ -28,7 +25,6 @@ class ItemSearchAnchor extends StatefulWidget {
 
 class _ItemSearchAnchorState extends State<ItemSearchAnchor> {
   final searchAnchorController = SearchController();
-  final List<PoojaUnits> pUnits = PoojaUnits.fromJsonList(poojaItemUnits);
 
   List<PoojaItems> _getSuggestions(String query) {
     if (query.isEmpty) {
@@ -152,7 +148,7 @@ class _ItemSearchAnchorState extends State<ItemSearchAnchor> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  "(${item.unitCount}${ProductUtils().getUnitName(item.unitId!, pUnits)})",
+                  "(${item.unitCount})",
                   style: GoogleFonts.aBeeZee(
                     fontSize: 14,
                     color: Theme.of(context).colorScheme.onPrimaryContainer,

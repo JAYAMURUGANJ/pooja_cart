@@ -26,6 +26,8 @@ class CategoryResponseModel extends CategoryResponse {
         units:
             json["units"] == null
                 ? []
-                : List<Unit>.from(json["units"]!.map((x) => Unit.fromJson(x))),
+                : List<CategoryUnit>.from(
+                  json["units"]!.map((x) => CategoryUnit.fromJson(x)),
+                ),
       );
 }

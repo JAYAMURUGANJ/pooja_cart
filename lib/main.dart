@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 
 import 'app_bloc_providers.dart';
+import 'app_route.dart';
 import 'di/di_module.dart';
 import 'features/presentation/ui/app_theme.dart';
 import 'features/presentation/ui/bloc/theme/theme_cubit.dart';
 import 'features/presentation/ui/enums.dart';
-import 'app_route.dart';
 
 Future<void> main() async {
   // Ensure Flutter binding is initialized before any async operations
   WidgetsFlutterBinding.ensureInitialized();
+  setUrlStrategy(PathUrlStrategy());
   // Set preferred orientations and system UI overlay style
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

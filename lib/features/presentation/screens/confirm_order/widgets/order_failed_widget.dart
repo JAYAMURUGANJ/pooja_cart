@@ -1,11 +1,15 @@
+// import 'package:go_router/go_router.dart';
+import 'dart:html' as html;
+
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class OrderFailedWidget extends StatelessWidget {
   final String errorMessage;
   final VoidCallback onRetry;
 
   const OrderFailedWidget({
-    super.key, 
+    super.key,
     required this.errorMessage,
     required this.onRetry,
   });
@@ -13,10 +17,7 @@ class OrderFailedWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Order Status'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Order Status'), centerTitle: true),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
@@ -38,21 +39,18 @@ class OrderFailedWidget extends StatelessWidget {
                   color: Colors.red[700],
                 ),
               ),
-              
+
               const SizedBox(height: 24.0),
-              
+
               // Error Title
               const Text(
                 'Order Failed',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
               ),
-              
+
               const SizedBox(height: 16.0),
-              
+
               // Error Message
               Container(
                 padding: const EdgeInsets.all(16.0),
@@ -73,16 +71,14 @@ class OrderFailedWidget extends StatelessWidget {
                     Text(
                       'Error: $errorMessage',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.grey[700],
-                      ),
+                      style: TextStyle(color: Colors.grey[700]),
                     ),
                   ],
                 ),
               ),
-              
+
               const SizedBox(height: 32.0),
-              
+
               // Retry Button
               SizedBox(
                 width: double.infinity,
@@ -99,15 +95,16 @@ class OrderFailedWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: 16.0),
-              
+
               // Back to Cart Button
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    GoRouter.of(context).go('/');
+                    html.window.history.pushState(null, '', '/');
                   },
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -118,9 +115,9 @@ class OrderFailedWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: 24.0),
-              
+
               // Customer Support Info
               Container(
                 padding: const EdgeInsets.all(16.0),

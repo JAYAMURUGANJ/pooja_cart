@@ -28,7 +28,6 @@ class ProductResponse {
   final List<Unit>? units;
   @JsonKey(name: "images")
   final List<Image>? images;
- 
 
   ProductResponse({
     this.id,

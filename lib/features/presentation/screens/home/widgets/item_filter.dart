@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pooja_cart/features/domain/entities/category/category_response.dart';
+import 'package:pooja_cart/features/domain/entities/product/product_response.dart';
 import 'package:pooja_cart/features/presentation/screens/home/bloc/category/category_bloc.dart';
+import 'package:pooja_cart/features/presentation/screens/home/cubit/category_filter_selection/category_filter_selection_cubit.dart';
+import 'package:pooja_cart/features/presentation/screens/home/cubit/unit_filter_selection/unit_filter_selection_cubit.dart';
 
 import '../../../../../models/pooja_item_functions.dart';
 import '../../../common_widgets/head_container.dart';
+import '../cubit/product_filter/product_filter_cubit.dart';
 
 class ItemFilter extends StatefulWidget {
-  final List<dynamic> poojaFunctions;
-  final List<dynamic> poojaItemUnits;
   final Function(Set<int> categoryIds, Set<int> functionIds, Set<int> unitIds)
   onFilterApplied;
   final bool isInline;
-  // Add a new parameter for category-unit mapping
-  final Map<int, List<int>> categoryUnitMapping;
+  final List<ProductResponse> productList;
 
   const ItemFilter({
-    required this.poojaFunctions,
-    required this.poojaItemUnits,
     required this.onFilterApplied,
-    required this.categoryUnitMapping, // Add this required parameter
     this.isInline = true,
     super.key,
+    required this.productList,
   });
 
   @override
@@ -31,144 +30,19 @@ class ItemFilter extends StatefulWidget {
 class _ItemFilterState extends State<ItemFilter> {
   final List<int> _selectedCategoryIds = [];
   final List<int> _selectedFunctionIds = [];
-  final List<int> _selectedUnitIds = [];
-  List<Unit> _selectedCategoryUnits = [];
+
+  final List<CategoryUnit> _selectedCategoryUnits = [];
 
   // late List<CategoryResponse> pCategories;
   late List<PoojaItemFunctions> pFunctions;
-  late List<Unit> pUnits;
+  late List<CategoryUnit> pUnits;
 
   // Track available units based on selected categories
-  List<int> _availableUnitIds = [];
+  final List<int> _availableUnitIds = [];
 
   @override
   void initState() {
     super.initState();
-    _initializeData();
-  }
-
-  @override
-  void didUpdateWidget(ItemFilter oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    // Check if data sources have changed
-    if ( /* widget.poojaItemCategory != oldWidget.poojaItemCategory || */ widget
-                .poojaFunctions !=
-            oldWidget.poojaFunctions ||
-        widget.poojaItemUnits != oldWidget.poojaItemUnits ||
-        widget.categoryUnitMapping != oldWidget.categoryUnitMapping) {
-      _initializeData();
-    }
-  }
-
-  void _initializeData() {
-    // pCategories = PoojaItemCategory.fromJsonList(widget.poojaItemCategory);
-    pFunctions = PoojaItemFunctions.fromJsonList(widget.poojaFunctions);
-
-    _updateAvailableUnits();
-  }
-
-  // Update available units based on selected categories
-  void _updateAvailableUnits() {
-    // If no categories selected, no units are available
-    if (_selectedCategoryIds.isEmpty) {
-      // Clear any selected units
-      _selectedUnitIds.clear();
-    } else {
-      // Collect all unit IDs for selected categories
-      for (int categoryId in _selectedCategoryIds) {
-        if (widget.categoryUnitMapping.containsKey(categoryId)) {
-          _availableUnitIds.addAll(widget.categoryUnitMapping[categoryId]!);
-        }
-      }
-
-      // Remove duplicates
-      _availableUnitIds = _availableUnitIds.toSet().toList();
-
-      // Remove any selected units that are no longer available
-      _selectedUnitIds.removeWhere(
-        (unitId) => !_availableUnitIds.contains(unitId),
-      );
-    }
-  }
-
-  void _toggleCategory(int categoryId, List<CategoryResponse> categoryList) {
-    setState(() {
-      if (_selectedCategoryIds.contains(categoryId)) {
-        _selectedCategoryIds.remove(categoryId);
-      } else {
-        _selectedCategoryIds.add(categoryId);
-        List<Unit> selectedUnits =
-            categoryList
-                .where(
-                  (category) => _selectedCategoryIds.contains(category.id),
-                ) // Filter by selected categories
-                .map(
-                  (category) => category.units as List<Unit>,
-                ) // Extract items list
-                .expand((items) => items) // Flatten into a single list
-                .toList();
-
-        _selectedCategoryUnits = selectedUnits;
-      }
-      // Update available units whenever categories change
-      _updateAvailableUnits();
-    });
-    _applyFilters();
-  }
-
-  void _toggleFunction(int functionId) {
-    setState(() {
-      // If the function is already selected, deselect it
-      if (_selectedFunctionIds.contains(functionId)) {
-        _selectedFunctionIds.remove(functionId);
-      } else {
-        // Clear any previously selected functions (single selection)
-        _selectedFunctionIds.clear();
-        // Add the new function
-        _selectedFunctionIds.add(functionId);
-
-        // Clear all selected categories when a function is selected
-        _selectedCategoryIds.clear();
-
-        // Since categories are cleared, also clear units and available units
-        _selectedUnitIds.clear();
-        _availableUnitIds = [];
-      }
-    });
-    _applyFilters();
-  }
-
-  void _toggleUnit(int unitId) {
-    // Only toggle if the unit is available based on selected categories
-    if (_availableUnitIds.contains(unitId) ||
-        _selectedUnitIds.contains(unitId)) {
-      setState(() {
-        if (_selectedUnitIds.contains(unitId)) {
-          _selectedUnitIds.remove(unitId);
-        } else {
-          _selectedUnitIds.add(unitId);
-        }
-      });
-      _applyFilters();
-    }
-  }
-
-  void _applyFilters() {
-    widget.onFilterApplied(
-      _selectedCategoryIds.toSet(),
-      _selectedFunctionIds.toSet(),
-      _selectedUnitIds.toSet(),
-    );
-  }
-
-  void _clearAllFilters() {
-    setState(() {
-      _selectedCategoryIds.clear();
-      _selectedFunctionIds.clear();
-      _selectedUnitIds.clear();
-      _availableUnitIds = [];
-    });
-    _applyFilters();
   }
 
   @override
@@ -177,11 +51,6 @@ class _ItemFilterState extends State<ItemFilter> {
   }
 
   Widget _buildInlineFilter() {
-    final bool hasFiltersApplied =
-        _selectedCategoryIds.isNotEmpty ||
-        _selectedFunctionIds.isNotEmpty ||
-        _selectedUnitIds.isNotEmpty;
-
     return Container(
       width: 260,
       color: Colors.grey.shade50,
@@ -200,29 +69,19 @@ class _ItemFilterState extends State<ItemFilter> {
                     color: Theme.of(context).colorScheme.onSecondary,
                   ),
                 ),
-                IconButton(
-                  onPressed: hasFiltersApplied ? _clearAllFilters : null,
-                  icon: Icon(
-                    hasFiltersApplied ? Icons.filter_alt_off : Icons.filter_alt,
-                    color: hasFiltersApplied ? Colors.red : Colors.grey,
-                  ),
-                  tooltip: hasFiltersApplied ? 'Clear all filters' : 'Filters',
-                ),
+                // IconButton(
+                //   onPressed: hasFiltersApplied ? _clearAllFilters : null,
+                //   icon: Icon(
+                //     hasFiltersApplied ? Icons.filter_alt_off : Icons.filter_alt,
+                //     color: hasFiltersApplied ? Colors.red : Colors.grey,
+                //   ),
+                //   tooltip: hasFiltersApplied ? 'Clear all filters' : 'Filters',
+                // ),
               ],
             ),
           ),
           Expanded(
-            child: ListView(
-              children: [
-                _buildFilterSection(
-                  title: 'Functions',
-                  items: pFunctions,
-                  selectedIds: _selectedFunctionIds,
-                  onToggle: _toggleFunction,
-                ),
-                _buildCategoryWithUnitsSection(),
-              ],
-            ),
+            child: ListView(children: [_buildCategoryWithUnitsSection()]),
           ),
         ],
       ),
@@ -241,11 +100,10 @@ class _ItemFilterState extends State<ItemFilter> {
         ),
         actions: [
           if (_selectedCategoryIds.isNotEmpty ||
-              _selectedFunctionIds.isNotEmpty ||
-              _selectedUnitIds.isNotEmpty)
+              _selectedFunctionIds.isNotEmpty)
             IconButton(
               icon: const Icon(Icons.filter_alt_off),
-              onPressed: _clearAllFilters,
+              onPressed: () {},
               tooltip: 'Clear all filters',
             ),
           IconButton(
@@ -265,12 +123,6 @@ class _ItemFilterState extends State<ItemFilter> {
                 child: Column(
                   spacing: 12,
                   children: [
-                    _buildFilterSection(
-                      title: 'Functions',
-                      items: pFunctions,
-                      selectedIds: _selectedFunctionIds,
-                      onToggle: _toggleFunction,
-                    ),
                     BlocBuilder<CategoryBloc, CategoryState>(
                       builder: (context, state) {
                         switch (state.status) {
@@ -283,14 +135,6 @@ class _ItemFilterState extends State<ItemFilter> {
                               child: CircularProgressIndicator(),
                             );
                           case CategoryStatus.loaded:
-                          // Update the categories list based on the state
-                          // return _buildFilterSection(
-                          //   title: 'Categories',
-                          //   items: state.categoryResponse!,
-                          //   selectedIds: _selectedCategoryIds,
-                          //   // onToggle: () => _toggleCategory( 0   ,state.categoryResponse!),
-                          // );
-
                           case CategoryStatus.error:
                             return Center(child: Text(state.errorMsg!));
                         }
@@ -302,8 +146,6 @@ class _ItemFilterState extends State<ItemFilter> {
                       _buildFilterSection(
                         title: 'Units',
                         items: pUnits,
-                        selectedIds: _selectedUnitIds,
-                        onToggle: _toggleUnit,
                         availableIds: _availableUnitIds,
                       ),
                     if (_selectedCategoryIds.isEmpty)
@@ -323,12 +165,11 @@ class _ItemFilterState extends State<ItemFilter> {
             ),
             const SizedBox(height: 16),
             if (_selectedCategoryIds.isNotEmpty ||
-                _selectedFunctionIds.isNotEmpty ||
-                _selectedUnitIds.isNotEmpty)
+                _selectedFunctionIds.isNotEmpty)
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _clearAllFilters,
+                  onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red.shade50,
                     foregroundColor: Colors.red.shade700,
@@ -352,47 +193,184 @@ class _ItemFilterState extends State<ItemFilter> {
           case CategoryStatus.loading:
             return const Center(child: CircularProgressIndicator());
           case CategoryStatus.loaded:
-            return ExpansionTile(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Categories',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            return BlocBuilder<
+              CategoryFilterSelectionCubit,
+              CategoryFilterSelectionState
+            >(
+              builder: (context, categorySelectionState) {
+                return ExpansionTile(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Categories',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      if (categorySelectionState.status ==
+                          CategoryFilterSelectionStatus.selected)
+                        IconButton(
+                          onPressed: () {
+                            BlocProvider.of<CategoryFilterSelectionCubit>(
+                              context,
+                            ).resetCategorySelection();
+                          },
+                          icon: Icon(Icons.close),
+                        ),
+                    ],
                   ),
-                  if (_selectedCategoryIds.isNotEmpty)
-                    IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _selectedCategoryIds.clear();
-                          _selectedUnitIds.clear();
-                          _availableUnitIds = [];
-                        });
-                        _applyFilters();
-                      },
-                      icon: Icon(Icons.close),
+                  initiallyExpanded: false, // Expand if no functions selected
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 16,
+                        right: 16,
+                        bottom: 8,
+                      ),
+                      child: Wrap(
+                        spacing: 8.0,
+                        runSpacing: 8.0,
+                        children:
+                            state.categoryResponse!.map((category) {
+                              final bool isSelectedCategory =
+                                  categorySelectionState.status ==
+                                          CategoryFilterSelectionStatus.selected
+                                      ? categorySelectionState
+                                              .categoryResponse!
+                                              .id ==
+                                          category.id
+                                      : false;
+
+                              return ChoiceChip(
+                                label: Text(
+                                  category.name ?? '',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color:
+                                        isSelectedCategory
+                                            ? Colors.white
+                                            : Colors.black87,
+                                  ),
+                                ),
+                                selected: isSelectedCategory,
+                                showCheckmark: false,
+                                selectedColor:
+                                    Theme.of(context).colorScheme.primary,
+                                onSelected: (value) {
+                                  BlocProvider.of<CategoryFilterSelectionCubit>(
+                                    context,
+                                  ).selectCategory(category);
+                                  BlocProvider.of<ProductFilterCubit>(
+                                    context,
+                                  ).filterProduct(
+                                    widget.productList,
+                                    // searchController.text.toLowerCase(),
+                                    "",
+                                    category,
+                                    null,
+                                  );
+                                },
+                                backgroundColor: Colors.grey.shade200,
+                              );
+                            }).toList(),
+                      ),
                     ),
-                ],
-              ),
-              initiallyExpanded: false, // Expand if no functions selected
+
+                    // Only show units section if categories are selected
+                    if (categorySelectionState.status ==
+                        CategoryFilterSelectionStatus.selected)
+                      _buildUnitSelectionWidget(
+                        categorySelectionState,
+                        context,
+                      ),
+
+                    if (categorySelectionState.status !=
+                        CategoryFilterSelectionStatus.selected)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 16,
+                          right: 16,
+                          bottom: 16,
+                        ),
+                        child: Text(
+                          'Select a category to \nview available units',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
+            );
+
+          default:
+            return Text("default");
+        }
+      },
+    );
+  }
+
+  Widget _buildUnitSelectionWidget(
+    CategoryFilterSelectionState categorySelectionState,
+    BuildContext context,
+  ) {
+    List<CategoryUnit> units = categorySelectionState.categoryResponse!.units!;
+    return BlocBuilder<UnitFilterSelectionCubit, UnitFilterSelectionState>(
+      builder: (context, unitFilterSelectionState) {
+        return Padding(
+          padding: const EdgeInsets.only(left: 16, right: 16),
+          child: ExpansionTile(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 16,
-                    right: 16,
-                    bottom: 8,
+                const Text(
+                  'Units',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                ),
+                if (unitFilterSelectionState.status ==
+                    UnitFilterSelectionStatus.selected)
+                  IconButton(
+                    onPressed: () {
+                      BlocProvider.of<UnitFilterSelectionCubit>(
+                        context,
+                      ).resetUnitSelection();
+                    },
+                    icon: Icon(Icons.close),
                   ),
+              ],
+            ),
+            initiallyExpanded: true,
+            children: [
+              if (units.isEmpty)
+                Center(
+                  child: Text(
+                    'No units available for the selected category',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                )
+              else
+                Padding(
+                  padding: const EdgeInsets.only(left: 8, right: 8, bottom: 16),
                   child: Wrap(
                     spacing: 8.0,
                     runSpacing: 8.0,
                     children:
-                        state.categoryResponse!.map((category) {
-                          final bool isSelected = _selectedCategoryIds.contains(
-                            category.id,
-                          );
+                        units.map((unit) {
+                          final bool isSelected =
+                              unitFilterSelectionState.status ==
+                                      UnitFilterSelectionStatus.selected
+                                  ? unitFilterSelectionState.unitResponse!.id ==
+                                      unit.id
+                                  : false;
+
                           return ChoiceChip(
                             label: Text(
-                              category.name ?? '',
+                              unit.name ?? '',
                               style: TextStyle(
                                 fontSize: 14,
                                 color:
@@ -403,118 +381,29 @@ class _ItemFilterState extends State<ItemFilter> {
                             showCheckmark: false,
                             selectedColor:
                                 Theme.of(context).colorScheme.primary,
-                            onSelected:
-                                (_) => _toggleCategory(
-                                  category.id!,
-                                  state.categoryResponse!,
-                                ),
+                            onSelected: (value) {
+                              BlocProvider.of<UnitFilterSelectionCubit>(
+                                context,
+                              ).selectUnit(unit);
+                              BlocProvider.of<ProductFilterCubit>(
+                                context,
+                              ).filterProduct(
+                                widget.productList,
+                                // searchController.text.toLowerCase(),
+                                "",
+                                categorySelectionState.categoryResponse,
+                                null,
+                              );
+                            },
                             backgroundColor: Colors.grey.shade200,
+                            disabledColor: Colors.grey.shade100,
                           );
                         }).toList(),
                   ),
                 ),
-
-                // Only show units section if categories are selected
-                if (_selectedCategoryIds.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16, right: 16),
-                    child: ExpansionTile(
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Units',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          if (_selectedUnitIds.isNotEmpty)
-                            IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _selectedUnitIds.clear();
-                                });
-                                _applyFilters();
-                              },
-                              icon: Icon(Icons.close),
-                            ),
-                        ],
-                      ),
-                      initiallyExpanded: true,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            left: 8,
-                            right: 8,
-                            bottom: 16,
-                          ),
-                          child: Wrap(
-                            spacing: 8.0,
-                            runSpacing: 8.0,
-                            children:
-                                _selectedCategoryUnits.map((unit) {
-                                  final bool isSelected = _selectedUnitIds
-                                      .contains(unit.id);
-                                  final bool isEnabled = _availableUnitIds
-                                      .contains(unit.id);
-
-                                  return ChoiceChip(
-                                    label: Text(
-                                      unit.name ?? '',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color:
-                                            isSelected
-                                                ? Colors.white
-                                                : isEnabled
-                                                ? Colors.black87
-                                                : Colors.grey.shade400,
-                                      ),
-                                    ),
-                                    selected: isSelected,
-                                    showCheckmark: false,
-                                    selectedColor:
-                                        Theme.of(context).colorScheme.primary,
-                                    onSelected:
-                                        isEnabled
-                                            ? (_) => _toggleUnit(unit.id!)
-                                            : null,
-                                    backgroundColor:
-                                        isEnabled
-                                            ? Colors.grey.shade200
-                                            : Colors.grey.shade100,
-                                    disabledColor: Colors.grey.shade100,
-                                  );
-                                }).toList(),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                if (_selectedCategoryIds.isEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16,
-                      right: 16,
-                      bottom: 16,
-                    ),
-                    child: Text(
-                      'Select a category to \nview available units',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ),
-              ],
-            );
-
-          default:
-            return Text("default");
-        }
+            ],
+          ),
+        );
       },
     );
   }
@@ -522,8 +411,6 @@ class _ItemFilterState extends State<ItemFilter> {
   Widget _buildFilterSection({
     required String title,
     required List<dynamic> items,
-    required List<int> selectedIds,
-    required Function(int) onToggle,
     List<int>? availableIds,
   }) {
     if (items.isEmpty) {
@@ -538,21 +425,8 @@ class _ItemFilterState extends State<ItemFilter> {
             title,
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
-          if (selectedIds.isNotEmpty)
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  selectedIds.clear();
-                  if (title == 'Categories') {
-                    // Clear units when categories are cleared
-                    _selectedUnitIds.clear();
-                    _availableUnitIds = [];
-                  }
-                });
-                _applyFilters();
-              },
-              icon: Icon(Icons.close),
-            ),
+
+          IconButton(onPressed: () {}, icon: Icon(Icons.close)),
         ],
       ),
       initiallyExpanded: false, // Start with Functions expanded
@@ -568,7 +442,7 @@ class _ItemFilterState extends State<ItemFilter> {
                   final String itemName =
                       title == 'Units' ? item.unitName : item.name ?? '';
                   final int itemId = item.id;
-                  final bool isSelected = selectedIds.contains(itemId);
+                  final bool isSelected = true;
 
                   // Determine if the item should be enabled based on availability
                   bool isEnabled = true;
@@ -592,7 +466,7 @@ class _ItemFilterState extends State<ItemFilter> {
                     selected: isSelected,
                     showCheckmark: false,
                     selectedColor: Theme.of(context).colorScheme.primary,
-                    onSelected: isEnabled ? (_) => onToggle(itemId) : null,
+                    onSelected: isEnabled ? (_) {} : null,
                     backgroundColor:
                         isEnabled ? Colors.grey.shade200 : Colors.grey.shade100,
                     disabledColor: Colors.grey.shade100,

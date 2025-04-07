@@ -2,51 +2,48 @@
 //
 //     final categoryResponse = categoryResponseFromJson(jsonString);
 
-import 'package:json_annotation/json_annotation.dart';
 import 'dart:convert';
+
+import 'package:json_annotation/json_annotation.dart';
 
 part 'category_response.g.dart';
 
-CategoryResponse categoryResponseFromJson(String str) => CategoryResponse.fromJson(json.decode(str));
+CategoryResponse categoryResponseFromJson(String str) =>
+    CategoryResponse.fromJson(json.decode(str));
 
-String categoryResponseToJson(CategoryResponse data) => json.encode(data.toJson());
+String categoryResponseToJson(CategoryResponse data) =>
+    json.encode(data.toJson());
 
 @JsonSerializable()
 class CategoryResponse {
-    @JsonKey(name: "id")
-    final int? id;
-    @JsonKey(name: "name")
-    final String? name;
-    @JsonKey(name: "units")
-    final List<Unit>? units;
+  @JsonKey(name: "id")
+  final int? id;
+  @JsonKey(name: "name")
+  final String? name;
+  @JsonKey(name: "units")
+  final List<CategoryUnit>? units;
 
-    CategoryResponse({
-        this.id,
-        this.name,
-        this.units,
-    });
+  CategoryResponse({this.id, this.name, this.units});
 
-    factory CategoryResponse.fromJson(Map<String, dynamic> json) => _$CategoryResponseFromJson(json);
+  factory CategoryResponse.fromJson(Map<String, dynamic> json) =>
+      _$CategoryResponseFromJson(json);
 
-    Map<String, dynamic> toJson() => _$CategoryResponseToJson(this);
+  Map<String, dynamic> toJson() => _$CategoryResponseToJson(this);
 }
 
 @JsonSerializable()
-class Unit {
-    @JsonKey(name: "id")
-    final int? id;
-    @JsonKey(name: "name")
-    final String? name;
-    @JsonKey(name: "abbreviation")
-    final String? abbreviation;
+class CategoryUnit {
+  @JsonKey(name: "id")
+  final int? id;
+  @JsonKey(name: "name")
+  final String? name;
+  @JsonKey(name: "abbreviation")
+  final String? abbreviation;
 
-    Unit({
-        this.id,
-        this.name,
-        this.abbreviation,
-    });
+  CategoryUnit({this.id, this.name, this.abbreviation});
 
-    factory Unit.fromJson(Map<String, dynamic> json) => _$UnitFromJson(json);
+  factory CategoryUnit.fromJson(Map<String, dynamic> json) =>
+      _$UnitFromJson(json);
 
-    Map<String, dynamic> toJson() => _$UnitToJson(this);
+  Map<String, dynamic> toJson() => _$UnitToJson(this);
 }

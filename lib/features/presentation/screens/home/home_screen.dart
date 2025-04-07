@@ -5,10 +5,9 @@ import 'package:pooja_cart/features/presentation/common_widgets/alert_widgets.da
 import 'package:pooja_cart/features/presentation/screens/home/bloc/category/category_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/home/bloc/product/product_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/home/bloc/unit/unit_bloc.dart';
+import 'package:pooja_cart/features/presentation/screens/home/cubit/product_filter/product_filter_cubit.dart';
 import 'package:pooja_cart/features/presentation/screens/home/cubit/unit_selection/unit_selection_cubit.dart';
 
-import '/constants/function.dart';
-import '/constants/unit.dart';
 import '/utils/pooja_item_utils.dart';
 import '/utils/responsive_utils.dart';
 import '../../../domain/entities/order_items/order_items.dart';
@@ -31,9 +30,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController searchController = TextEditingController();
-  List<int>? selectedCategoryId;
-  List<int>? selectedFunctionCategoryId;
-  List<int>? selectedUnitId;
+  // List<int>? selectedCategoryId;
+  // List<int>? selectedFunctionCategoryId;
+  // List<int>? selectedUnitId;
   final unitSelectionCubit = UnitSelectionCubit();
 
   @override
@@ -87,6 +86,12 @@ class _HomeScreenState extends State<HomeScreen> {
           case ProductStatus.error:
             break;
           case ProductStatus.loaded:
+            BlocProvider.of<ProductFilterCubit>(context).filterProduct(
+              state.productResponse!,
+              searchController.text.toLowerCase(),
+              null,
+              null,
+            );
             unitSelectionCubit.initializeDefaultUnits(state.productResponse!);
             break;
           default:
@@ -117,8 +122,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildMobileLayout(List<ProductResponse> productsList) {
     return Column(
       children: [
-        _searchAndFilterBarWithButton(context),
-        if (_isAnyFilterApplied()) _clearFilter(),
+        _searchAndFilterBarWithButton(context, productsList),
+        // if (_isAnyFilterApplied()) _clearFilter(),
         Expanded(child: _showItemGrid(productsList)),
       ],
     );
@@ -137,8 +142,8 @@ class _HomeScreenState extends State<HomeScreen> {
           flex: contentSidebarRatio[0],
           child: Column(
             children: [
-              _searchAndFilterBarWithButton(context),
-              if (_isAnyFilterApplied()) _clearFilter(),
+              _searchAndFilterBarWithButton(context, productList),
+              // if (_isAnyFilterApplied()) _clearFilter(),
               Expanded(child: _showItemGrid(productList)),
             ],
           ),
@@ -158,15 +163,13 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ItemFilter(
-          poojaFunctions: poojaItemFunctions,
-          poojaItemUnits: poojaItemUnits,
-          categoryUnitMapping: ProductUtils.convertMappingListToMap([]),
+          productList: productList,
           onFilterApplied: (categoryIds, functionIds, unitIds) {
-            setState(() {
-              selectedCategoryId = categoryIds.toList();
-              selectedFunctionCategoryId = functionIds.toList();
-              selectedUnitId = unitIds.toList();
-            });
+            // setState(() {
+            //   selectedCategoryId = categoryIds.toList();
+            //   selectedFunctionCategoryId = functionIds.toList();
+            //   selectedUnitId = unitIds.toList();
+            // });
           },
           isInline: true,
         ),
@@ -178,12 +181,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  bool _isAnyFilterApplied() {
-    return (selectedCategoryId != null && selectedCategoryId!.isNotEmpty) ||
-        (selectedFunctionCategoryId != null &&
-            selectedFunctionCategoryId!.isNotEmpty) ||
-        (selectedUnitId != null && selectedUnitId!.isNotEmpty);
-  }
+  // bool _isAnyFilterApplied() {
+  //   return (selectedCategoryId != null && selectedCategoryId!.isNotEmpty) ||
+  //       (selectedFunctionCategoryId != null &&
+  //           selectedFunctionCategoryId!.isNotEmpty) ||
+  //       (selectedUnitId != null && selectedUnitId!.isNotEmpty);
+  // }
 
   Widget _clearFilter() {
     return Padding(
@@ -205,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Chip(
             label: Text(
-              "${selectedCategoryId!.length + selectedFunctionCategoryId!.length + selectedUnitId!.length} Clear",
+              /* ${selectedCategoryId!.length + selectedFunctionCategoryId!.length + selectedUnitId!.length}  */ "Clear",
               style: TextStyle(
                 fontSize: context.responsiveFontSize(mobile: 11, desktop: 12),
               ),
@@ -219,9 +222,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 searchController: searchController,
                 setState: setState,
                 onFilterReset: (categoryIds, functionIds, unitIds) {
-                  selectedCategoryId = categoryIds;
-                  selectedFunctionCategoryId = functionIds;
-                  selectedUnitId = unitIds;
+                  // selectedCategoryId = categoryIds;
+                  // selectedFunctionCategoryId = functionIds;
+                  // selectedUnitId = unitIds;
                 },
               );
             },
@@ -234,7 +237,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _searchAndFilterBarWithButton(BuildContext context) {
+  Widget _searchAndFilterBarWithButton(
+    BuildContext context,
+    List<ProductResponse> productList,
+  ) {
     return Padding(
       padding: context.responsivePadding,
       child: Row(
@@ -256,7 +262,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // Filter button to show bottom sheet
           Card(
             child: IconButton(
-              onPressed: () => _showFilterBottomSheet(context),
+              onPressed: () => _showFilterBottomSheet(context, productList),
               icon: Icon(Icons.filter_list, size: context.responsiveIconSize),
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.all(context.standardSpacing),
@@ -268,7 +274,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _showFilterBottomSheet(BuildContext context) {
+  void _showFilterBottomSheet(
+    BuildContext context,
+    List<ProductResponse> productList,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -279,15 +288,13 @@ class _HomeScreenState extends State<HomeScreen> {
         return FractionallySizedBox(
           heightFactor: 0.9,
           child: ItemFilter(
-            poojaFunctions: poojaItemFunctions,
-            poojaItemUnits: poojaItemUnits,
-            categoryUnitMapping: ProductUtils.convertMappingListToMap([]),
+            productList: productList,
             onFilterApplied: (categoryIds, functionIds, unitIds) {
-              setState(() {
-                selectedCategoryId = categoryIds.toList();
-                selectedFunctionCategoryId = functionIds.toList();
-                selectedUnitId = unitIds.toList();
-              });
+              // setState(() {
+              //   selectedCategoryId = categoryIds.toList();
+              //   selectedFunctionCategoryId = functionIds.toList();
+              //   selectedUnitId = unitIds.toList();
+              // });
             },
             isInline: false,
           ),
@@ -304,111 +311,123 @@ class _HomeScreenState extends State<HomeScreen> {
     double aspectRatio = context.gridAspectRatio;
 
     // Get filtered items
-    final filteredItems = ProductUtils.getFilteredItems(
-      items: productList,
-      searchController: searchController,
-      selectedCategoryIds: selectedCategoryId,
-      selectedItemsFunctionIds: selectedFunctionCategoryId,
-      selectedUnitIds: selectedUnitId,
-    );
-
-    if (filteredItems.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.search_off_rounded, size: 70, color: Colors.grey[300]),
-            SizedBox(height: context.standardSpacing),
-            Text(
-              'No items found',
-              style: TextStyle(
-                fontSize: context.responsiveFontSize(mobile: 18, desktop: 20),
-                fontWeight: FontWeight.w500,
-                color: Colors.grey[600],
-              ),
-            ),
-            SizedBox(height: context.standardSpacing / 2),
-            Text(
-              'Try adjusting your search or filters',
-              style: TextStyle(
-                fontSize: context.responsiveFontSize(mobile: 14, desktop: 16),
-                color: Colors.grey[500],
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    // Use a staggered grid view for flexible heights
-    return isMobileView
-        ? ListView.builder(
-          padding: const EdgeInsets.only(bottom: 80),
-          itemCount: filteredItems.length,
-          itemBuilder: (context, index) {
-            final item = filteredItems[index];
-            // int quantity = itemQuantities[item.id] ?? 0;
-            return Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: Colors.grey.shade200, width: 1),
+    // final filteredItems =
+    //  ProductUtils.getFilteredItems(
+    //   items: productList,
+    //   searchController: searchController,
+    //   selectedCategoryIds: selectedCategoryId,
+    //   selectedUnitIds: selectedUnitId,
+    // );
+    return BlocBuilder<ProductFilterCubit, List<ProductResponse>>(
+      builder: (context, filteredItems) {
+        if (filteredItems.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.search_off_rounded,
+                  size: 70,
+                  color: Colors.grey[300],
                 ),
-              ),
-              padding: EdgeInsets.symmetric(
-                vertical: context.standardSpacing,
-                horizontal: context.standardSpacing * 1.5,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Item info row
-                  ItemNameImgUnit(
-                    item: item,
-                    pUnits: productList,
-                    useWideLayout: false,
-                    unitSelectionCubit: unitSelectionCubit,
-                  ),
-                  SizedBox(height: context.standardSpacing),
-                  _buildItemFooter(item, context, unitSelectionCubit),
-                ],
-              ),
-            );
-          },
-        )
-        : GridView.builder(
-          padding: EdgeInsets.all(context.standardSpacing),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: crossAxisCount,
-            childAspectRatio: aspectRatio,
-            crossAxisSpacing: context.standardSpacing,
-            mainAxisSpacing: context.standardSpacing,
-          ),
-          itemCount: filteredItems.length,
-          itemBuilder: (context, index) {
-            final item = filteredItems[index];
-            final unitSelectionCubit = UnitSelectionCubit();
-            return Card(
-              child: Padding(
-                padding: context.responsivePadding,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ItemNameImgUnit(
-                      item: item,
-                      useWideLayout: context.isDesktop || context.isTablet,
-                      pUnits: productList,
-                      unitSelectionCubit: unitSelectionCubit,
+                SizedBox(height: context.standardSpacing),
+                Text(
+                  'No items found',
+                  style: TextStyle(
+                    fontSize: context.responsiveFontSize(
+                      mobile: 18,
+                      desktop: 20,
                     ),
-                    const Spacer(),
-                    Divider(color: Colors.grey.shade200),
-                    _buildItemFooter(item, context, unitSelectionCubit),
-                  ],
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[600],
+                  ),
                 ),
+                SizedBox(height: context.standardSpacing / 2),
+                Text(
+                  'Try adjusting your search or filters',
+                  style: TextStyle(
+                    fontSize: context.responsiveFontSize(
+                      mobile: 14,
+                      desktop: 16,
+                    ),
+                    color: Colors.grey[500],
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+        // Use a staggered grid view for flexible heights
+        return isMobileView
+            ? ListView.builder(
+              padding: const EdgeInsets.only(bottom: 80),
+              itemCount: filteredItems.length,
+              itemBuilder: (context, index) {
+                final item = filteredItems[index];
+                // int quantity = itemQuantities[item.id] ?? 0;
+                return Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(color: Colors.grey.shade200, width: 1),
+                    ),
+                  ),
+                  padding: EdgeInsets.symmetric(
+                    vertical: context.standardSpacing,
+                    horizontal: context.standardSpacing * 1.5,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Item info row
+                      ItemNameImgUnit(
+                        item: item,
+                        pUnits: productList,
+                        useWideLayout: false,
+                        unitSelectionCubit: unitSelectionCubit,
+                      ),
+                      SizedBox(height: context.standardSpacing),
+                      _buildItemFooter(item, context, unitSelectionCubit),
+                    ],
+                  ),
+                );
+              },
+            )
+            : GridView.builder(
+              padding: EdgeInsets.all(context.standardSpacing),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxisCount,
+                childAspectRatio: aspectRatio,
+                crossAxisSpacing: context.standardSpacing,
+                mainAxisSpacing: context.standardSpacing,
               ),
+              itemCount: filteredItems.length,
+              itemBuilder: (context, index) {
+                final item = filteredItems[index];
+                final unitSelectionCubit = UnitSelectionCubit();
+                return Card(
+                  child: Padding(
+                    padding: context.responsivePadding,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ItemNameImgUnit(
+                          item: item,
+                          useWideLayout: context.isDesktop || context.isTablet,
+                          pUnits: productList,
+                          unitSelectionCubit: unitSelectionCubit,
+                        ),
+                        const Spacer(),
+                        Divider(color: Colors.grey.shade200),
+                        _buildItemFooter(item, context, unitSelectionCubit),
+                      ],
+                    ),
+                  ),
+                );
+              },
             );
-          },
-        );
+      },
+    );
   }
 
   Widget _buildItemFooter(

@@ -12,7 +12,7 @@ CategoryResponse _$CategoryResponseFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String?,
       units:
           (json['units'] as List<dynamic>?)
-              ?.map((e) => Unit.fromJson(e as Map<String, dynamic>))
+              ?.map((e) => CategoryUnit.fromJson(e as Map<String, dynamic>))
               .toList(),
     );
 
@@ -23,13 +23,13 @@ Map<String, dynamic> _$CategoryResponseToJson(CategoryResponse instance) =>
       'units': instance.units,
     };
 
-Unit _$UnitFromJson(Map<String, dynamic> json) => Unit(
+CategoryUnit _$UnitFromJson(Map<String, dynamic> json) => CategoryUnit(
   id: (json['id'] as num?)?.toInt(),
   name: json['name'] as String?,
   abbreviation: json['abbreviation'] as String?,
 );
 
-Map<String, dynamic> _$UnitToJson(Unit instance) => <String, dynamic>{
+Map<String, dynamic> _$UnitToJson(CategoryUnit instance) => <String, dynamic>{
   'id': instance.id,
   'name': instance.name,
   'abbreviation': instance.abbreviation,

@@ -24,7 +24,6 @@ class ProductUtils {
     required List<ProductResponse> items,
     required TextEditingController searchController,
     List<int>? selectedCategoryIds,
-    List<int>? selectedItemsFunctionIds,
     List<int>? selectedUnitIds,
   }) {
     String searchQuery = searchController.text.toLowerCase();
