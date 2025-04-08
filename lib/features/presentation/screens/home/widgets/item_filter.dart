@@ -103,7 +103,11 @@ class _ItemFilterState extends State<ItemFilter> {
               _selectedFunctionIds.isNotEmpty)
             IconButton(
               icon: const Icon(Icons.filter_alt_off),
-              onPressed: () {},
+              onPressed: () {
+                BlocProvider.of<ProductFilterCubit>(
+                  context,
+                ).resetFilter(widget.productList);
+              },
               tooltip: 'Clear all filters',
             ),
           IconButton(
@@ -216,6 +220,9 @@ class _ItemFilterState extends State<ItemFilter> {
                             BlocProvider.of<CategoryFilterSelectionCubit>(
                               context,
                             ).resetCategorySelection();
+                            BlocProvider.of<ProductFilterCubit>(
+                              context,
+                            ).resetFilter(widget.productList);
                           },
                           icon: Icon(Icons.close),
                         ),
@@ -265,11 +272,8 @@ class _ItemFilterState extends State<ItemFilter> {
                                   BlocProvider.of<ProductFilterCubit>(
                                     context,
                                   ).filterProduct(
-                                    widget.productList,
-                                    // searchController.text.toLowerCase(),
-                                    "",
-                                    category,
-                                    null,
+                                    products: widget.productList,
+                                    selectedCategory: category,
                                   );
                                 },
                                 backgroundColor: Colors.grey.shade200,
@@ -388,11 +392,9 @@ class _ItemFilterState extends State<ItemFilter> {
                               BlocProvider.of<ProductFilterCubit>(
                                 context,
                               ).filterProduct(
-                                widget.productList,
-                                // searchController.text.toLowerCase(),
-                                "",
-                                categorySelectionState.categoryResponse,
-                                null,
+                                products: widget.productList,
+                                selectedCategory:
+                                    categorySelectionState.categoryResponse,
                               );
                             },
                             backgroundColor: Colors.grey.shade200,
@@ -426,7 +428,14 @@ class _ItemFilterState extends State<ItemFilter> {
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
 
-          IconButton(onPressed: () {}, icon: Icon(Icons.close)),
+          IconButton(
+            onPressed: () {
+              BlocProvider.of<ProductFilterCubit>(
+                context,
+              ).resetFilter(widget.productList);
+            },
+            icon: Icon(Icons.close),
+          ),
         ],
       ),
       initiallyExpanded: false, // Start with Functions expanded

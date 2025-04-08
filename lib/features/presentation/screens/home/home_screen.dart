@@ -87,10 +87,8 @@ class _HomeScreenState extends State<HomeScreen> {
             break;
           case ProductStatus.loaded:
             BlocProvider.of<ProductFilterCubit>(context).filterProduct(
-              state.productResponse!,
-              searchController.text.toLowerCase(),
-              null,
-              null,
+              products: state.productResponse!,
+              searchQuery: searchController.text.toLowerCase(),
             );
             unitSelectionCubit.initializeDefaultUnits(state.productResponse!);
             break;
