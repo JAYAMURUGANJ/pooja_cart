@@ -20,15 +20,15 @@ import 'package:pooja_cart/features/domain/usecase/my_orders/get_my_orders_by_mo
 import 'package:pooja_cart/features/domain/usecase/place_order/create_place_order_usecase.dart';
 import 'package:pooja_cart/features/domain/usecase/product/get_products_usecase.dart';
 import 'package:pooja_cart/features/domain/usecase/units/get_units_usecase.dart';
-import 'package:pooja_cart/features/presentation/screens/confirm_order/bloc/place_order/place_order_bloc.dart';
-import 'package:pooja_cart/features/presentation/screens/home/bloc/category/category_bloc.dart';
-import 'package:pooja_cart/features/presentation/screens/home/bloc/product/product_bloc.dart';
-import 'package:pooja_cart/features/presentation/screens/home/bloc/unit/unit_bloc.dart';
+import 'package:pooja_cart/features/presentation/screens/customer/confirm_order/bloc/place_order/place_order_bloc.dart';
+import 'package:pooja_cart/features/presentation/screens/customer/home/bloc/category/category_bloc.dart';
+import 'package:pooja_cart/features/presentation/screens/customer/home/bloc/product/product_bloc.dart';
+import 'package:pooja_cart/features/presentation/screens/customer/home/bloc/unit/unit_bloc.dart';
 
 import '../core/network/dio_client.dart';
 import '../core/network/network_info.dart';
 import '../features/data/repository/category_repository_impl.dart';
-import '../features/presentation/screens/my_orders/bloc/my_orders/my_orders_bloc.dart';
+import '../features/presentation/screens/customer/my_orders/bloc/my_orders/my_orders_bloc.dart';
 
 final sl = GetIt.instance;
 

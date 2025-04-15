@@ -11,7 +11,8 @@ class AppScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: _appBar(context), body: child);
+    final isAdminPage = state.fullPath?.contains('admin') ?? false;
+    return Scaffold(appBar: isAdminPage ? null : _appBar(context), body: child);
   }
 
   PreferredSizeWidget _appBar(BuildContext context) {
