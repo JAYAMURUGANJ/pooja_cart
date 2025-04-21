@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:pooja_cart/features/presentation/screens/admin/add_new_item/widgets/add_new_item_form.dart';
 
 import '../../../common_widgets/nav_bar.dart';
 import 'widgets/dashboard_card.dart';
@@ -888,7 +888,13 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   // Navigation functions
   void _navigateToAddItemScreen(BuildContext context) {
-    context.go('/admin/add_product');
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (context) => AddNewItemForm(),
+    );
+    // context.go('/admin/add_product');
   }
 
   void _navigateToScanScreen() {
