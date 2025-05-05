@@ -27,9 +27,9 @@ class OrderItems {
   @JsonKey(name: "quantity")
   int? quantity;
   @JsonKey(name: "selling_price")
-  int? sellingPrice;
+  double? sellingPrice;
   @JsonKey(name: "mrp")
-  int? mrp;
+  double? mrp;
   @JsonKey(name: "conversion_factor")
   int? conversionFactor;
   @JsonKey(name: "unit_abbreviation")

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../domain/entities/order_items/order_items.dart';
 import '../../../../../common/helpers/order_calculation_helper.dart';
+import '../../../../../domain/entities/order_items/order_items.dart';
 
 class MobileCartFooter extends StatelessWidget {
   const MobileCartFooter({
@@ -20,7 +20,7 @@ class MobileCartFooter extends StatelessWidget {
     List<OrderItems> items = orderItems;
     int itemsCount = items.length;
     final calculator = OrderCalculationHelper(items);
-    int total = calculator.total;
+    double total = calculator.total;
     return Container(
       width: MediaQuery.of(context).size.width * 0.92,
       height: 60,

@@ -5,21 +5,21 @@ class OrderCalculationHelper {
 
   OrderCalculationHelper(this.items);
 
-  int get subtotal => items.fold(
+  double get subtotal => items.fold(
     0,
     (sum, item) => sum + ((item.mrp ?? 0) * (item.quantity ?? 0)),
   );
 
-  int get discount => items.fold(
+  double get discount => items.fold(
     0,
     (sum, item) =>
         sum +
         (((item.mrp ?? 0) - (item.sellingPrice ?? 0)) * (item.quantity ?? 0)),
   );
 
-  int get total => subtotal - discount;
+  double get total => subtotal - discount;
 
-  int get mrpTotal => items.fold(
+  double get mrpTotal => items.fold(
     0,
     (sum, item) => sum + ((item.mrp ?? 0) * (item.quantity ?? 0)),
   );

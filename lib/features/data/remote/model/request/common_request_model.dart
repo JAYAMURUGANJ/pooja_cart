@@ -4,6 +4,9 @@
 
 import 'dart:convert';
 
+import 'package:dio/dio.dart' show FormData, MultipartFile;
+import 'package:flutter/foundation.dart';
+
 import 'place_order_request.dart';
 
 CommonRequestModel commonRequestModelFromJson(String str) =>
@@ -16,8 +19,8 @@ class CommonRequestModel {
   final int? categoryId;
   final bool? isActive;
   final List<Translation>? translations;
-  final List<Unit>? units;
-  final List<Image>? images;
+  final List<ProductUnit>? units;
+  final List<ProductImage>? images;
   final PlaceOrderRequest? placeOrderRequest;
   final String? orderId;
   final String? mobileNo;
@@ -37,8 +40,8 @@ class CommonRequestModel {
     int? categoryId,
     bool? isActive,
     List<Translation>? translations,
-    List<Unit>? units,
-    List<Image>? images,
+    List<ProductUnit>? units,
+    List<ProductImage>? images,
     PlaceOrderRequest? placeOrderRequest,
     String? orderId,
     String? mobileNo,
@@ -66,12 +69,14 @@ class CommonRequestModel {
         units:
             json["units"] == null
                 ? []
-                : List<Unit>.from(json["units"]!.map((x) => Unit.fromJson(x))),
+                : List<ProductUnit>.from(
+                  json["units"]!.map((x) => ProductUnit.fromJson(x)),
+                ),
         images:
             json["images"] == null
                 ? []
-                : List<Image>.from(
-                  json["images"]!.map((x) => Image.fromJson(x)),
+                : List<ProductImage>.from(
+                  json["images"]!.map((x) => ProductImage.fromJson(x)),
                 ),
         placeOrderRequest:
             json["place_order_request"] == null
@@ -106,21 +111,40 @@ class CommonRequestModel {
   };
 }
 
-class Image {
+class ProductImage {
   final String? imageUrl;
   final bool? isPrimary;
   final int? displayOrder;
+  final String? filePath;
+  final Uint8List? bytes;
+  final String? fileName;
 
-  Image({this.imageUrl, this.isPrimary, this.displayOrder});
+  ProductImage({
+    this.imageUrl,
+    this.isPrimary,
+    this.displayOrder,
+    this.filePath,
+    this.bytes,
+    this.fileName,
+  });
 
-  Image copyWith({String? imageUrl, bool? isPrimary, int? displayOrder}) =>
-      Image(
-        imageUrl: imageUrl ?? this.imageUrl,
-        isPrimary: isPrimary ?? this.isPrimary,
-        displayOrder: displayOrder ?? this.displayOrder,
-      );
+  ProductImage copyWith({
+    String? imageUrl,
+    bool? isPrimary,
+    int? displayOrder,
+    String? filePath,
+    Uint8List? bytes,
+    String? fileName,
+  }) => ProductImage(
+    imageUrl: imageUrl ?? this.imageUrl,
+    isPrimary: isPrimary ?? this.isPrimary,
+    displayOrder: displayOrder ?? this.displayOrder,
+    filePath: filePath ?? this.filePath,
+    bytes: bytes ?? this.bytes,
+    fileName: fileName ?? this.fileName,
+  );
 
-  factory Image.fromJson(Map<String, dynamic> json) => Image(
+  factory ProductImage.fromJson(Map<String, dynamic> json) => ProductImage(
     imageUrl: json["image_url"],
     isPrimary: json["is_primary"],
     displayOrder: json["display_order"],
@@ -160,7 +184,7 @@ class Translation {
   };
 }
 
-class Unit {
+class ProductUnit {
   final int? unitId;
   final String? name;
   final String? abbreviation;
@@ -170,7 +194,7 @@ class Unit {
   final int? inStock;
   final bool? isDefault;
 
-  Unit({
+  ProductUnit({
     this.unitId,
     this.name,
     this.abbreviation,
@@ -181,7 +205,7 @@ class Unit {
     this.isDefault,
   });
 
-  Unit copyWith({
+  ProductUnit copyWith({
     int? unitId,
     String? name,
     String? abbreviation,
@@ -190,7 +214,7 @@ class Unit {
     int? sellingPrice,
     int? inStock,
     bool? isDefault,
-  }) => Unit(
+  }) => ProductUnit(
     unitId: unitId ?? this.unitId,
     name: name ?? this.name,
     abbreviation: abbreviation ?? this.abbreviation,
@@ -201,7 +225,7 @@ class Unit {
     isDefault: isDefault ?? this.isDefault,
   );
 
-  factory Unit.fromJson(Map<String, dynamic> json) => Unit(
+  factory ProductUnit.fromJson(Map<String, dynamic> json) => ProductUnit(
     unitId: json["unit_id"],
     name: json["name"],
     abbreviation: json["abbreviation"],
@@ -222,4 +246,59 @@ class Unit {
     "in_stock": inStock,
     "is_default": isDefault,
   };
+}
+
+extension FormDataBuilder on CommonRequestModel {
+  Future<FormData> toFormData() async {
+    final files = await Future.wait(
+      images
+              ?.where(
+                (img) => kIsWeb ? img.bytes != null : img.filePath != null,
+              )
+              .map((img) async {
+                if (kIsWeb) {
+                  return MultipartFile.fromBytes(
+                    img.bytes!,
+                    filename: img.fileName ?? 'upload.jpg',
+                  );
+                } else {
+                  return await MultipartFile.fromFile(
+                    img.filePath!,
+                    filename: img.filePath!.split("/").last,
+                  );
+                }
+              })
+              .toList() ??
+          [],
+    );
+
+    final imageMetadata =
+        images
+            ?.map(
+              (img) => {
+                "image_url": img.imageUrl,
+                "is_primary": img.isPrimary ?? false,
+                "display_order": img.displayOrder ?? 0,
+              },
+            )
+            .toList() ??
+        [];
+
+    return FormData.fromMap({
+      if (categoryId != null) 'category_id': categoryId.toString(),
+      if (isActive != null) 'is_active': isActive.toString(),
+      if (orderId != null) 'order_id': orderId,
+      if (mobileNo != null) 'mobile_no': mobileNo,
+      if (translations != null)
+        'translations': jsonEncode(
+          translations!.map((e) => e.toJson()).toList(),
+        ),
+      if (units != null)
+        'units': jsonEncode(units!.map((e) => e.toJson()).toList()),
+      if (placeOrderRequest != null)
+        'place_order_request': jsonEncode(placeOrderRequest!.toJson()),
+      if (imageMetadata.isNotEmpty) 'images': jsonEncode(imageMetadata),
+      if (files.isNotEmpty) 'files': files,
+    });
+  }
 }

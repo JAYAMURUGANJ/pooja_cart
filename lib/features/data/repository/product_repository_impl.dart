@@ -18,9 +18,17 @@ class ProductRepositoryImpl implements ProductRepository {
   @override
   Future<Either<Failure, ProductResponse>> createProduct(
     CommonRequestModel request,
-  ) {
-    // TODO: implement createProduct
-    throw UnimplementedError();
+  ) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final response = await remoteDataSource.createProduct(request);
+        return Right(response);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(message: e.message));
+      }
+    } else {
+      return const Left(NetworkFailure(message: 'No internet connection'));
+    }
   }
 
   @override

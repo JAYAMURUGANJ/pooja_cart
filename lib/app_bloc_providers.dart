@@ -13,6 +13,7 @@ import 'package:pooja_cart/features/presentation/screens/customer/my_orders/bloc
 import 'package:pooja_cart/features/presentation/ui/bloc/theme/theme_cubit.dart';
 
 import 'di/di_module.dart';
+import 'features/presentation/screens/admin/add_new_item/cubit/add_units/add_units_cubit.dart';
 import 'features/presentation/screens/customer/home/cubit/product_filter/product_filter_cubit.dart';
 
 class AppBlocProviders {
@@ -21,7 +22,7 @@ class AppBlocProviders {
       BlocProvider<ThemeCubit>(create: (context) => ThemeCubit()),
       BlocProvider<UnitBloc>(create: (context) => UnitBloc(sl())),
       BlocProvider<CategoryBloc>(create: (context) => CategoryBloc(sl())),
-      BlocProvider<ProductBloc>(create: (context) => ProductBloc(sl())),
+      BlocProvider<ProductBloc>(create: (context) => ProductBloc(sl(), sl())),
       BlocProvider<UnitSelectionCubit>(
         create: (context) => UnitSelectionCubit(),
       ),
@@ -38,6 +39,7 @@ class AppBlocProviders {
         create: (context) => ProductFilterCubit(),
       ),
       BlocProvider<ImagePickerCubit>(create: (context) => ImagePickerCubit()),
+      BlocProvider<AddUnitsCubit>(create: (context) => AddUnitsCubit()),
     ];
   }
 }

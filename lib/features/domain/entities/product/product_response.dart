@@ -25,7 +25,7 @@ class ProductResponse {
   @JsonKey(name: "name")
   final String? name;
   @JsonKey(name: "units")
-  final List<Unit>? units;
+  final List<ProductUnit>? units;
   @JsonKey(name: "images")
   final List<Image>? images;
 
@@ -63,15 +63,15 @@ class Image {
 }
 
 @JsonSerializable()
-class Unit {
+class ProductUnit {
   @JsonKey(name: "unit_id")
   final int? unitId;
   @JsonKey(name: "conversion_factor")
   final int? conversionFactor;
   @JsonKey(name: "mrp")
-  final int? mrp;
+  final double? mrp;
   @JsonKey(name: "selling_price")
-  final int? sellingPrice;
+  final double? sellingPrice;
   @JsonKey(name: "is_default")
   final int? isDefault;
   @JsonKey(name: "in_stock")
@@ -81,7 +81,7 @@ class Unit {
   @JsonKey(name: "abbreviation")
   final String? abbreviation;
 
-  Unit({
+  ProductUnit({
     this.unitId,
     this.conversionFactor,
     this.mrp,
@@ -92,7 +92,8 @@ class Unit {
     this.abbreviation,
   });
 
-  factory Unit.fromJson(Map<String, dynamic> json) => _$UnitFromJson(json);
+  factory ProductUnit.fromJson(Map<String, dynamic> json) =>
+      _$UnitFromJson(json);
 
   Map<String, dynamic> toJson() => _$UnitToJson(this);
 }

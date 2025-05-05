@@ -14,7 +14,7 @@ ProductResponse _$ProductResponseFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String?,
       units:
           (json['units'] as List<dynamic>?)
-              ?.map((e) => Unit.fromJson(e as Map<String, dynamic>))
+              ?.map((e) => ProductUnit.fromJson(e as Map<String, dynamic>))
               .toList(),
       images:
           (json['images'] as List<dynamic>?)
@@ -46,18 +46,18 @@ Map<String, dynamic> _$ImageToJson(Image instance) => <String, dynamic>{
   'display_order': instance.displayOrder,
 };
 
-Unit _$UnitFromJson(Map<String, dynamic> json) => Unit(
+ProductUnit _$UnitFromJson(Map<String, dynamic> json) => ProductUnit(
   unitId: (json['unit_id'] as num?)?.toInt(),
   conversionFactor: (json['conversion_factor'] as num?)?.toInt(),
-  mrp: (json['mrp'] as num?)?.toInt(),
-  sellingPrice: (json['selling_price'] as num?)?.toInt(),
+  mrp: (json['mrp'] as num?)?.toDouble(),
+  sellingPrice: (json['selling_price'] as num?)?.toDouble(),
   isDefault: (json['is_default'] as num?)?.toInt(),
   inStock: (json['in_stock'] as num?)?.toInt(),
   name: json['name'] as String?,
   abbreviation: json['abbreviation'] as String?,
 );
 
-Map<String, dynamic> _$UnitToJson(Unit instance) => <String, dynamic>{
+Map<String, dynamic> _$UnitToJson(ProductUnit instance) => <String, dynamic>{
   'unit_id': instance.unitId,
   'conversion_factor': instance.conversionFactor,
   'mrp': instance.mrp,

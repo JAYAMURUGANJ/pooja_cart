@@ -181,14 +181,14 @@ class _ItemNameImgUnitState extends State<ItemNameImgUnit> {
 
             final selectedUnit =
                 state.selectedUnits[widget.item.id] ?? defaultUnit;
-            return DropdownButton<Unit>(
+            return DropdownButton<ProductUnit>(
               isDense: true,
               isExpanded: true,
               underline: const SizedBox(),
               value: selectedUnit,
               items:
                   widget.item.units!.map((unit) {
-                    return DropdownMenuItem<Unit>(
+                    return DropdownMenuItem<ProductUnit>(
                       value: unit,
                       child: Text(
                         "${unit.conversionFactor} ${unit.abbreviation.toString()}",
@@ -201,7 +201,7 @@ class _ItemNameImgUnitState extends State<ItemNameImgUnit> {
                       ),
                     );
                   }).toList(),
-              onChanged: (Unit? selectedUnit) {
+              onChanged: (ProductUnit? selectedUnit) {
                 // BlocProvider.of<UnitSelectionCubit>(
                 //   context,
                 // ).selectUnit(widget.item.id!, selectedUnit!);

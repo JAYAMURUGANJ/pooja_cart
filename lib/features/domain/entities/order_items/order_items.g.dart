@@ -11,8 +11,8 @@ OrderItems _$OrderItemsFromJson(Map<String, dynamic> json) => OrderItems(
   name: json['name'] as String?,
   unitId: (json['unit_id'] as num?)?.toInt(),
   quantity: (json['quantity'] as num?)?.toInt(),
-  sellingPrice: (json['selling_price'] as num?)?.toInt(),
-  mrp: (json['mrp'] as num?)?.toInt(),
+  sellingPrice: (json['selling_price'] as num?)?.toDouble(),
+  mrp: (json['mrp'] as num?)?.toDouble(),
   conversionFactor: (json['conversion_factor'] as num?)?.toInt(),
   unitAbbreviation: json['unit_abbreviation'] as String?,
 );

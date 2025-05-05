@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pooja_cart/utils/responsive_utils.dart';
 
-import 'widgets/add_new_item_form.dart';
+import 'widgets/add_new_form/add_new_item_form.dart';
 import 'widgets/available_items_widget.dart';
 
 class AddNewItemScreen extends StatefulWidget {

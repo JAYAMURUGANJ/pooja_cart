@@ -139,6 +139,7 @@ class _ItemFilterState extends State<ItemFilter> {
                               child: CircularProgressIndicator(),
                             );
                           case CategoryStatus.loaded:
+                          
                           case CategoryStatus.error:
                             return Center(child: Text(state.errorMsg!));
                         }

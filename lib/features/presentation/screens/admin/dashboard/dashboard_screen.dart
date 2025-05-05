@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:pooja_cart/features/presentation/screens/admin/add_new_item/widgets/add_new_item_form.dart';
+import 'package:pooja_cart/features/presentation/screens/admin/add_new_item/widgets/add_new_form/add_new_item_form.dart';
 
 import '../../../common_widgets/nav_bar.dart';
 import 'widgets/dashboard_card.dart';

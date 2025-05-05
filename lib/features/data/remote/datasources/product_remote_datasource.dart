@@ -8,6 +8,7 @@ import '../model/response/product/product_response_model.dart';
 
 abstract class ProductRemoteDatasource {
   Future<List<ProductResponseModel>> getProducts(CommonRequestModel request);
+  Future<ProductResponseModel> createProduct(CommonRequestModel request);
 }
 
 class ProductRemoteDatasourceImpl implements ProductRemoteDatasource {
@@ -19,10 +20,29 @@ class ProductRemoteDatasourceImpl implements ProductRemoteDatasource {
     CommonRequestModel request,
   ) async {
     try {
-      final response = await dioClient.get(path: ApiRoutes.getProducts);
+      final response = await dioClient.get(path: ApiRoutes.products);
       return (response.data as List)
           .map((e) => ProductResponseModel.fromJson(e))
           .toList();
+    } on DioException catch (e) {
+      throw ServerException(
+        message: e.response?.data['message'] ?? 'Something went wrong',
+      );
+    }
+  }
+
+  @override
+  Future<ProductResponseModel> createProduct(CommonRequestModel request) async {
+    try {
+      final response = await dioClient.post(
+        path: ApiRoutes.products,
+        data: request.toFormData(),
+        options:
+            request is FormData
+                ? Options(contentType: 'multipart/form-data')
+                : null,
+      );
+      return ProductResponseModel.fromJson(response.data);
     } on DioException catch (e) {
       throw ServerException(
         message: e.response?.data['message'] ?? 'Something went wrong',

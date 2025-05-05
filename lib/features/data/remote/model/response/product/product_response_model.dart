@@ -31,7 +31,9 @@ class ProductResponseModel extends ProductResponse {
         units:
             json["units"] == null
                 ? []
-                : List<Unit>.from(json["units"]!.map((x) => Unit.fromJson(x))),
+                : List<ProductUnit>.from(
+                  json["units"]!.map((x) => ProductUnit.fromJson(x)),
+                ),
         images:
             json["images"] == null
                 ? []
