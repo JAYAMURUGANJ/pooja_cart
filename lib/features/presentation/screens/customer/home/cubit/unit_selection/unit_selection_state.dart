@@ -4,7 +4,7 @@ enum UnitSelectionStatus { unSelected, selected, error }
 
 class UnitSelectionState {
   final UnitSelectionStatus status;
-  final Map<int, ProductUnit> selectedUnits;
+  final Map<int, ProductUnitResponse> selectedUnits;
   final String? error;
 
   const UnitSelectionState({
@@ -15,7 +15,7 @@ class UnitSelectionState {
 
   UnitSelectionState copyWith({
     UnitSelectionStatus? status,
-    Map<int, ProductUnit>? selectedUnits,
+    Map<int, ProductUnitResponse>? selectedUnits,
     String? error,
   }) {
     return UnitSelectionState(

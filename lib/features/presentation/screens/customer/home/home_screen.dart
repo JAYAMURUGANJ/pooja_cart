@@ -90,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
               products: state.productResponse!,
               searchQuery: searchController.text.toLowerCase(),
             );
-            unitSelectionCubit.initializeDefaultUnits(state.productResponse!);
+            // unitSelectionCubit.initializeDefaultUnits(state.productResponse!);
             break;
           default:
         }

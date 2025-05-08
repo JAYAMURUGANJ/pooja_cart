@@ -27,10 +27,14 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
             status: ProductStatus.error,
             errorMsg: failure.message,
           ),
-          (getProductResponse) => state.copyWith(
-            status: ProductStatus.loaded,
-            productResponse: getProductResponse,
-          ),
+          (getProductResponse) {
+            print("results in  ==> $getProductResponse");
+
+            return state.copyWith(
+              status: ProductStatus.loaded,
+              productResponse: getProductResponse,
+            );
+          },
         ),
       );
     } catch (e) {

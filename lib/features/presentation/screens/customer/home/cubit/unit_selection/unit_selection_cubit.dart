@@ -7,7 +7,7 @@ class UnitSelectionCubit extends Cubit<UnitSelectionState> {
   UnitSelectionCubit() : super(UnitSelectionState());
 
   void initializeDefaultUnits(List<ProductResponse> products) {
-    final Map<int, ProductUnit> defaultUnits = {};
+    final Map<int, ProductUnitResponse> defaultUnits = {};
 
     for (var product in products) {
       final defaultUnit = product.units!.firstWhere(
@@ -24,8 +24,10 @@ class UnitSelectionCubit extends Cubit<UnitSelectionState> {
     );
   }
 
-  void selectUnit(int productId, ProductUnit unit) {
-    final updatedSelections = Map<int, ProductUnit>.from(state.selectedUnits);
+  void selectUnit(int productId, ProductUnitResponse unit) {
+    final updatedSelections = Map<int, ProductUnitResponse>.from(
+      state.selectedUnits,
+    );
     updatedSelections[productId] = unit;
 
     emit(
@@ -37,7 +39,9 @@ class UnitSelectionCubit extends Cubit<UnitSelectionState> {
   }
 
   void resetUnitSelection(int productId) {
-    final updatedSelections = Map<int, ProductUnit>.from(state.selectedUnits);
+    final updatedSelections = Map<int, ProductUnitResponse>.from(
+      state.selectedUnits,
+    );
     updatedSelections.remove(productId);
 
     emit(

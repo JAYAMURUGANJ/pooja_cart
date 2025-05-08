@@ -2,17 +2,17 @@ import 'package:bloc/bloc.dart';
 
 import '../../../../../../domain/entities/product/product_response.dart';
 
-class AddUnitsCubit extends Cubit<List<ProductUnit>> {
+class AddUnitsCubit extends Cubit<List<ProductUnitResponse>> {
   AddUnitsCubit() : super([]);
 
-  void addUnit(ProductUnit unit) {
-    final updatedUnits = List<ProductUnit>.from(state);
+  void addUnit(ProductUnitResponse unit) {
+    final updatedUnits = List<ProductUnitResponse>.from(state);
     updatedUnits.add(unit);
     emit(updatedUnits);
   }
 
-  void removeUnit(ProductUnit unit) {
-    final updatedUnits = List<ProductUnit>.from(state);
+  void removeUnit(ProductUnitResponse unit) {
+    final updatedUnits = List<ProductUnitResponse>.from(state);
     updatedUnits.remove(unit);
     emit(updatedUnits);
   }
@@ -22,7 +22,7 @@ class AddUnitsCubit extends Cubit<List<ProductUnit>> {
     emit([]);
   }
 
-  List<ProductUnit> getUnits() {
+  List<ProductUnitResponse> getUnits() {
     return state;
   }
 }

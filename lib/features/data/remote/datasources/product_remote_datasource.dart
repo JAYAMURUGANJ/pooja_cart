@@ -36,11 +36,8 @@ class ProductRemoteDatasourceImpl implements ProductRemoteDatasource {
     try {
       final response = await dioClient.post(
         path: ApiRoutes.products,
-        data: request.toFormData(),
-        options:
-            request is FormData
-                ? Options(contentType: 'multipart/form-data')
-                : null,
+        options: Options(headers: {'Content-Type': 'multipart/form-data'}),
+        data: await request.toFormData(),
       );
       return ProductResponseModel.fromJson(response.data);
     } on DioException catch (e) {

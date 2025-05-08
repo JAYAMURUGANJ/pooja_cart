@@ -11,7 +11,7 @@ import '../../../../../../../data/remote/model/request/common_request_model.dart
 import '../../../../../../../domain/entities/product/product_response.dart';
 
 class AddUnitsWidget extends StatefulWidget {
-  final Function(List<ProductUnit>) onUnitAdded;
+  final Function(List<ProductUnitResponse>) onUnitAdded;
   const AddUnitsWidget({super.key, required this.onUnitAdded});
 
   @override
@@ -39,7 +39,7 @@ class _AddUnitsWidgetState extends State<AddUnitsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AddUnitsCubit, List<ProductUnit>>(
+    return BlocConsumer<AddUnitsCubit, List<ProductUnitResponse>>(
       listener: (context, addedUnits) {
         widget.onUnitAdded(addedUnits);
       },
@@ -250,7 +250,7 @@ class _AddUnitsWidgetState extends State<AddUnitsWidget> {
                                       BlocProvider.of<AddUnitsCubit>(
                                         context,
                                       ).addUnit(
-                                        ProductUnit(
+                                        ProductUnitResponse(
                                           unitId: selectedUnit?.id,
                                           name: selectedUnit?.name,
                                           abbreviation:

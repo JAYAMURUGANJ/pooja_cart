@@ -14,7 +14,9 @@ ProductResponse _$ProductResponseFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String?,
       units:
           (json['units'] as List<dynamic>?)
-              ?.map((e) => ProductUnit.fromJson(e as Map<String, dynamic>))
+              ?.map(
+                (e) => ProductUnitResponse.fromJson(e as Map<String, dynamic>),
+              )
               .toList(),
       images:
           (json['images'] as List<dynamic>?)
@@ -46,24 +48,26 @@ Map<String, dynamic> _$ImageToJson(Image instance) => <String, dynamic>{
   'display_order': instance.displayOrder,
 };
 
-ProductUnit _$UnitFromJson(Map<String, dynamic> json) => ProductUnit(
-  unitId: (json['unit_id'] as num?)?.toInt(),
-  conversionFactor: (json['conversion_factor'] as num?)?.toInt(),
-  mrp: (json['mrp'] as num?)?.toDouble(),
-  sellingPrice: (json['selling_price'] as num?)?.toDouble(),
-  isDefault: (json['is_default'] as num?)?.toInt(),
-  inStock: (json['in_stock'] as num?)?.toInt(),
-  name: json['name'] as String?,
-  abbreviation: json['abbreviation'] as String?,
-);
+ProductUnitResponse _$UnitFromJson(Map<String, dynamic> json) =>
+    ProductUnitResponse(
+      unitId: (json['unit_id'] as num?)?.toInt(),
+      conversionFactor: (json['conversion_factor'] as num?)?.toInt(),
+      mrp: (json['mrp'] as num?)?.toDouble(),
+      sellingPrice: (json['selling_price'] as num?)?.toDouble(),
+      isDefault: (json['is_default'] as num?)?.toInt(),
+      inStock: (json['in_stock'] as num?)?.toInt(),
+      name: json['name'] as String?,
+      abbreviation: json['abbreviation'] as String?,
+    );
 
-Map<String, dynamic> _$UnitToJson(ProductUnit instance) => <String, dynamic>{
-  'unit_id': instance.unitId,
-  'conversion_factor': instance.conversionFactor,
-  'mrp': instance.mrp,
-  'selling_price': instance.sellingPrice,
-  'is_default': instance.isDefault,
-  'in_stock': instance.inStock,
-  'name': instance.name,
-  'abbreviation': instance.abbreviation,
-};
+Map<String, dynamic> _$UnitToJson(ProductUnitResponse instance) =>
+    <String, dynamic>{
+      'unit_id': instance.unitId,
+      'conversion_factor': instance.conversionFactor,
+      'mrp': instance.mrp,
+      'selling_price': instance.sellingPrice,
+      'is_default': instance.isDefault,
+      'in_stock': instance.inStock,
+      'name': instance.name,
+      'abbreviation': instance.abbreviation,
+    };

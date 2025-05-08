@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pooja_cart/features/domain/entities/product/product_response.dart'
-    show ProductUnit;
+    show ProductUnitResponse;
 import 'package:pooja_cart/features/presentation/common_widgets/extensions.dart';
 import 'package:pooja_cart/features/presentation/screens/admin/add_new_item/widgets/add_new_form/components/add_units_widget.dart';
 import 'package:pooja_cart/features/presentation/screens/admin/add_new_item/widgets/add_new_form/components/select_category_widget.dart';
@@ -14,7 +14,7 @@ import 'package:pooja_cart/features/presentation/screens/customer/home/bloc/prod
 import 'package:pooja_cart/features/presentation/screens/customer/home/bloc/unit/unit_bloc.dart';
 
 import '../../../../../../data/remote/model/request/common_request_model.dart'
-    show CommonRequestModel, ProductImage, Translation;
+    show CommonRequestModel, ProductImage, ProductUnit, Translation;
 import '../../../../../../domain/entities/category/category_response.dart';
 import '../../../../customer/home/bloc/category/category_bloc.dart';
 import '../../cubit/image_picker/image_picker_cubit.dart';
@@ -31,7 +31,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
   final TextEditingController _englishNameController = TextEditingController();
   final TextEditingController _tamilNameController = TextEditingController();
   final categoryNotifier = ValueNotifier<CategoryResponse?>(null);
-  final unitNotifier = ValueNotifier<List<ProductUnit>?>(null);
+  final unitNotifier = ValueNotifier<List<ProductUnitResponse>?>(null);
 
   @override
   void initState() {
@@ -144,7 +144,8 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                         isActive: true,
                         images: [
                           ProductImage(
-                            filePath: xFile.path,
+                            bytes: await convertImageToBytes(xFile),
+                            filePath: xFile.name,
                             isPrimary: true,
                             displayOrder: 1,
                           ),
@@ -159,7 +160,19 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                             name: _tamilNameController.text,
                           ),
                         ],
-                        units: [],
+                        units:
+                            unitNotifier.value!.map((unit) {
+                              return ProductUnit(
+                                unitId: unit.unitId,
+                                name: unit.name,
+                                abbreviation: unit.abbreviation,
+                                conversionFactor: unit.conversionFactor,
+                                sellingPrice: unit.sellingPrice,
+                                mrp: unit.mrp,
+                                inStock: unit.inStock,
+                                isDefault: unit.isDefault,
+                              );
+                            }).toList(),
                       ),
                     ),
                   );
@@ -306,5 +319,10 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
         );
       },
     );
+  }
+
+  Future<Uint8List> convertImageToBytes(XFile pickedFile) async {
+    // Read as bytes directly from XFile (works on Web & Mobile)
+    return await pickedFile.readAsBytes();
   }
 }

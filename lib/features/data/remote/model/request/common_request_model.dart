@@ -3,6 +3,7 @@
 //     final commonRequestModel = commonRequestModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'dart:io' show File;
 
 import 'package:dio/dio.dart' show FormData, MultipartFile;
 import 'package:flutter/foundation.dart';
@@ -118,6 +119,7 @@ class ProductImage {
   final String? filePath;
   final Uint8List? bytes;
   final String? fileName;
+  final String? base64String;
 
   ProductImage({
     this.imageUrl,
@@ -126,6 +128,7 @@ class ProductImage {
     this.filePath,
     this.bytes,
     this.fileName,
+    this.base64String,
   });
 
   ProductImage copyWith({
@@ -135,6 +138,7 @@ class ProductImage {
     String? filePath,
     Uint8List? bytes,
     String? fileName,
+    String? base64String,
   }) => ProductImage(
     imageUrl: imageUrl ?? this.imageUrl,
     isPrimary: isPrimary ?? this.isPrimary,
@@ -142,18 +146,27 @@ class ProductImage {
     filePath: filePath ?? this.filePath,
     bytes: bytes ?? this.bytes,
     fileName: fileName ?? this.fileName,
+    base64String: base64String ?? this.base64String,
   );
 
   factory ProductImage.fromJson(Map<String, dynamic> json) => ProductImage(
     imageUrl: json["image_url"],
     isPrimary: json["is_primary"],
     displayOrder: json["display_order"],
+    filePath: json["file_path"],
+    bytes: json["bytes"] != null ? Uint8List.fromList(json["bytes"]) : null,
+    fileName: json["file_name"],
+    base64String: json["base64_string"],
   );
 
   Map<String, dynamic> toJson() => {
     "image_url": imageUrl,
     "is_primary": isPrimary,
     "display_order": displayOrder,
+    "file_path": filePath,
+    "bytes": bytes,
+    "file_name": fileName,
+    "base64_string": base64String,
   };
 }
 
@@ -189,10 +202,10 @@ class ProductUnit {
   final String? name;
   final String? abbreviation;
   final int? conversionFactor;
-  final int? mrp;
-  final int? sellingPrice;
+  final double? mrp;
+  final double? sellingPrice;
   final int? inStock;
-  final bool? isDefault;
+  final int? isDefault;
 
   ProductUnit({
     this.unitId,
@@ -210,10 +223,10 @@ class ProductUnit {
     String? name,
     String? abbreviation,
     int? conversionFactor,
-    int? mrp,
-    int? sellingPrice,
+    double? mrp,
+    double? sellingPrice,
     int? inStock,
-    bool? isDefault,
+    int? isDefault,
   }) => ProductUnit(
     unitId: unitId ?? this.unitId,
     name: name ?? this.name,
@@ -250,55 +263,63 @@ class ProductUnit {
 
 extension FormDataBuilder on CommonRequestModel {
   Future<FormData> toFormData() async {
-    final files = await Future.wait(
-      images
-              ?.where(
-                (img) => kIsWeb ? img.bytes != null : img.filePath != null,
-              )
-              .map((img) async {
-                if (kIsWeb) {
-                  return MultipartFile.fromBytes(
-                    img.bytes!,
-                    filename: img.fileName ?? 'upload.jpg',
-                  );
-                } else {
-                  return await MultipartFile.fromFile(
-                    img.filePath!,
-                    filename: img.filePath!.split("/").last,
-                  );
-                }
-              })
-              .toList() ??
-          [],
-    );
-
-    final imageMetadata =
+    try {
+      final files = await Future.wait(
         images
-            ?.map(
-              (img) => {
-                "image_url": img.imageUrl,
-                "is_primary": img.isPrimary ?? false,
-                "display_order": img.displayOrder ?? 0,
-              },
-            )
-            .toList() ??
-        [];
+                ?.where(
+                  (img) => kIsWeb ? img.bytes != null : img.filePath != null,
+                )
+                .map((img) async {
+                  if (kIsWeb) {
+                    return MultipartFile.fromBytes(
+                      img.bytes!,
+                      filename:
+                          img.fileName ??
+                          'upload_${DateTime.now().millisecondsSinceEpoch}.jpg',
+                    );
+                  } else {
+                    final file = File(img.filePath!);
+                    return await MultipartFile.fromFile(
+                      img.filePath!,
+                      filename: img.fileName ?? file.path.split('/').last,
+                    );
+                  }
+                })
+                .toList() ??
+            [],
+      );
 
-    return FormData.fromMap({
-      if (categoryId != null) 'category_id': categoryId.toString(),
-      if (isActive != null) 'is_active': isActive.toString(),
-      if (orderId != null) 'order_id': orderId,
-      if (mobileNo != null) 'mobile_no': mobileNo,
-      if (translations != null)
-        'translations': jsonEncode(
-          translations!.map((e) => e.toJson()).toList(),
-        ),
-      if (units != null)
-        'units': jsonEncode(units!.map((e) => e.toJson()).toList()),
-      if (placeOrderRequest != null)
-        'place_order_request': jsonEncode(placeOrderRequest!.toJson()),
-      if (imageMetadata.isNotEmpty) 'images': jsonEncode(imageMetadata),
-      if (files.isNotEmpty) 'files': files,
-    });
+      final imageMetadata =
+          images
+              ?.where((img) => img.imageUrl != null)
+              .map(
+                (img) => {
+                  "image_url": img.imageUrl!,
+                  "is_primary": img.isPrimary ?? false,
+                  "display_order": img.displayOrder ?? 0,
+                },
+              )
+              .toList() ??
+          [];
+
+      return FormData.fromMap({
+        if (categoryId != null) 'category_id': categoryId,
+        if (isActive != null) 'is_active': isActive,
+        if (orderId != null) 'order_id': orderId,
+        if (mobileNo != null) 'mobile_no': mobileNo,
+        if (translations != null)
+          'translations': jsonEncode(
+            translations!.map((e) => e.toJson()).toList(),
+          ),
+        if (units != null)
+          'units': jsonEncode(units!.map((e) => e.toJson()).toList()),
+        if (placeOrderRequest != null)
+          'place_order_request': jsonEncode(placeOrderRequest!.toJson()),
+        if (imageMetadata.isNotEmpty) 'images': jsonEncode(imageMetadata),
+        if (files.isNotEmpty) 'files': files,
+      });
+    } catch (e) {
+      throw Exception('Failed to create FormData: $e');
+    }
   }
 }
