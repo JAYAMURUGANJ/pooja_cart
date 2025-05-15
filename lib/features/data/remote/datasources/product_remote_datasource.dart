@@ -20,7 +20,10 @@ class ProductRemoteDatasourceImpl implements ProductRemoteDatasource {
     CommonRequestModel request,
   ) async {
     try {
-      final response = await dioClient.get(path: ApiRoutes.products);
+      final response = await dioClient.get(
+        path: ApiRoutes.products,
+        queryParameters: {"page": 1, "limit": 20},
+      );
       return (response.data as List)
           .map((e) => ProductResponseModel.fromJson(e))
           .toList();

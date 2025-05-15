@@ -41,16 +41,14 @@ class ProductRepositoryImpl implements ProductRepository {
   Future<Either<Failure, List<ProductResponse>>> getProduct(
     CommonRequestModel getRequest,
   ) async {
-    print("inside repository");
     if (await networkInfo.isConnected) {
       try {
-        final response = await remoteDataSource.getProducts(getRequest);
+        final response = await remoteDataSource.getProducts(getRequest,);
         return Right(response);
       } on ServerException catch (e) {
         return Left(ServerFailure(message: e.message));
       }
     } else {
-      print("inside repository else");
       return const Left(NetworkFailure(message: 'No internet connection'));
     }
   }

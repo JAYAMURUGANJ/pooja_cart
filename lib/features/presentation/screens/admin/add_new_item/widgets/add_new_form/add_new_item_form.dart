@@ -14,7 +14,7 @@ import 'package:pooja_cart/features/presentation/screens/customer/home/bloc/prod
 import 'package:pooja_cart/features/presentation/screens/customer/home/bloc/unit/unit_bloc.dart';
 
 import '../../../../../../data/remote/model/request/common_request_model.dart'
-    show CommonRequestModel, ProductImage, ProductUnit, Translation;
+    show CommonRequestModel, ProductUnit, Translation;
 import '../../../../../../domain/entities/category/category_response.dart';
 import '../../../../customer/home/bloc/category/category_bloc.dart';
 import '../../cubit/image_picker/image_picker_cubit.dart';
@@ -93,7 +93,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                     spacing: 20,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      _buildImagePicker(xFile, context),
+                      // _buildImagePicker(xFile, context),
                       SelectCategoryWidget(
                         onCategorySelected: (selectedCategory) {
                           categoryNotifier.value = selectedCategory;
@@ -121,11 +121,11 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
             child: ElevatedButton(
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
-                  if (xFile == null) {
-                    return context.showSnackBar(
-                      message: 'Please select an image',
-                    );
-                  }
+                  // if (xFile == null) {
+                  //   return context.showSnackBar(
+                  //     message: 'Please select an image',
+                  //   );
+                  // }
                   if (categoryNotifier.value == null) {
                     return context.showSnackBar(
                       message: 'Please select a category',
@@ -142,14 +142,14 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
                       CommonRequestModel(
                         categoryId: categoryNotifier.value!.id,
                         isActive: true,
-                        images: [
-                          ProductImage(
-                            bytes: await convertImageToBytes(xFile),
-                            filePath: xFile.name,
-                            isPrimary: true,
-                            displayOrder: 1,
-                          ),
-                        ],
+                        // images: [
+                        //   ProductImage(
+                        //     bytes: await convertImageToBytes(xFile),
+                        //     filePath: xFile.name,
+                        //     isPrimary: true,
+                        //     displayOrder: 1,
+                        //   ),
+                        // ],
                         translations: [
                           Translation(
                             lang: "en",
