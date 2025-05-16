@@ -1,6 +1,5 @@
 import 'package:go_router/go_router.dart';
 import 'package:pooja_cart/features/domain/entities/order_items/order_items.dart';
-import 'package:pooja_cart/features/presentation/screens/admin/dashboard/dashboard_screen.dart';
 import 'package:pooja_cart/features/presentation/screens/customer/home/home_screen.dart';
 import 'package:pooja_cart/features/presentation/screens/customer/my_orders/my_orders_screen.dart';
 import 'package:pooja_cart/features/presentation/screens/customer/order_summary/order_summary_screen.dart';
@@ -8,11 +7,12 @@ import 'package:pooja_cart/features/presentation/screens/customer/profile/profil
 
 import 'features/presentation/common_widgets/app_scaffold.dart';
 import 'features/presentation/screens/admin/add_new_item/add_new_item_screen.dart';
+import 'features/presentation/screens/admin/dashboard/admin_dashboard.dart';
 import 'features/presentation/screens/customer/confirm_order/confirm_order_screen.dart';
 import 'features/presentation/screens/customer/contact/contact_screen.dart';
 
 final GoRouter router = GoRouter(
-  initialLocation: '/',
+  initialLocation: '/admin',
   routes: [
     ShellRoute(
       builder: (context, state, child) {
@@ -59,8 +59,9 @@ final GoRouter router = GoRouter(
         GoRoute(
           path: '/admin',
           pageBuilder:
-              (context, state) =>
-                  NoTransitionPage(child: const DashboardScreen()),
+              (context, state) => NoTransitionPage(
+                child: AdminDashboard() /* const DashboardScreen() */,
+              ),
           routes: [
             GoRoute(
               path: '/add_product',

@@ -86,7 +86,7 @@ class WebNavBar extends StatelessWidget {
         _buildNavItem(context, 'Dashboard', '/dashboard', Icons.dashboard),
         _buildNavItem(context, 'Inventory', '/inventory', Icons.inventory),
         _buildNavItem(context, 'Orders', '/orders', Icons.shopping_cart),
-        _buildNavItem(context, 'Customers', '/customers', Icons.people),
+        // _buildNavItem(context, 'Customers', '/customers', Icons.people),
       ],
     );
   }

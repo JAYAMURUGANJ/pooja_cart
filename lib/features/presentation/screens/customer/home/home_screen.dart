@@ -100,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
           case ProductStatus.loading:
             return Center(child: CircularProgressIndicator());
           case ProductStatus.error:
-            return Text("Error loading products");
+            return Center(child: Text("Error loading products"));
           case ProductStatus.loaded:
             List<ProductResponse> productsList = state.productResponse!;
             return ResponsiveUtils.responsiveLayout(
