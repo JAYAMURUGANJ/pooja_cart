@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pooja_cart/utils/responsive_utils.dart';
 
+import '../../../models/nav_bar_item_model.dart';
+
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
 
@@ -10,11 +12,11 @@ class AdminDashboard extends StatefulWidget {
 
 class _AdminDashboardState extends State<AdminDashboard> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  final List _navBarItems = [
-    {'title': 'Add New Item', 'icon': Icons.add},
-    {'title': 'Manage Items', 'icon': Icons.list},
-    {'title': 'Orders', 'icon': Icons.shopping_cart},
-    {'title': 'Settings', 'icon': Icons.settings},
+
+  final List<NavBarItemModel> navBarItems = [
+    NavBarItemModel(label: 'Dashboard', icon: Icons.dashboard_rounded),
+    NavBarItemModel(label: 'Products', icon: Icons.list),
+    NavBarItemModel(label: 'Settings', icon: Icons.settings),
   ];
   @override
   Widget build(BuildContext context) {
@@ -41,11 +43,44 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 ]
                 : [Row(children: [])],
       ),
-      body: Center(
-        child: Text(
-          'Admin Dashboard',
-          style: Theme.of(context).textTheme.headlineLarge,
-        ),
+      body: Row(
+        children: [
+          NavigationRail(
+            extended: true,
+            useIndicator: true,
+            indicatorShape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            // selectedIconTheme: const IconThemeData(color: Colors.white),
+            // unselectedIconTheme: const IconThemeData(color: Colors.grey),
+            // selectedLabelTextStyle: const TextStyle(color: Colors.white),
+            // unselectedLabelTextStyle: const TextStyle(color: Colors.grey),
+            destinations:
+                navBarItems
+                    .map(
+                      (navItem) => NavigationRailDestination(
+                        icon: Icon(navItem.icon),
+                        label: Text(navItem.label),
+                      ),
+                    )
+                    .toList(),
+
+            // List.generate(
+            //   _navBarItems.length,
+            //   (navItem) => NavigationRailDestination(
+            //     icon: Icon(Icons.home),
+            //     label: Text("Home"),
+            //   ),
+            // ),
+            selectedIndex: 1,
+          ),
+          Center(
+            child: Text(
+              'Admin Dashboard',
+              style: Theme.of(context).textTheme.headlineLarge,
+            ),
+          ),
+        ],
       ),
     );
   }
