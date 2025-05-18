@@ -14,6 +14,7 @@ import 'package:pooja_cart/features/presentation/ui/bloc/theme/theme_cubit.dart'
 
 import 'di/di_module.dart';
 import 'features/presentation/screens/admin/add_new_item/cubit/add_units/add_units_cubit.dart';
+import 'features/presentation/screens/admin/main_page/cubit/page_navigation/page_navigation_cubit.dart';
 import 'features/presentation/screens/customer/home/cubit/product_filter/product_filter_cubit.dart';
 
 class AppBlocProviders {
@@ -40,6 +41,9 @@ class AppBlocProviders {
       ),
       BlocProvider<ImagePickerCubit>(create: (context) => ImagePickerCubit()),
       BlocProvider<AddUnitsCubit>(create: (context) => AddUnitsCubit()),
+      BlocProvider<PageNavigationCubit>(
+        create: (context) => PageNavigationCubit(),
+      ),
     ];
   }
 }

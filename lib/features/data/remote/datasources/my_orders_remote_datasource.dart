@@ -11,6 +11,7 @@ abstract class MyOrdersRemoteDatasource {
   Future<List<MyOrdersResponseModel>> getOrderByMobile(
     CommonRequestModel request,
   );
+  Future<List<MyOrdersResponseModel>> getAllOrders(CommonRequestModel request);
 }
 
 class MyOrdersRemoteDatasourceImpl implements MyOrdersRemoteDatasource {
@@ -43,6 +44,25 @@ class MyOrdersRemoteDatasourceImpl implements MyOrdersRemoteDatasource {
     try {
       final response = await dioClient.post(
         path: ApiRoutes.getOrderByMobile,
+        data: request.toJson(),
+      );
+      return (response.data as List)
+          .map((e) => MyOrdersResponseModel.fromJson(e))
+          .toList();
+    } on DioException catch (e) {
+      throw ServerException(
+        message: e.response?.data['message'] ?? 'Something went wrong',
+      );
+    }
+  }
+
+  @override
+  Future<List<MyOrdersResponseModel>> getAllOrders(
+    CommonRequestModel request,
+  ) async {
+    try {
+      final response = await dioClient.post(
+        path: ApiRoutes.getAllOrders,
         data: request.toJson(),
       );
       return (response.data as List)

@@ -7,7 +7,8 @@ import 'package:pooja_cart/features/presentation/screens/customer/profile/profil
 
 import 'features/presentation/common_widgets/app_scaffold.dart';
 import 'features/presentation/screens/admin/add_new_item/add_new_item_screen.dart';
-import 'features/presentation/screens/admin/dashboard/admin_dashboard.dart';
+import 'features/presentation/screens/admin/main_page/admin_main_page.dart';
+import 'features/presentation/screens/admin/main_page/dashboard_screen.dart';
 import 'features/presentation/screens/customer/confirm_order/confirm_order_screen.dart';
 import 'features/presentation/screens/customer/contact/contact_screen.dart';
 
@@ -60,7 +61,7 @@ final GoRouter router = GoRouter(
           path: '/admin',
           pageBuilder:
               (context, state) => NoTransitionPage(
-                child: AdminDashboard() /* const DashboardScreen() */,
+                child: AdminMainPage() /* const DashboardScreen() */,
               ),
           routes: [
             GoRoute(
