@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pooja_cart/features/presentation/screens/admin/add_new_item/master/master_page.dart';
 import 'package:pooja_cart/features/presentation/screens/admin/main_page/cubit/page_navigation/page_navigation_cubit.dart';
 import 'package:pooja_cart/utils/responsive_utils.dart';
 
@@ -27,7 +28,7 @@ class _AdminMainPageState extends State<AdminMainPage> {
     Text("Dashboard"),
     Text("Orders"),
     Text("Products"),
-    Text("Master"),
+    MasterPage(),
     Text("Report"),
   ];
   @override
@@ -128,6 +129,9 @@ class _AdminMainPageState extends State<AdminMainPage> {
                           title: Text(navItem.label),
                           onTap: () {
                             _scaffoldKey.currentState?.closeDrawer();
+                            BlocProvider.of<PageNavigationCubit>(
+                              context,
+                            ).changePage(navBarItems.indexOf(navItem));
                           },
                         ),
                       )

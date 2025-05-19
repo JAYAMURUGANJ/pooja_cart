@@ -22,7 +22,7 @@ class AppBlocProviders {
     return [
       BlocProvider<ThemeCubit>(create: (context) => ThemeCubit()),
       BlocProvider<UnitBloc>(create: (context) => UnitBloc(sl())),
-      BlocProvider<CategoryBloc>(create: (context) => CategoryBloc(sl())),
+      BlocProvider<CategoryBloc>(create: (context) => CategoryBloc(sl(), sl())),
       BlocProvider<ProductBloc>(create: (context) => ProductBloc(sl(), sl())),
       BlocProvider<UnitSelectionCubit>(
         create: (context) => UnitSelectionCubit(),

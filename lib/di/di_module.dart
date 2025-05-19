@@ -14,6 +14,7 @@ import 'package:pooja_cart/features/domain/repository/my_orders_repository.dart'
 import 'package:pooja_cart/features/domain/repository/place_order_repository.dart';
 import 'package:pooja_cart/features/domain/repository/product_repository.dart';
 import 'package:pooja_cart/features/domain/repository/units_repository.dart';
+import 'package:pooja_cart/features/domain/usecase/category/delete_category_usecase.dart';
 import 'package:pooja_cart/features/domain/usecase/category/get_category_usecase.dart';
 import 'package:pooja_cart/features/domain/usecase/my_orders/get_my_orders_by_id_usecase.dart';
 import 'package:pooja_cart/features/domain/usecase/my_orders/get_my_orders_by_mobile_usecase.dart';
@@ -38,7 +39,7 @@ class DiModule {
     // Bloc
     sl.registerFactory(() => UnitBloc(sl()));
     sl.registerFactory(() => ProductBloc(sl(), sl()));
-    sl.registerFactory(() => CategoryBloc(sl()));
+    sl.registerFactory(() => CategoryBloc(sl(), sl()));
     sl.registerFactory(() => PlaceOrderBloc(sl()));
     sl.registerFactory(() => MyOrdersBloc(sl(), sl()));
 
@@ -47,6 +48,7 @@ class DiModule {
     sl.registerLazySingleton(() => GetProductUseCase(sl()));
     sl.registerLazySingleton(() => CreateProductUseCase(sl()));
     sl.registerLazySingleton(() => GetCategoryUseCase(sl()));
+    sl.registerLazySingleton(() => DeleteCategoryUseCase(sl()));
     sl.registerLazySingleton(() => CreatePlaceOrderUseCase(sl()));
     sl.registerLazySingleton(() => GetMyOrdersByIdUseCase(sl()));
     sl.registerLazySingleton(() => GetMyOrdersByMobileUseCase(sl()));

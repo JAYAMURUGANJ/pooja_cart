@@ -24,9 +24,19 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Future<Either<Failure, String>> deleteCategory(CommonRequestModel request) {
-    // TODO: implement deleteCategory
-    throw UnimplementedError();
+  Future<Either<Failure, String>> deleteCategory(
+    CommonRequestModel request,
+  ) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final response = await remoteDataSource.deleteCategory(request);
+        return Right(response);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(message: e.message));
+      }
+    } else {
+      return const Left(NetworkFailure(message: 'No internet connection'));
+    }
   }
 
   @override
