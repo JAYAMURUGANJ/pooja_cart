@@ -28,8 +28,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
             errorMsg: failure.message,
           ),
           (getProductResponse) {
-            print("results in  ==> $getProductResponse");
-
             return state.copyWith(
               status: ProductStatus.loaded,
               productResponse: getProductResponse,

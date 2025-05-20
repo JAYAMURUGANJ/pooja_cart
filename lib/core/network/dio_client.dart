@@ -26,14 +26,14 @@ class DioClient {
     dio = Dio(baseOptions);
 
     // Add interceptors
-    dio.interceptors.add(
-      LogInterceptor(
-        request: true,
-        requestBody: true,
-        responseBody: true,
-        error: true,
-      ),
-    );
+    // dio.interceptors.add(
+    //   LogInterceptor(
+    //     request: true,
+    //     requestBody: true,
+    //     responseBody: true,
+    //     error: true,
+    //   ),
+    // );
 
     dio.interceptors.add(
       InterceptorsWrapper(

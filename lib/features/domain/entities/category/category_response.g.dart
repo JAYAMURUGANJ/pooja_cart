@@ -23,14 +23,15 @@ Map<String, dynamic> _$CategoryResponseToJson(CategoryResponse instance) =>
       'units': instance.units,
     };
 
-CategoryUnit _$UnitFromJson(Map<String, dynamic> json) => CategoryUnit(
+CategoryUnit _$CategoryUnitFromJson(Map<String, dynamic> json) => CategoryUnit(
   id: (json['id'] as num?)?.toInt(),
   name: json['name'] as String?,
   abbreviation: json['abbreviation'] as String?,
 );
 
-Map<String, dynamic> _$UnitToJson(CategoryUnit instance) => <String, dynamic>{
-  'id': instance.id,
-  'name': instance.name,
-  'abbreviation': instance.abbreviation,
-};
+Map<String, dynamic> _$CategoryUnitToJson(CategoryUnit instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'abbreviation': instance.abbreviation,
+    };

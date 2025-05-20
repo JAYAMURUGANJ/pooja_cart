@@ -93,7 +93,7 @@ class ProductUnitResponse {
   });
 
   factory ProductUnitResponse.fromJson(Map<String, dynamic> json) =>
-      _$UnitFromJson(json);
+      _$ProductUnitResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => _$UnitToJson(this);
+  Map<String, dynamic> toJson() => _$ProductUnitResponseToJson(this);
 }

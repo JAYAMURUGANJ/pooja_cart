@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pooja_cart/features/domain/entities/category/category_response.dart';
 
-import '../../../../../../data/remote/model/request/common_request_model.dart';
-import '../../../../customer/home/bloc/category/category_bloc.dart';
+import '../../../../../data/remote/model/request/common_request_model.dart';
+import '../../../customer/home/bloc/category/category_bloc.dart';
 
 class CategoriesMasterWidget extends StatefulWidget {
   const CategoriesMasterWidget({super.key});

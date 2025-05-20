@@ -67,7 +67,6 @@ OrderItem _$OrderItemFromJson(Map<String, dynamic> json) => OrderItem(
   orderItemId: (json['order_item_id'] as num?)?.toInt(),
   productId: (json['product_id'] as num?)?.toInt(),
   unitId: (json['unit_id'] as num?)?.toInt(),
-  conversionFactor: (json['conversion_factor'] as num?)?.toInt(),
   quantity: (json['quantity'] as num?)?.toInt(),
   sellingPrice: (json['selling_price'] as num?)?.toDouble(),
   mrp: (json['mrp'] as num?)?.toInt(),
@@ -76,6 +75,7 @@ OrderItem _$OrderItemFromJson(Map<String, dynamic> json) => OrderItem(
   productName: json['product_name'] as String?,
   productDescription: json['product_description'] as String?,
   unitName: json['unit_name'] as String?,
+  conversionFactor: (json['conversion_factor'] as num?)?.toInt(),
   unitAbbreviation: json['unit_abbreviation'] as String?,
   productImage: json['product_image'] as String?,
 );
@@ -84,7 +84,6 @@ Map<String, dynamic> _$OrderItemToJson(OrderItem instance) => <String, dynamic>{
   'order_item_id': instance.orderItemId,
   'product_id': instance.productId,
   'unit_id': instance.unitId,
-  'conversion_factor': instance.conversionFactor,
   'quantity': instance.quantity,
   'selling_price': instance.sellingPrice,
   'mrp': instance.mrp,
@@ -93,6 +92,7 @@ Map<String, dynamic> _$OrderItemToJson(OrderItem instance) => <String, dynamic>{
   'product_name': instance.productName,
   'product_description': instance.productDescription,
   'unit_name': instance.unitName,
+  'conversion_factor': instance.conversionFactor,
   'unit_abbreviation': instance.unitAbbreviation,
   'product_image': instance.productImage,
 };

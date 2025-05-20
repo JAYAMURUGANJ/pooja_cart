@@ -8,4 +8,7 @@ class ApiRoutes {
   static const String getOrderById = '/orders/order_id';
   static const String getOrderByMobile = '/orders/mobile';
   static const String getAllOrders = '/orders/mobile';
+  static const String getAdminOrders = '/orders/all_orders';
+  static const String updateAdminOrder = '/orders/delete_order';
+  static const String deleteAdminOrder = '/orders/delete_order';
 }

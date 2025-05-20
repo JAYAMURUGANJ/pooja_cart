@@ -107,21 +107,32 @@ class OrderSuccessWidget extends StatelessWidget {
                               // Product Image
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(8.0),
-                                child: Image.network(
-                                  item.productImage!,
-                                  width: 60,
-                                  height: 60,
-                                  fit: BoxFit.cover,
-                                  errorBuilder:
-                                      (context, error, stackTrace) => Container(
+                                child: (item.productImage == null ||
+                                        item.productImage!.isEmpty)
+                                    ? Container(
                                         width: 60,
                                         height: 60,
                                         color: Colors.grey[300],
                                         child: const Icon(
                                           Icons.image_not_supported,
                                         ),
-                                      ),
-                                ),
+                                      )
+                                    : Image.network(
+                                          item.productImage ?? '',
+                                          width: 60,
+                                          height: 60,
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  Container(
+                                                    width: 60,
+                                                    height: 60,
+                                                    color: Colors.grey[300],
+                                                    child: const Icon(
+                                                      Icons.image_not_supported,
+                                                    ),
+                                                  ),
+                                        ),
                               ),
                               const SizedBox(width: 12.0),
                               // Product Details

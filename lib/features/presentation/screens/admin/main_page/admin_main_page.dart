@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pooja_cart/features/presentation/screens/admin/add_new_item/master/master_page.dart';
+import 'package:pooja_cart/features/presentation/screens/admin/dashboard/dashboard_screen.dart';
 import 'package:pooja_cart/features/presentation/screens/admin/main_page/cubit/page_navigation/page_navigation_cubit.dart';
+import 'package:pooja_cart/features/presentation/screens/admin/master/master_page.dart';
+import 'package:pooja_cart/features/presentation/screens/admin/orders/order_page.dart';
+import 'package:pooja_cart/features/presentation/screens/admin/report/report_screen.dart';
 import 'package:pooja_cart/utils/responsive_utils.dart';
 
+import '../../../common_widgets/nav_bar.dart';
 import '../../../models/nav_bar_item_model.dart';
+import '../products/admin_products_page.dart';
 
 class AdminMainPage extends StatefulWidget {
   const AdminMainPage({super.key});
@@ -25,11 +30,11 @@ class _AdminMainPageState extends State<AdminMainPage> {
   ];
 
   final List<Widget> _pages = [
-    Text("Dashboard"),
-    Text("Orders"),
-    Text("Products"),
+    DashboardScreen(),
+    OrdersPage(),
+    AdminProductPage(),
     MasterPage(),
-    Text("Report"),
+    ReportScreen(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -44,10 +49,7 @@ class _AdminMainPageState extends State<AdminMainPage> {
                   : null,
           appBar: AppBar(
             automaticallyImplyLeading: false,
-            title: Text(
-              'S.Plani Store Admin',
-              style: TextStyle(color: Theme.of(context).colorScheme.primary),
-            ),
+            title: AppTitle(),
             actions:
                 (context.isMobile)
                     ? [

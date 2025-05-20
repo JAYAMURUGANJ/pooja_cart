@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:pooja_cart/features/data/remote/datasources/admin/admin_orders_remote_datasource.dart';
 import 'package:pooja_cart/features/data/remote/datasources/category_remote_datasource.dart';
 import 'package:pooja_cart/features/data/remote/datasources/my_orders_remote_datasource.dart';
 import 'package:pooja_cart/features/data/remote/datasources/place_order_datasource.dart';
@@ -9,11 +10,13 @@ import 'package:pooja_cart/features/data/repository/my_orders_repository_impl.da
 import 'package:pooja_cart/features/data/repository/place_order_repository_impl.dart';
 import 'package:pooja_cart/features/data/repository/product_repository_impl.dart';
 import 'package:pooja_cart/features/data/repository/units_repository_impl.dart';
+import 'package:pooja_cart/features/domain/repository/admin/admin_orders_repository.dart';
 import 'package:pooja_cart/features/domain/repository/category_repository.dart';
 import 'package:pooja_cart/features/domain/repository/my_orders_repository.dart';
 import 'package:pooja_cart/features/domain/repository/place_order_repository.dart';
 import 'package:pooja_cart/features/domain/repository/product_repository.dart';
 import 'package:pooja_cart/features/domain/repository/units_repository.dart';
+import 'package:pooja_cart/features/domain/usecase/admin/admin_orders/get_admin_orders_usecase.dart';
 import 'package:pooja_cart/features/domain/usecase/category/delete_category_usecase.dart';
 import 'package:pooja_cart/features/domain/usecase/category/get_category_usecase.dart';
 import 'package:pooja_cart/features/domain/usecase/my_orders/get_my_orders_by_id_usecase.dart';
@@ -22,6 +25,7 @@ import 'package:pooja_cart/features/domain/usecase/place_order/create_place_orde
 import 'package:pooja_cart/features/domain/usecase/product/create_product_usecase.dart';
 import 'package:pooja_cart/features/domain/usecase/product/get_products_usecase.dart';
 import 'package:pooja_cart/features/domain/usecase/units/get_units_usecase.dart';
+import 'package:pooja_cart/features/presentation/screens/admin/orders/bloc/admin_orders/admin_orders_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/customer/confirm_order/bloc/place_order/place_order_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/customer/home/bloc/category/category_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/customer/home/bloc/product/product_bloc.dart';
@@ -29,6 +33,7 @@ import 'package:pooja_cart/features/presentation/screens/customer/home/bloc/unit
 
 import '../core/network/dio_client.dart';
 import '../core/network/network_info.dart';
+import '../features/data/repository/admin/admin_orders_repository_impl.dart';
 import '../features/data/repository/category_repository_impl.dart';
 import '../features/presentation/screens/customer/my_orders/bloc/my_orders/my_orders_bloc.dart';
 
@@ -42,6 +47,7 @@ class DiModule {
     sl.registerFactory(() => CategoryBloc(sl(), sl()));
     sl.registerFactory(() => PlaceOrderBloc(sl()));
     sl.registerFactory(() => MyOrdersBloc(sl(), sl()));
+    sl.registerFactory(() => AdminOrdersBloc(sl()));
 
     // Use cases
     sl.registerLazySingleton(() => GetUnitsUseCase(sl()));
@@ -52,6 +58,7 @@ class DiModule {
     sl.registerLazySingleton(() => CreatePlaceOrderUseCase(sl()));
     sl.registerLazySingleton(() => GetMyOrdersByIdUseCase(sl()));
     sl.registerLazySingleton(() => GetMyOrdersByMobileUseCase(sl()));
+    sl.registerLazySingleton(() => GetAdminOrdersUseCase(sl()));
 
     // Repository
     sl.registerLazySingleton<UnitsRepository>(
@@ -69,6 +76,10 @@ class DiModule {
     sl.registerLazySingleton<MyOrdersRepository>(
       () => MyOrdersRepositoryImpl(remoteDataSource: sl(), networkInfo: sl()),
     );
+    sl.registerLazySingleton<AdminOrdersRepository>(
+      () =>
+          AdminOrdersRepositoryImpl(remoteDataSource: sl(), networkInfo: sl()),
+    );
 
     // // // // Data sources
     sl.registerLazySingleton<UnitRemoteDatasource>(
@@ -85,6 +96,9 @@ class DiModule {
     );
     sl.registerLazySingleton<MyOrdersRemoteDatasource>(
       () => MyOrdersRemoteDatasourceImpl(dioClient: sl()),
+    );
+    sl.registerLazySingleton<AdminOrdersRemoteDatasource>(
+      () => AdminOrdersRemoteDatasourceImpl(dioClient: sl()),
     );
 
     //! Core

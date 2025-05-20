@@ -43,7 +43,7 @@ class CategoryUnit {
   CategoryUnit({this.id, this.name, this.abbreviation});
 
   factory CategoryUnit.fromJson(Map<String, dynamic> json) =>
-      _$UnitFromJson(json);
+      _$CategoryUnitFromJson(json);
 
-  Map<String, dynamic> toJson() => _$UnitToJson(this);
+  Map<String, dynamic> toJson() => _$CategoryUnitToJson(this);
 }

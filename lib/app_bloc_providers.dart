@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nested/nested.dart';
 import 'package:pooja_cart/features/presentation/screens/admin/add_new_item/cubit/image_picker/image_picker_cubit.dart';
+import 'package:pooja_cart/features/presentation/screens/admin/orders/bloc/admin_orders/admin_orders_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/customer/confirm_order/bloc/place_order/place_order_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/customer/home/bloc/category/category_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/customer/home/bloc/product/product_bloc.dart';
@@ -44,6 +45,7 @@ class AppBlocProviders {
       BlocProvider<PageNavigationCubit>(
         create: (context) => PageNavigationCubit(),
       ),
+      BlocProvider<AdminOrdersBloc>(create: (context) => AdminOrdersBloc(sl())),
     ];
   }
 }

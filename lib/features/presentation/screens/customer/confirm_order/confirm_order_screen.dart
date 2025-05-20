@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pooja_cart/features/domain/entities/order_items/order_items.dart';
 import 'package:pooja_cart/features/presentation/screens/customer/confirm_order/widgets/order_failed_widget.dart';
-import 'package:pooja_cart/features/presentation/screens/customer/confirm_order/widgets/oreder_success_widget.dart';
+import 'package:pooja_cart/features/presentation/screens/customer/confirm_order/widgets/order_success_widget.dart';
 
 import '../home/cubit/order_items/order_items_cubit.dart';
 import 'bloc/place_order/place_order_bloc.dart';
