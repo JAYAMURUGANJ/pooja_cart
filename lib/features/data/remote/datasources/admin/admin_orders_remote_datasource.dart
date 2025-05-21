@@ -24,17 +24,13 @@ class AdminOrdersRemoteDatasourceImpl implements AdminOrdersRemoteDatasource {
     CommonRequestModel request,
   ) async {
     try {
-      print("inside remote datasource");
       final response = await dioClient.get(path: ApiRoutes.getAdminOrders);
-      print(" data source response.data: ${response.data}");
       var data =
           (response.data as List)
               .map((e) => AdminOrdersResponseModel.fromJson(e))
               .toList();
-      print(data);
       return data;
     } on DioException catch (e) {
-      print(e.toString());
       throw ServerException(
         message: e.response?.data['message'] ?? 'Something went wrong',
       );

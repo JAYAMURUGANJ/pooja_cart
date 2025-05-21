@@ -12,7 +12,7 @@ import 'features/presentation/screens/customer/confirm_order/confirm_order_scree
 import 'features/presentation/screens/customer/contact/contact_screen.dart';
 
 final GoRouter router = GoRouter(
-  initialLocation: '/admin',
+  initialLocation: '/',
   routes: [
     ShellRoute(
       builder: (context, state, child) {

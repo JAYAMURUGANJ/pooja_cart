@@ -1,7 +1,6 @@
 class ApiConstants {
-  // static const String baseUrl =
-  //     'https://poojacartbackend-production.up.railway.app';
-  static const String baseUrl = 'http://localhost:5000';
+  static const String baseUrl = 'https://pooja-cart-backend.onrender.com';
+  // static const String baseUrl = 'http://localhost:5000';
   static const int connectionTimeout = 2; // 2 minutes
   static const int receiveTimeout = 3; // 3 minutes
 

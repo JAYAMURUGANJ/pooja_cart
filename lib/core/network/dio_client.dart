@@ -11,8 +11,8 @@ class DioClient {
     // Encode credentials in Base64
     final baseOptions = BaseOptions(
       baseUrl: ApiConstants.baseUrl,
-      connectTimeout: const Duration(seconds: ApiConstants.connectionTimeout),
-      receiveTimeout: const Duration(seconds: ApiConstants.receiveTimeout),
+      connectTimeout: const Duration(minutes: ApiConstants.connectionTimeout),
+      receiveTimeout: const Duration(minutes: ApiConstants.receiveTimeout),
       responseType: ResponseType.json,
 
       headers: {
@@ -26,14 +26,14 @@ class DioClient {
     dio = Dio(baseOptions);
 
     // Add interceptors
-    // dio.interceptors.add(
-    //   LogInterceptor(
-    //     request: true,
-    //     requestBody: true,
-    //     responseBody: true,
-    //     error: true,
-    //   ),
-    // );
+    dio.interceptors.add(
+      LogInterceptor(
+        request: true,
+        requestBody: true,
+        responseBody: true,
+        error: true,
+      ),
+    );
 
     dio.interceptors.add(
       InterceptorsWrapper(

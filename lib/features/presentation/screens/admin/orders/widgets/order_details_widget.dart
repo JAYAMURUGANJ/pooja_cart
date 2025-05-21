@@ -21,7 +21,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   void initState() {
     super.initState();
     _selectedStatus =
-        widget.order.orderStatus.isEmpty ? 'Pending' : widget.order.orderStatus;
+        widget.order.orderStatus!.isEmpty
+            ? 'Pending'
+            : widget.order.orderStatus!;
   }
 
   @override
@@ -39,13 +41,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     ).format(orderDate);
 
     // Calculate order summary
-    final totalDiscount = widget.order.orderItems.fold<double>(
+    final totalDiscount = widget.order.orderItems!.fold<double>(
       0,
-      (sum, item) => sum + item.itemDiscount,
+      (sum, item) => sum + item.itemDiscount!,
     );
-    final totalItems = widget.order.orderItems.fold<int>(
+    final totalItems = widget.order.orderItems!.fold<int>(
       0,
-      (sum, item) => sum + item.quantity,
+      (sum, item) => sum + item.quantity!,
     );
 
     return Scaffold(
@@ -157,15 +159,15 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                                   _buildDetailRow('Order Date', formattedDate),
                                   _buildDetailRow(
                                     'Payment Method',
-                                    widget.order.paymentMethod.isEmpty
+                                    widget.order.paymentMethod!.isEmpty
                                         ? 'Not specified'
-                                        : widget.order.paymentMethod,
+                                        : widget.order.paymentMethod!,
                                   ),
                                   _buildDetailRow(
                                     'Shipping Method',
-                                    widget.order.shippingMethod.isEmpty
+                                    widget.order.shippingMethod!.isEmpty
                                         ? 'Standard'
-                                        : widget.order.shippingMethod,
+                                        : widget.order.shippingMethod!,
                                   ),
                                   _buildDetailRow(
                                     'Items Count',
@@ -200,11 +202,11 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                                         const SizedBox(height: 16),
                                         _buildDetailRow(
                                           'Name',
-                                          widget.order.name,
+                                          widget.order.name!,
                                         ),
                                         _buildDetailRow(
                                           'Phone',
-                                          widget.order.mobileNo,
+                                          widget.order.mobileNo!,
                                         ),
                                         // Additional customer details would go here
                                       ],
@@ -233,7 +235,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                                     ),
                                   ),
                                   const SizedBox(height: 16),
-                                  widget.order.orderItems.isEmpty
+                                  widget.order.orderItems!.isEmpty
                                       ? const Center(
                                         child: Padding(
                                           padding: EdgeInsets.all(16),
@@ -246,7 +248,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                                     children: [
                                       _buildSummaryRow(
                                         'Subtotal',
-                                        '₹${widget.order.subTotal.toStringAsFixed(2)}',
+                                        '₹${widget.order.subTotal!.toStringAsFixed(2)}',
                                       ),
                                       _buildSummaryRow(
                                         'Discount',
@@ -257,7 +259,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                                       const Divider(),
                                       _buildSummaryRow(
                                         'Total',
-                                        '₹${widget.order.total.toStringAsFixed(2)}',
+                                        '₹${widget.order.total!.toStringAsFixed(2)}',
                                         isBold: true,
                                       ),
                                     ],
@@ -322,10 +324,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: widget.order.orderItems.length,
+      itemCount: widget.order.orderItems!.length,
       separatorBuilder: (context, index) => const Divider(),
       itemBuilder: (context, index) {
-        final item = widget.order.orderItems[index];
+        final item = widget.order.orderItems![index];
         return _buildOrderItemCard(item);
       },
     );
@@ -334,8 +336,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   Widget _buildOrderItemCard(OrderItem item) {
     // Calculate the discount percentage
     final discountPercent =
-        item.mrp > 0
-            ? ((item.mrp - item.sellingPrice) / item.mrp * 100).round()
+        item.mrp! > 0
+            ? ((item.mrp! - item.sellingPrice!) / item.mrp! * 100).round()
             : 0;
 
     return Padding(
@@ -379,14 +381,14 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item.productName,
+                  item.productName!,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
                 ),
                 Text(
-                  item.productDescription,
+                  item.productDescription!,
                   style: TextStyle(color: Colors.grey[600], fontSize: 14),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -400,7 +402,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                     ),
                     const Text(' × '),
                     Text(
-                      '₹${item.sellingPrice.toStringAsFixed(2)}',
+                      '₹${item.sellingPrice!.toStringAsFixed(2)}',
                       style: const TextStyle(fontWeight: FontWeight.w500),
                     ),
                     if (discountPercent > 0) ...[
@@ -435,7 +437,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '₹${item.itemSubTotal.toStringAsFixed(2)}',
+                '₹${item.itemSubTotal!.toStringAsFixed(2)}',
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -443,16 +445,16 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               ),
               if (item.mrp != item.sellingPrice)
                 Text(
-                  '₹${item.mrp.toStringAsFixed(2)}',
+                  '₹${item.mrp!.toStringAsFixed(2)}',
                   style: TextStyle(
                     decoration: TextDecoration.lineThrough,
                     color: Colors.grey[600],
                     fontSize: 14,
                   ),
                 ),
-              if (item.itemDiscount > 0)
+              if (item.itemDiscount! > 0)
                 Text(
-                  'Saved: ₹${item.itemDiscount.toStringAsFixed(2)}',
+                  'Saved: ₹${item.itemDiscount!.toStringAsFixed(2)}',
                   style: TextStyle(
                     color: Colors.green[700],
                     fontSize: 13,

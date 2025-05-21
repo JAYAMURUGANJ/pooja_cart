@@ -28,7 +28,7 @@ class _OrderItemCardState extends State<OrderItemCard> {
 
     // Determine status color
     Color statusColor;
-    switch (item.orderStatus.toLowerCase()) {
+    switch (item.orderStatus!.toLowerCase()) {
       case 'pending':
         statusColor = Colors.orange;
         break;
@@ -92,7 +92,7 @@ class _OrderItemCardState extends State<OrderItemCard> {
                   ),
                   Chip(
                     label: Text(
-                      item.orderStatus.isEmpty ? 'Pending' : item.orderStatus,
+                      item.orderStatus!.isEmpty ? 'Pending' : item.orderStatus!,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 12,
@@ -115,13 +115,13 @@ class _OrderItemCardState extends State<OrderItemCard> {
                         _buildInfoRow(
                           Icons.person_outline,
                           'Customer',
-                          item.name,
+                          item.name!,
                         ),
                         const SizedBox(height: 8),
                         _buildInfoRow(
                           Icons.phone_outlined,
                           'Phone',
-                          item.mobileNo,
+                          item.mobileNo!,
                         ),
                       ],
                     ),
@@ -139,9 +139,9 @@ class _OrderItemCardState extends State<OrderItemCard> {
                         _buildInfoRow(
                           Icons.payments_outlined,
                           'Payment',
-                          item.paymentMethod.isEmpty
+                          item.paymentMethod!.isEmpty
                               ? 'Not specified'
-                              : item.paymentMethod,
+                              : item.paymentMethod!,
                         ),
                       ],
                     ),
@@ -158,11 +158,11 @@ class _OrderItemCardState extends State<OrderItemCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Subtotal: ₹${item.subTotal.toStringAsFixed(2)}',
+                        'Subtotal: ₹${item.subTotal!.toStringAsFixed(2)}',
                         style: const TextStyle(color: Colors.grey),
                       ),
                       Text(
-                        'Total: ₹${item.total.toStringAsFixed(2)}',
+                        'Total: ₹${item.total!.toStringAsFixed(2)}',
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,

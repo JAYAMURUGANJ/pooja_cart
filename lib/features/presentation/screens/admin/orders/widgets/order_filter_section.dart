@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pooja_cart/features/domain/entities/admin/admin_orders/admin_orders_response.dart';
 
 class OrderFilterSection extends StatefulWidget {
   const OrderFilterSection({super.key});
@@ -9,9 +8,6 @@ class OrderFilterSection extends StatefulWidget {
 }
 
 class _OrderFilterSectionState extends State<OrderFilterSection> {
-  late Future<AdminOrdersResponse> _ordersData;
-  int _currentPage = 1;
-  final int _limit = 10;
   String _searchQuery = '';
   String _filterStatus = 'All';
   final TextEditingController _searchController = TextEditingController();
@@ -107,7 +103,6 @@ class _OrderFilterSectionState extends State<OrderFilterSection> {
 
   void _applyFilters() {
     setState(() {
-      _currentPage = 1;
       // _ordersData = fetchOrders(1);
     });
   }

@@ -49,6 +49,8 @@ class _AdminMainPageState extends State<AdminMainPage> {
                   : null,
           appBar: AppBar(
             automaticallyImplyLeading: false,
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            excludeHeaderSemantics: true,
             title: AppTitle(),
             actions:
                 (context.isMobile)

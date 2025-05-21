@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pooja_cart/features/presentation/screens/admin/master/widgets/categories_master_widget.dart';
+import 'package:pooja_cart/features/presentation/screens/admin/master/widgets/category/categories_master_widget.dart';
 
 import 'widgets/unit_master_widget.dart';
 

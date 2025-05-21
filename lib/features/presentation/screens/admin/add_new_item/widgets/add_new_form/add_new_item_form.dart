@@ -63,7 +63,7 @@ class _AddNewItemFormState extends State<AddNewItemForm> {
           return BlocListener<ProductBloc, ProductState>(
             listener: (context, productState) {
               switch (productState.status) {
-                case ProductStatus.intial:
+                case ProductStatus.initial:
                   // Do nothing
                   break;
                 case ProductStatus.loading:

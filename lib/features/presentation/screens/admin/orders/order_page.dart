@@ -44,7 +44,7 @@ class _OrdersPageState extends State<OrdersPage> {
   }
 
   _buildOrderList(List<AdminOrdersResponse> orders) {
-    List<OrdersList> ordersList = orders.first.orders;
+    List<OrdersList> ordersList = orders.first.orders!;
     return Column(
       children: [
         OrderFilterSection(),
