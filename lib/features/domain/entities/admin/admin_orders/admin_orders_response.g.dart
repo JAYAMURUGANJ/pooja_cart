@@ -25,7 +25,7 @@ Map<String, dynamic> _$AdminOrdersResponseToJson(
   'pagination': instance.pagination,
 };
 
-OrdersList _$OrderFromJson(Map<String, dynamic> json) => OrdersList(
+OrdersList _$OrdersListFromJson(Map<String, dynamic> json) => OrdersList(
   orderId: (json['order_id'] as num?)?.toInt(),
   orderDate:
       json['order_date'] == null
@@ -44,18 +44,19 @@ OrdersList _$OrderFromJson(Map<String, dynamic> json) => OrdersList(
           .toList(),
 );
 
-Map<String, dynamic> _$OrderToJson(OrdersList instance) => <String, dynamic>{
-  'order_id': instance.orderId,
-  'order_date': instance.orderDate?.toIso8601String(),
-  'order_status': instance.orderStatus,
-  'name': instance.name,
-  'mobile_no': instance.mobileNo,
-  'shipping_method': instance.shippingMethod,
-  'sub_total': instance.subTotal,
-  'total': instance.total,
-  'payment_method': instance.paymentMethod,
-  'order_items': instance.orderItems,
-};
+Map<String, dynamic> _$OrdersListToJson(OrdersList instance) =>
+    <String, dynamic>{
+      'order_id': instance.orderId,
+      'order_date': instance.orderDate?.toIso8601String(),
+      'order_status': instance.orderStatus,
+      'name': instance.name,
+      'mobile_no': instance.mobileNo,
+      'shipping_method': instance.shippingMethod,
+      'sub_total': instance.subTotal,
+      'total': instance.total,
+      'payment_method': instance.paymentMethod,
+      'order_items': instance.orderItems,
+    };
 
 OrderItem _$OrderItemFromJson(Map<String, dynamic> json) => OrderItem(
   orderItemId: (json['order_item_id'] as num?)?.toInt(),

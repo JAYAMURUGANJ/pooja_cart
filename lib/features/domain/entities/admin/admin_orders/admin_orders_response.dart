@@ -74,9 +74,9 @@ class OrdersList {
   });
 
   factory OrdersList.fromJson(Map<String, dynamic> json) =>
-      _$OrderFromJson(json);
+      _$OrdersListFromJson(json);
 
-  Map<String, dynamic> toJson() => _$OrderToJson(this);
+  Map<String, dynamic> toJson() => _$OrdersListToJson(this);
 }
 
 @JsonSerializable()

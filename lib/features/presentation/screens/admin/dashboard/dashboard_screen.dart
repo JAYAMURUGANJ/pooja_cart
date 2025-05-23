@@ -1,4 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pooja_cart/features/presentation/screens/admin/dashboard/bloc/admin_dashboard_data/admin_dashboard_data_bloc.dart';
+import 'package:pooja_cart/features/presentation/screens/admin/dashboard/widgets/welcome_section.dart';
+
+import '../../../../data/remote/model/request/common_request_model.dart';
+import '../../../../domain/entities/admin/admin_dashboard/admin_dashboard_response.dart';
+import 'widgets/metrics_section.dart';
+import 'widgets/products_info_section.dart';
+import 'widgets/recent_orders_section.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -9,70 +18,53 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<AdminDashboardDataBloc>(
+      context,
+    ).add(GetDashboardDataEvent(requestData: CommonRequestModel()));
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            spacing: 15,
-            children: [
-              _buildWelcomeSection(context),
-              _buildMainCardsSection(),
-              Center(child: Text('Welcome to the Admin Dashboard!')),
-            ],
-          ),
-        ),
+      body: BlocBuilder<AdminDashboardDataBloc, AdminDashboardDataState>(
+        builder: (context, state) {
+          switch (state.status) {
+            case AdminDashboardDataStatus.initial:
+              return const Center(child: CircularProgressIndicator());
+            case AdminDashboardDataStatus.loading:
+              return const Center(child: CircularProgressIndicator());
+            case AdminDashboardDataStatus.error:
+              return Center(
+                child: Text(
+                  state.errorMsg ?? 'Something went wrong',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              );
+            case AdminDashboardDataStatus.loaded:
+              return _buildSuccessWidget(context, state.dashboardResponse!);
+          }
+        },
       ),
     );
   }
 
-  GridView _buildMainCardsSection() {
-    return GridView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 250,
-        mainAxisSpacing: 15,
-        crossAxisSpacing: 15,
-      ),
-      itemBuilder: (context, index) {
-        return Card(child: Center(child: Text('Item $index')));
-      },
-      itemCount: 4,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-    );
-  }
-
-  Card _buildWelcomeSection(BuildContext context) {
-    return Card(
+  SingleChildScrollView _buildSuccessWidget(
+    BuildContext context,
+    AdminDashboardResponse dashboardData,
+  ) {
+    return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          spacing: 24,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(
-                    text: "Welcome back, Admin\n",
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextSpan(
-                    text: "Here's what's happening in your store",
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ],
-              ),
-            ),
-            IconButton(
-              icon: Icon(Icons.refresh),
-              onPressed: () {
-                // Navigate to settings
-              },
-            ),
+            WelcomeSection(adminUser: dashboardData.adminUser),
+            MetricsSection(metrics: dashboardData.metrics!),
+            RecentOrdersSection(recentOrders: dashboardData.recentOrders),
+            ProductsInfoSection(products: dashboardData.products),
           ],
         ),
       ),
