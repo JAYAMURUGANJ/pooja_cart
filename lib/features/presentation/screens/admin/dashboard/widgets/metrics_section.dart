@@ -61,6 +61,7 @@ Widget _buildMetricCard({
   required IconData icon,
 }) {
   return Card(
+    color: Theme.of(context).colorScheme.surface,
     elevation: 5,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     child: Padding(
@@ -70,19 +71,20 @@ Widget _buildMetricCard({
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Column(
+            spacing: 12,
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
                 title,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
               Text(
                 value,
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.green,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
             ],

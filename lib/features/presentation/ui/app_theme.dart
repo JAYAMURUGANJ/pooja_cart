@@ -97,7 +97,7 @@ class AppTheme {
       headlineMedium: TextStyle(color: Colors.black),
       headlineSmall: TextStyle(color: Colors.black87),
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: Colors.white,
       shadowColor: Colors.grey.shade300,
       elevation: 2,
