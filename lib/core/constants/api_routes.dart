@@ -12,4 +12,5 @@ class ApiRoutes {
   static const String updateAdminOrder = '/orders/update_order';
   static const String deleteAdminOrder = '/orders/delete_order';
   static const String getDashboardData = '/dashboard';
+  static const String getAdminReportData = '/report';
 }

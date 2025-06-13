@@ -27,6 +27,7 @@ import 'package:pooja_cart/features/domain/usecase/product/create_product_usecas
 import 'package:pooja_cart/features/domain/usecase/product/get_products_usecase.dart';
 import 'package:pooja_cart/features/domain/usecase/units/get_units_usecase.dart';
 import 'package:pooja_cart/features/presentation/screens/admin/orders/bloc/admin_orders/admin_orders_bloc.dart';
+import 'package:pooja_cart/features/presentation/screens/admin/report/bloc/admin_report_data/admin_report_data_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/customer/confirm_order/bloc/place_order/place_order_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/customer/home/bloc/category/category_bloc.dart';
 import 'package:pooja_cart/features/presentation/screens/customer/home/bloc/product/product_bloc.dart';
@@ -35,10 +36,14 @@ import 'package:pooja_cart/features/presentation/screens/customer/home/bloc/unit
 import '../core/network/dio_client.dart';
 import '../core/network/network_info.dart';
 import '../features/data/remote/datasources/admin/admin_dashboard_remote_datasource.dart';
+import '../features/data/remote/datasources/admin/admin_report_remote_datasource.dart';
 import '../features/data/repository/admin/admin_dashboard_repository_impl.dart';
 import '../features/data/repository/admin/admin_orders_repository_impl.dart';
+import '../features/data/repository/admin/admin_report_repository_impl.dart';
 import '../features/data/repository/category_repository_impl.dart';
+import '../features/domain/repository/admin/admin_report_repository.dart';
 import '../features/domain/usecase/admin/admin_dashboard/get_admin_dashboard_data_usecase.dart';
+import '../features/domain/usecase/admin/admin_report/get_admin_report_data_usecase.dart';
 import '../features/presentation/screens/admin/dashboard/bloc/admin_dashboard_data/admin_dashboard_data_bloc.dart';
 import '../features/presentation/screens/customer/my_orders/bloc/my_orders/my_orders_bloc.dart';
 
@@ -54,6 +59,7 @@ class DiModule {
     sl.registerFactory(() => MyOrdersBloc(sl(), sl()));
     sl.registerFactory(() => AdminOrdersBloc(sl()));
     sl.registerFactory(() => AdminDashboardDataBloc(sl()));
+    sl.registerFactory(() => AdminReportDataBloc(sl()));
 
     // Use cases
     sl.registerLazySingleton(() => GetUnitsUseCase(sl()));
@@ -66,6 +72,7 @@ class DiModule {
     sl.registerLazySingleton(() => GetMyOrdersByMobileUseCase(sl()));
     sl.registerLazySingleton(() => GetAdminOrdersUseCase(sl()));
     sl.registerLazySingleton(() => GetAdminDashboardDataUseCase(sl()));
+    sl.registerLazySingleton(() => GetAdminReportDataUseCase(sl()));
 
     // Repository
     sl.registerLazySingleton<UnitsRepository>(
@@ -93,6 +100,10 @@ class DiModule {
         networkInfo: sl(),
       ),
     );
+    sl.registerLazySingleton<AdminReportRepository>(
+      () =>
+          AdminReportRepositoryImpl(remoteDataSource: sl(), networkInfo: sl()),
+    );
 
     // // // // Data sources
     sl.registerLazySingleton<UnitRemoteDatasource>(
@@ -115,6 +126,9 @@ class DiModule {
     );
     sl.registerLazySingleton<AdminDashboardRemoteDatasource>(
       () => AdminDashboardRemoteDatasourceImpl(dioClient: sl()),
+    );
+    sl.registerLazySingleton<AdminReportRemoteDatasource>(
+      () => AdminReportRemoteDatasourceImpl(dioClient: sl()),
     );
 
     //! Core
